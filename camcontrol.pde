@@ -22,13 +22,13 @@ public class ControlDisplay extends PApplet {
   SoundFile mSoundfile;
 
    public void settings(){
-    size(kCAM_WIDTH*2, kCAM_HEIGHT);    
+    size(kCAM_WIDTH, kCAM_HEIGHT);    
    }
   
    public void setup(){ 
     mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, 30);
 
-    mSoundfile = new SoundFile(this, "glass.wav");
+    mSoundfile = new SoundFile(this, "bazinga.mp3");
 
     mVideo.start();  
    
@@ -37,7 +37,6 @@ public class ControlDisplay extends PApplet {
     mFeedback = createImage(mVideo.width,mVideo.height, RGB); 
     mCamCtrl = createGraphics(mVideo.width,mVideo.height);
 
-    frameRate(15);   
    }
  
   public void setDetection(boolean bStatus){

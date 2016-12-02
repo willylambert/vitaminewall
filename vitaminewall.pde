@@ -2,7 +2,7 @@ import controlP5.*;
 
 // How different must a pixel be to be a "motion" pixel
 float kTHRESHOLD = 60;
-float kSENSIVITY = 50; //number of pixels changed to light a dot
+float kSENSIVITY = 10; //number of pixels changed to light a dot
 
 // 640 x 480 resolution is enough for camera to do motion detection
 int kCAM_WIDTH = 640;
@@ -96,11 +96,14 @@ void setup(){
 }
 
 void draw() {
-  
+  background(0);
   /**
   * Select dots
   **/
   if(bChooseDots){
+    if(!(mouseY>100 && mouseX>displayWidth-110)){
+      ellipse(mouseX,mouseY,kDOT_SIZE,kDOT_SIZE);
+    }
     if(gNbDots==0){
       mChooseDotsLabel = new Textlabel(cp5,"",10,10); 
       mChooseDotsLabel.setFont(gFont);
@@ -110,6 +113,9 @@ void draw() {
       btnGo.hide();
     }else{
       btnGo.show();
+    }
+    for(int i=0;i<gNbDots;i++){
+      rect(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
     }
   }
   
@@ -179,14 +185,17 @@ void draw() {
       fill(255); 
       for(int i=0;i<10;i++){
         if(gHallOfFame[i].score!=MAX_INT){
-          String score =  (i+1) + " -  " +  nf((gHallOfFame[i].score)/1000.,1,1) + " s - " + gHallOfFame[i].name;
-          text(score,50,100+i*60);
+          String score =  (i+1) + " -  " +  nf((gHallOfFame[i].score)/1000.,1,1) + " - " + gHallOfFame[i].name;
+          text(score,100,100+i*60);
         }        
       }
     }
   }
 }
 
+/**
+* TextField callback
+**/
 public void Climber(String climberName) {
   //new score
   println("We have a new winner !",climberName);
@@ -217,7 +226,6 @@ public void Climber(String climberName) {
   btnGo.show();
 }
 
-
  void Go(int value){
    println("Start Playing");
    gCurrentDot = 0;
@@ -238,9 +246,11 @@ public void Climber(String climberName) {
 
 void mouseClicked() {
   //Store dots
-  println("new dot at ",mouseX," ",mouseY);
-  gTblDots[gNbDots][0] = mouseX;
-  gTblDots[gNbDots][1] = mouseY;  
-  bRecordDot = true;
-  rect(mouseX,mouseY,kDOT_SIZE,kDOT_SIZE);  
+  if(bChooseDots){
+    println("new dot at ",mouseX," ",mouseY);
+    gTblDots[gNbDots][0] = mouseX;
+    gTblDots[gNbDots][1] = mouseY;  
+    //Enable dot detection through camera
+    bRecordDot = true;
+  }
 }
