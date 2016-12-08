@@ -1,4 +1,5 @@
 import controlP5.*;
+import processing.sound.*;
 
 // How different must a pixel be to be a "motion" pixel
 float kTHRESHOLD = 60;
@@ -20,6 +21,10 @@ int gCurrentDot = 0;
 
 //Screen buffers
 PGraphics gWall;
+
+PShape gUntouchedDot;
+PShape gPlay;
+PShape gPlayGo;
 
 //Font use
 PFont gFont;
@@ -51,6 +56,11 @@ Textfield mClimberName;
 //Store Hall Of Fame
 Climber[] gHallOfFame = new Climber[10]; 
 
+SoundFile gGoSoundfile;
+SoundFile gTouchSoundfile;
+SoundFile gEndSoundfile;
+SoundFile gWinSoundfile;
+
 ControlDisplay gCamView;
 
 void settings(){
@@ -62,6 +72,11 @@ void setup(){
   
   //Center rectangle when drawing
   rectMode(CENTER);
+  
+  gGoSoundfile = new SoundFile(this, "go.wav");
+  gTouchSoundfile = new SoundFile(this, "touch.wav");
+  gEndSoundfile = new SoundFile(this, "end.wav");
+  gWinSoundfile = new SoundFile(this, "win.wav");
   
   gWall = createGraphics(displayWidth,displayHeight);
   gFont = createFont("Digital-7",50);
@@ -76,6 +91,10 @@ void setup(){
      
   mGameWonLabel = new Textlabel(cp5,"",10,displayHeight/4);   
   mGameWonLabel.setFont(gFont);
+
+  gUntouchedDot = loadShape("bot1.svg");
+  gPlay = loadShape("play.svg");
+  gPlayGo = loadShape("play_go.svg");
 
   mLog = new Textlabel(cp5,"",10,displayHeight-20);   
   mLog.setFont(createFont("Digital-7",20));
@@ -130,17 +149,28 @@ void draw() {
 
     //Handle drawing of first dot
     if(gCurrentDot == 0){
-      gWall.rect(gTblDots[0][0],gTblDots[0][1],kDOT_SIZE,kDOT_SIZE);
+      gWall.shape(gPlay,gTblDots[0][0],gTblDots[0][1],kDOT_SIZE,kDOT_SIZE);
     }else{    
       //At least one dot is touched
       if(gCurrentDot < gNbDots){               
         for(int i=0;i<=gCurrentDot;i++){
+
+
           if(gTblDots[i][4]==0){
             gWall.fill(255,255,255);
+            gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
           }else{
-            gWall.fill(0,255,0);  
-          }
-          gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
+            if(i==0){
+              gWall.shape(gPlayGo,gTblDots[0][0],gTblDots[0][1],kDOT_SIZE,kDOT_SIZE);
+            }else{
+              gWall.fill(255,255,255);  
+              gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE*1.5,kDOT_SIZE*1.5);
+              gWall.fill(0,0,0);
+              gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
+              gWall.fill(0,255,0);  
+              gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE/2,kDOT_SIZE/2);
+           }
+      }
         }
       }
     }
@@ -163,16 +193,22 @@ void draw() {
       if(gCurrentDot>=gNbDots && gLastScore==0){
         gLastScore = millis()-gStartTime;
         println("You Win !!");
+        gEndSoundfile.play();
         background(0);
         mGameWonLabel.setValue(" Pas mal ...  " + nf((gLastScore)/1000.,1,1) + " secondes !!");
         mGameWonLabel.draw(this);
         bPlay = false;
        
-        cp5.addTextfield("Climber")
+        Textfield t = cp5.addTextfield("Climber")
            .setPosition(displayWidth/4,displayHeight/2-30)
            .setSize(600,60)
            .setFont(gFont)
-           .setFocus(true);      
+           .setFocus(true);  
+
+        Label label = t.getCaptionLabel(); 
+        label.setText("Grimpeur"); 
+        label.align(ControlP5.LEFT_OUTSIDE, CENTER);
+        label.getStyle().setPaddingLeft(-10);           
       }
     }
   }else{
@@ -217,6 +253,11 @@ public void Climber(String climberName) {
     for(int i=9;i>climberRank;i--){
       gHallOfFame[i] = gHallOfFame[i-1]; 
     }
+    
+    if(climberRank==0){
+      gWinSoundfile.play();
+    }
+    
     gHallOfFame[climberRank] = new Climber();
     gHallOfFame[climberRank].score = gLastScore;
     gHallOfFame[climberRank].name = climberName;

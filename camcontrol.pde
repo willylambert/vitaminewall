@@ -19,7 +19,6 @@ public class ControlDisplay extends PApplet {
   //Use to disable detection during a short period of time after a dot is touched
   int mLastDetectionTime;
 
-  SoundFile mSoundfile;
 
    public void settings(){
     size(kCAM_WIDTH, kCAM_HEIGHT);    
@@ -27,8 +26,6 @@ public class ControlDisplay extends PApplet {
   
    public void setup(){ 
     mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, 30);
-
-    mSoundfile = new SoundFile(this, "bazinga.mp3");
 
     mVideo.start();  
    
@@ -90,7 +87,10 @@ public class ControlDisplay extends PApplet {
            
            
            if(gCurrentDot==0){
+             gGoSoundfile.play();
              gStartTime = millis();
+           }else{
+             gTouchSoundfile.play();
            }
            
            //Go to next dot
@@ -145,7 +145,6 @@ public class ControlDisplay extends PApplet {
           //dot detected
           bRecordDot  = false;
           gNbDots++;        
-          //mSoundfile.play();
         }
       }        
       mFeedback.updatePixels();
