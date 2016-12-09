@@ -56,6 +56,10 @@ Textfield mClimberName;
 //Store Hall Of Fame
 Climber[] gHallOfFame = new Climber[10]; 
 
+//Used to animated dot when touched
+int gFrameCount = 0;
+int gDotSize = kDOT_SIZE*2;
+
 SoundFile gGoSoundfile;
 SoundFile gTouchSoundfile;
 SoundFile gEndSoundfile;
@@ -80,7 +84,7 @@ void setup(){
   
   gWall = createGraphics(displayWidth,displayHeight);
   gFont = createFont("Digital-7",50);
-  
+    
   //Launch control window on main screen
   String[] args = {"--location=0,0", "ClimbWall"};
 
@@ -116,6 +120,7 @@ void setup(){
 
 void draw() {
   background(0);
+
   /**
   * Select dots
   **/
@@ -146,6 +151,10 @@ void draw() {
     
     gWall.beginDraw();
     gWall.background(0);
+    
+    //font for dots
+    gWall.textFont(gFont,20);
+    textAlign(CENTER);
 
     //Handle drawing of first dot
     if(gCurrentDot == 0){
@@ -154,21 +163,27 @@ void draw() {
       //At least one dot is touched
       if(gCurrentDot < gNbDots){               
         for(int i=0;i<=gCurrentDot;i++){
-
-
+          //Untouched dot
           if(gTblDots[i][4]==0){
             gWall.fill(255,255,255);
             gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
           }else{
+            //First dot
             if(i==0){
               gWall.shape(gPlayGo,gTblDots[0][0],gTblDots[0][1],kDOT_SIZE,kDOT_SIZE);
             }else{
-              gWall.fill(255,255,255);  
-              gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE*1.5,kDOT_SIZE*1.5);
-              gWall.fill(0,0,0);
-              gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
-              gWall.fill(0,255,0);  
-              gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE/2,kDOT_SIZE/2);
+              if(i==gCurrentDot-1 && gDotSize>kDOT_SIZE/10){                
+                gWall.fill(255,255,255); 
+                gWall.ellipse(gTblDots[i][0],gTblDots[i][1],gDotSize,gDotSize);
+                gDotSize -= max(sqrt(kDOT_SIZE*2 - gDotSize),1);
+              }else{
+                gWall.fill(255);  
+                gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
+                gWall.fill(0);
+                gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE-10,kDOT_SIZE-10);
+                gWall.text(i+1,gTblDots[i][0],gTblDots[i][1]+10);
+                
+              }
            }
       }
         }
@@ -206,7 +221,7 @@ void draw() {
            .setFocus(true);  
 
         Label label = t.getCaptionLabel(); 
-        label.setText("Grimpeur"); 
+        label.setText("Grimpeur : "); 
         label.align(ControlP5.LEFT_OUTSIDE, CENTER);
         label.getStyle().setPaddingLeft(-10);           
       }

@@ -84,6 +84,7 @@ public class ControlDisplay extends PApplet {
            println("dot ",gCurrentDot, " at cell [",gTblDots[gCurrentDot][2],",",gTblDots[gCurrentDot][3],"] has ", pixelsCount);
            //Dot touched !!
            gTblDots[gCurrentDot][4] = 1;
+           gDotSize = kDOT_SIZE*2;
            
            
            if(gCurrentDot==0){
