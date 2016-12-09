@@ -1,3 +1,21 @@
+/**
+    VITAMINE WALL 
+    Copyright (C) 2016 Willy LAMBERT @willylambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**/
+
 import controlP5.*;
 import processing.sound.*;
 
@@ -153,8 +171,7 @@ void draw() {
     gWall.background(0);
     
     //font for dots
-    gWall.textFont(gFont,20);
-    textAlign(CENTER);
+    gWall.textFont(gFont,30);
 
     //Handle drawing of first dot
     if(gCurrentDot == 0){
@@ -181,7 +198,8 @@ void draw() {
                 gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
                 gWall.fill(0);
                 gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE-10,kDOT_SIZE-10);
-                gWall.text(i+1,gTblDots[i][0],gTblDots[i][1]+10);
+                gWall.fill(255);  
+                gWall.text(i+1,gTblDots[i][0]-7,gTblDots[i][1]+10);
                 
               }
            }
