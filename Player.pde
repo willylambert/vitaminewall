@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-class Climber implements Comparable{
+class Climber{
   int score;
   String name;
   int rank;
@@ -27,8 +27,4 @@ class Climber implements Comparable{
     rank = -1;
   }
 
-  int compareTo(Object o){
-    Climber p = (Climber)o;
-    return (score-p.score>0?1:0);
-  }  
 }

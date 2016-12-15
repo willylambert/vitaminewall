@@ -20,8 +20,8 @@ import controlP5.*;
 import processing.sound.*;
 
 // How different must a pixel be to be a "motion" pixel
-float kTHRESHOLD = 60;
-float kSENSIVITY = 10; //number of pixels changed to light a dot
+float kTHRESHOLD = 35;
+float kSENSIVITY = 30; //number of pixels changed to light a dot
 
 // 640 x 480 resolution is enough for camera to do motion detection
 int kCAM_WIDTH = 640;
@@ -199,11 +199,10 @@ void draw() {
                 gWall.fill(0);
                 gWall.ellipse(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE-10,kDOT_SIZE-10);
                 gWall.fill(255);  
-                gWall.text(i+1,gTblDots[i][0]-7,gTblDots[i][1]+10);
-                
+                gWall.text(i+1,gTblDots[i][0]-7,gTblDots[i][1]+10);                
               }
-           }
-      }
+            }
+          }
         }
       }
     }
@@ -280,7 +279,7 @@ public void Climber(String climberName) {
         break;
       }
     }
-}
+  }
   if(climberRank>-1){
     //Insert player and shift looser
     for(int i=9;i>climberRank;i--){
