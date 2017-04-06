@@ -1,7 +1,6 @@
 # Vitamine Wall : Augmented Climbing Wall
 
 Vitamine Wall combines projected graphics and body detection for funny climbing experience for everyone ! 
-It is written with Processing and fully Open Source - Please stricly respect the GPL V3 Licence.
 
 ## Run it
 
