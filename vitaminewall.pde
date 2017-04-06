@@ -53,6 +53,7 @@ controlP5.Button btnGo;
 boolean bPlay = false;
 boolean bChooseDots = false;
 boolean bRecordDot = false;
+boolean bBlinkDotWhileRecording = false;
 boolean bEnableDetection = true;
 boolean bDisplayScore = false;
 
@@ -144,6 +145,9 @@ void draw() {
   **/
   if(bChooseDots){
     if(!(mouseY>100 && mouseX>displayWidth-110)){
+      if(bRecordDot){
+        fill(0,255,0,255-map(millis()%300,0,300,0,300));
+      }
       ellipse(mouseX,mouseY,kDOT_SIZE,kDOT_SIZE);
     }
     if(gNbDots==0){
@@ -157,6 +161,7 @@ void draw() {
       btnGo.show();
     }
     for(int i=0;i<gNbDots;i++){
+      fill(255);
       rect(gTblDots[i][0],gTblDots[i][1],kDOT_SIZE,kDOT_SIZE);
     }
   }
