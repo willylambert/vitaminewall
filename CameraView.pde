@@ -17,9 +17,8 @@
 **/
 
 import processing.video.*;
-import processing.sound.*;
 
-public class ControlDisplay extends PApplet {
+public class CameraView extends PApplet {
 
   // Variable for capture device
   Capture mVideo;
@@ -30,13 +29,12 @@ public class ControlDisplay extends PApplet {
   PImage  mCurrFrame;  
   
   PGraphics mCamCtrl;
-
+  
   // Detection feedback
   PImage mFeedback;
 
   //Use to disable detection during a short period of time after a dot is touched
   int mLastDetectionTime;
-
 
    public void settings(){
     size(kCAM_WIDTH, kCAM_HEIGHT);    
@@ -51,7 +49,20 @@ public class ControlDisplay extends PApplet {
     mCurrFrame = createImage(mVideo.width,mVideo.height,RGB);  
     mFeedback = createImage(mVideo.width,mVideo.height, RGB); 
     mCamCtrl = createGraphics(mVideo.width,mVideo.height);
-
+   }
+   
+   PImage getCurrentFrame(){
+     return mCurrFrame;
+   }
+   
+   public void setCamera(String cameraName){  
+    String[] cameras = Capture.list();
+    
+    //we assume that video stream was already start in setup()
+    mVideo.stop();
+    
+    mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, cameraName,30);
+    mVideo.start();  
    }
  
   public void setDetection(boolean bStatus){
@@ -60,7 +71,19 @@ public class ControlDisplay extends PApplet {
       mLastDetectionTime = millis();
     }
   }
-   
+
+  public void draw(){
+    if(mVideo.available()){
+      mVideo.read();
+      //Updated frame 
+      mFeedback.copy(mVideo,0,0,mVideo.width,mVideo.height,0,0,mVideo.width,mVideo.height); 
+      mFeedback.loadPixels();
+      
+      image(mFeedback,0,0,width,height);
+    }
+  }
+ 
+   /*
   public void draw() {
     if(mVideo.available()) {
       mFeedback = createImage(mVideo.width,mVideo.height, RGB); 
@@ -172,4 +195,5 @@ public class ControlDisplay extends PApplet {
       image(mCamCtrl,mVideo.width,0,mVideo.width,mVideo.height);
     } 
   }
+*/
 }
