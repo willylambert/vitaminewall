@@ -20,6 +20,21 @@ import processing.video.*;
 
 public class CameraView extends PApplet {
 
+  // 640 x 480 resolution is enough for camera to do motion detection
+  static final int kCAM_WIDTH = 640;
+  static final int kCAM_HEIGHT = 480;
+  
+  // dots size in pixels
+  static final int kDOT_SIZE = 20;
+  
+  // How different must a pixel be to be detected as a "motion" pixel
+  float kTHRESHOLD = 35;
+  float kSENSIVITY = 30; //number of pixels changed to light a dot
+  
+  DetectionResult _detectionResult;
+  
+  boolean _bEnableDetection;
+  
   // Variable for capture device
   Capture mVideo;
    
@@ -42,6 +57,7 @@ public class CameraView extends PApplet {
   
    public void setup(){ 
     mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, 30);
+    _detectionResult = new DetectionResult(0,0,0);
 
     mVideo.start();  
    
@@ -55,9 +71,7 @@ public class CameraView extends PApplet {
      return mCurrFrame;
    }
    
-   public void setCamera(String cameraName){  
-    String[] cameras = Capture.list();
-    
+   public void setCamera(String cameraName){     
     //we assume that video stream was already start in setup()
     mVideo.stop();
     
@@ -66,10 +80,12 @@ public class CameraView extends PApplet {
    }
  
   public void setDetection(boolean bStatus){
-    bEnableDetection = bStatus;
-    if(!bStatus){
-      mLastDetectionTime = millis();
-    }
+    _bEnableDetection = bStatus;
+    _detectionResult = new DetectionResult(0,0,0);
+  }
+  
+  public DetectionResult getDetectionResult(){
+    return _detectionResult;
   }
 
   public void draw(){
@@ -80,10 +96,55 @@ public class CameraView extends PApplet {
       mFeedback.loadPixels();
       
       image(mFeedback,0,0,width,height);
+      
+      if(_bEnableDetection){
+        //Store previous video frame for comparison
+        mPrevFrame.copy(mVideo,0,0,mVideo.width,mVideo.height,0,0,mVideo.width,mVideo.height); 
+        
+        mVideo.read();
+        
+        //Updated frame 
+        mCurrFrame.copy(mVideo,0,0,mVideo.width,mVideo.height,0,0,mVideo.width,mVideo.height); 
+        
+        mPrevFrame.loadPixels(); 
+        mCurrFrame.loadPixels();         
+        
+        //we divide image from cam in cells having dot size
+        for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
+          for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
+            int pixelsCount=0;
+            for(int x=xCell;x<xCell+kDOT_SIZE;x++){
+              for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
+                int loc = x + y*mCurrFrame.width;            // what is the 1D pixel location
+                color current = mCurrFrame.pixels[loc];      // what is the current color
+                color previous = mPrevFrame.pixels[loc];     // what is the previous color
+    
+                // compare colors (previous vs. current)
+                float r1 = red(current); float g1 = green(current); float b1 = blue(current);
+                float r2 = red(previous); float g2 = green(previous); float b2 = blue(previous);
+                float diff = dist(r1,g1,b1,r2,g2,b2);
+                
+                // Step 5, How different are the colors?
+                if (diff > kTHRESHOLD) {    
+                  mFeedback.pixels[loc] = color(255);
+                  pixelsCount++;
+                }
+              }
+            }
+            if(pixelsCount > kSENSIVITY){              
+              if(pixelsCount > _detectionResult.getBestScore()){
+                println("cell ",xCell,"-",yCell," has ", pixelsCount);  
+                _detectionResult.setResult(xCell, yCell, pixelsCount);                  
+              }                
+            }
+          }
+        }  
+        image(mFeedback,0,0,width,height);
+      }
     }
   }
  
-   /*
+/*  
   public void draw() {
     if(mVideo.available()) {
       mFeedback = createImage(mVideo.width,mVideo.height, RGB); 

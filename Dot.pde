@@ -25,23 +25,65 @@ class Dot{
   int _dotType; // => type : 0 => Not defined, 1 => Do Not Touch, 2 => To be Touched
   
   boolean _touched; // => true/false : touched
+  boolean _bBlinking; // Used to animate a dot and detect its position
+  boolean _bShow;
+  boolean _bDetected;
   
-  Dot(int x,int y,int camX,int camY, int dotType){
+  Dot(int x,int y, int dotType){
     _x = x;
     _y = y;
-    _camX = camX;
-    _camY = camY;
     _dotType = dotType;
-  }
-  
-  void display(){
-    if(_dotType==1){
-      fill(255,0,0);
-    }else{
-      fill(0,255,0);
-    }
-    print("dot at ",_x,",",_y);
-    rect(_x, _y, 20, 20, 7);
+    _bShow = true;
+    _bDetected = false;
   }
 
-}
+  void setCamCoordinates(int camX,int camY){
+    _camX = camX;
+    _camY = camY;
+  }
+  
+  void setBlink(boolean bBlink){
+    _bBlinking = bBlink;
+  }
+
+  void show(){
+    _bShow = true;
+  }
+
+  void hide(){
+    _bShow = false;
+  }
+  
+  void display(PGraphics g){
+    if(_bShow){
+      if(_bBlinking){
+        //change color each 300ms to try to detect his position
+        g.fill(0,255-map(millis()%300,0,300,0,300),0,255-map(millis()%300,0,300,0,300));
+    }else{
+        if(_dotType==1){
+          g.fill(255,0,0);
+        }else{
+          g.fill(0,255,0);
+        }
+      }
+      g.rect(_x, _y, 40, 40, 7);
+    }
+  }
+
+  void setDetected(boolean bDetected){
+    _bDetected = bDetected;
+  }
+  
+  boolean getDetected(){
+    return _bDetected;
+  }
+
+  int getX(){
+    return _x;
+  }
+  
+  int getY(){
+    return _y;
+  }
+
+}  

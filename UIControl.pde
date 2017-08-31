@@ -77,8 +77,6 @@ public class UIControl extends PApplet {
     }
 
     for (Map.Entry camera : camerasFilteredList.entrySet()) {
-      //print(me.getKey() + " is ");
-      //println(me.getValue());
       _camerasList.add(camera.getKey().toString());
     }
     
@@ -86,9 +84,6 @@ public class UIControl extends PApplet {
   }
 
   void controlEvent(ControlEvent theEvent) {
-
-    //println(theEvent.getControlle).getName());
-    
     if (theEvent.getController().getName() == "sel-cam") {
       int camIndex = (int)theEvent.getController().getValue();
       

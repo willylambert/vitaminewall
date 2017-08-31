@@ -46,25 +46,29 @@ class TheWall extends PApplet {
   void setup(){
     _wallImg = loadImage(_calibrationImgPath);
     _dots = null;
+    surface.setResizable(true);
   }
  
   void showCalibrationImage(){
     _wallImg = loadImage(_calibrationImgPath);
+    //Strech image to full screen
+    println("resize",width,height);
+    _wallImg.resize(width,height);
   }
     
   PImage getWallImg(){
     return _wallImg;
   }
     
-  void draw(){    
+  void draw(){
     if(_dots != null){
       background(0);
       for (Dot dot : _dots) {
-        dot.display();
+        dot.display(g);
       }
     }else{
       if(_wallImg != null){
-        image(_wallImg,0,0,width,height);
+        image(_wallImg,0,0);
       }  
     }
   }

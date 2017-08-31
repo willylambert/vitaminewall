@@ -44,19 +44,18 @@ ArrayList<String> _camerasList;
 
 PFont _font;
 
-
 void setup(){  
   //Camera feedback applet
   String[] camArgs = {"--location=0,0", "ClimbWall"};
   gCamView = new CameraView();
   PApplet.runSketch(camArgs, gCamView);
   
-  //Wall applet
+  //The Wall
   String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};
   gWall = new TheWall("C:\\Users\\w.lambert.DURAND\\Documents\\GitHub\\vitaminewall\\wall1.png",0);
   PApplet.runSketch(wallArgs, gWall);
   
-  //Wall control - will then launch "the Wall" on fullscreen display
+  //Controls
   String[] controlArgs = {"--location=0,500", "ClimbWall"};
   gUIControl = new UIControl(gCamView,gWall);
   PApplet.runSketch(controlArgs, gUIControl);
