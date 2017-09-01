@@ -25,9 +25,6 @@ public class UIControl extends PApplet {
   ControlP5 _cp5;
   controlP5.Button _btnCalibrate;
   controlP5.Button _btnGo;
-  controlP5.Button _btnWindow;
-  controlP5.Button _btnFullScreen1;
-  controlP5.Button _btnFullScreen2;
   ScrollableList _selCam;
 
   CameraView _camView;
@@ -57,11 +54,6 @@ public class UIControl extends PApplet {
     //Sel Camera
     _selCam = _cp5.addScrollableList("sel-cam").setPosition(100, 10).setSize(100, 300).setItemHeight(30).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font);
 
-    // Full Screen Buttons
-    _btnWindow = _cp5.addButton("fullscreen0").setPosition(width-315,80).setSize(100, 30).setFont(_font).setLabel("Windowed");
-    _btnFullScreen1 = _cp5.addButton("fullscreen1").setPosition(width-210,80).setSize(100, 30).setFont(_font).setLabel("Full Screen #1");
-    _btnFullScreen2 = _cp5.addButton("fullscreen2").setPosition(width-105, 80).setSize(100, 30).setFont(_font).setLabel("Full Screen #2");
-
     _btnCalibrate = _cp5.addButton("calibrate").setPosition(width-210, 10).setSize(100, 30).setFont(_font).setVisible(true);
 
     // Start Game button
@@ -88,14 +80,9 @@ public class UIControl extends PApplet {
       int camIndex = (int)theEvent.getController().getValue();
       
       _camView.setCamera(_camerasList.get(camIndex).toString());
-    }else{
-      
-      if (theEvent.getController().getName() == "fullscreen0") {
-        launchTheWall(0);
-      }else{
-        if (theEvent.getController().getName() == "calibrate") {
-          calibrateTheWall();
-        }
+    }else{      
+      if (theEvent.getController().getName() == "calibrate") {
+        calibrateTheWall();
       }
     }
   }  
@@ -108,35 +95,7 @@ public class UIControl extends PApplet {
   void calibrateTheWall(){
     _calibration = new Calibration(_camView,_theWall);
     _calibration.calibrate();
-  }
-  
-  void launchTheWall(int screen){
-    println("launchTheWall("+screen+")");
-    //Wall applet
-    String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};
-    gWall = new TheWall("C:\\Users\\w.lambert.DURAND\\Documents\\GitHub\\vitaminewall\\wall1.png",screen);
-    PApplet.runSketch(wallArgs, gWall);
-    
-    _btnWindow.setVisible(false);
-    _btnFullScreen1.setVisible(false);
-    _btnFullScreen2.setVisible(false);
-    _btnCalibrate.setVisible(true);  
-  }
-
-  //The wall in a movable window
-  /*
-  void fullscreen0(){    
-    launchTheWall(0);
-  }*/
-
-  //The wall fullscreen on display #1
-  void fullscreen1(){
-    launchTheWall(1);
-  }
-
-  //The wall fullscreen on display #2
-  void fullscreen2(){
-    launchTheWall(2);
+    _btnGo.setVisible(true);
   }
 
   void draw() {
