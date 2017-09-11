@@ -1,4 +1,4 @@
-public class DetectionResult{
+  public class DetectionResult{
 
   // store the dot coordinates with higher activity
   int _xActiveDot;

@@ -24,7 +24,7 @@ class Dot{
   
   int _dotType; // => type : 0 => Not defined, 1 => Do Not Touch, 2 => To be Touched
   
-  boolean _touched; // => true/false : touched
+  boolean _bTouched; // => true/false : touched
   boolean _bBlinking; // Used to animate a dot and detect its position
   boolean _bShow;
   boolean _bDetected;
@@ -54,19 +54,27 @@ class Dot{
     _bShow = false;
   }
   
+  int getType(){
+    return _dotType;
+  }
+  
   void display(PGraphics g){
     if(_bShow){
       if(_bBlinking){
         //change color each 300ms to try to detect his position
         g.fill(0,255-map(millis()%300,0,300,0,300),0,255-map(millis()%300,0,300,0,300));
-    }else{
+      }else{
         if(_dotType==1){
           g.fill(255,0,0);
         }else{
           g.fill(0,255,0);
         }
       }
-      g.rect(_x, _y, 40, 40, 7);
+      g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
+      if(_bTouched){
+        g.fill(255,255,255);
+        g.rect(_x+5, _y+5, Calibration.kDOT_SIZE-10, Calibration.kDOT_SIZE-10, 7);
+      }
     }
   }
 
@@ -77,6 +85,10 @@ class Dot{
   boolean getDetected(){
     return _bDetected;
   }
+  
+  void touched(){
+    _bTouched = true;
+  }
 
   int getX(){
     return _x;
@@ -84,6 +96,14 @@ class Dot{
   
   int getY(){
     return _y;
+  }
+
+  int getXcam(){
+    return _camX;
+  }
+  
+  int getYcam(){
+    return _camY;
   }
 
 }  

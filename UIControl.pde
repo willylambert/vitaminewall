@@ -57,7 +57,7 @@ public class UIControl extends PApplet {
     _btnCalibrate = _cp5.addButton("calibrate").setPosition(width-210, 10).setSize(100, 30).setFont(_font).setVisible(true);
 
     // Start Game button
-    _btnGo = _cp5.addButton("Go").setPosition(width-105, 10).setSize(100, 30).setFont(_font).setVisible(false);
+    _btnGo = _cp5.addButton("go").setPosition(width-105, 10).setSize(100, 30).setFont(_font).setVisible(false);
 
     String[] allCameras = Capture.list();
     
@@ -83,6 +83,10 @@ public class UIControl extends PApplet {
     }else{      
       if (theEvent.getController().getName() == "calibrate") {
         calibrateTheWall();
+      }else{
+        if (theEvent.getController().getName() == "go") {
+          _camView.play();
+        }
       }
     }
   }  

@@ -21,6 +21,8 @@ class TheWall extends PApplet {
   String _calibrationImgPath;
   PImage _wallImg;
   
+  PGraphics _wallBuffer;
+  
   PFont _font;
   
   int _fullscreenMode; //0 => no fullscreen, 1 => display #1, 2 => display #2
@@ -29,7 +31,7 @@ class TheWall extends PApplet {
   
   TheWall(String calibrationImg,int fullscreenMode){
     _calibrationImgPath = calibrationImg;   
-    _fullscreenMode = fullscreenMode;       
+    _fullscreenMode = fullscreenMode;    
   }
   
   public void settings(){
@@ -51,6 +53,7 @@ class TheWall extends PApplet {
     surface.setResizable(true);
     
     _font = createFont("Digital-7",30);
+    _wallBuffer = createGraphics(width,height);
   }
  
   void showCalibrationImage(){
@@ -65,21 +68,24 @@ class TheWall extends PApplet {
   }
     
   void draw(){
-    if(_dots != null){
-      background(0);
+    _wallBuffer.beginDraw();
+    _wallBuffer.background(0);
+    if(_dots != null){      
       for (Dot dot : _dots) {
-        dot.display(g);
+        dot.display(_wallBuffer);
       }
     }else{
       if(_wallImg != null){
-        image(_wallImg,0,0);
+        _wallBuffer.image(_wallImg,0,0);
       }else{
         //Welcome message
-        textFont(_font);
+        _wallBuffer.textFont(_font);
         String msg = "Move this window to the 2nd display and maximize it"; 
-        text(msg,(width/2)-textWidth(msg)/2,height/2);
+        _wallBuffer.text(msg,(width/2)-textWidth(msg)/2,height/2);
       }
     }
+    _wallBuffer.endDraw();
+    image(_wallBuffer,0,0,width,height);
   }
   
   void showCalibrationResult(ArrayList<Dot> dots){

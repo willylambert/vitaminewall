@@ -16,7 +16,7 @@ public class Calibration{
   static final int kCAM_HEIGHT = 480;
   
   // dots size in pixels
-  static final int kDOT_SIZE = 40;
+  static final int kDOT_SIZE = 80;
   
   Calibration(CameraView camView,TheWall theWall){
      _camView = camView;
@@ -34,7 +34,7 @@ public class Calibration{
     PImage wallImg = _theWall.getWallImg();
 
     // read it by 20x20 pixels area
-    //do we detect a "touch" or a "not touch" area ?
+    //do we detect a "touch" or a "do not touch" area ?
     for(int xDot=0;xDot<wallImg.width-kDOT_SIZE;xDot+=kDOT_SIZE){
       for(int yDot=0;yDot<wallImg.height-kDOT_SIZE;yDot+=kDOT_SIZE){
         //We are on a dot - analyse it pixel per pixel
@@ -76,15 +76,18 @@ public class Calibration{
     }
     
     //Start blinking one by one to get cameras coordinates for each one        
+    //delay(2000);
+
     for (Dot dot : _dots) {
-      delay(2000);
+      delay(1000);
+
       //Init cam for a new detection run
       _camView.setDetection(true);
 
       println("start detection for dot", dot.getX(),dot.getY());
       dot.show();
       dot.setBlink(true);
-
+      
       //get area which get the most activity during detection run
       //wait for detection result
       
@@ -97,6 +100,7 @@ public class Calibration{
       
       if(detectionResult.getBestScore() >= 200){
         println("Dot detected !",detectionResult.getX(),detectionResult.getY(),detectionResult.getBestScore());
+        dot.setCamCoordinates(detectionResult.getX(),detectionResult.getY());
         dot.setDetected(true);
       }
       dot.hide();      
@@ -111,7 +115,8 @@ public class Calibration{
         
     // ask the wall to display the result of calibration
     _theWall.showCalibrationResult(_dots);
-              
+    _camView.setDots(_dots);
+                            
     return ret;
   }
   
