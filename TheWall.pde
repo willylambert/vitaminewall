@@ -29,6 +29,8 @@ class TheWall extends PApplet {
   
   ArrayList<Dot> _dots = new ArrayList<Dot>();
   
+  int _startTime;
+  
   TheWall(String calibrationImg,int fullscreenMode){
     _calibrationImgPath = calibrationImg;   
     _fullscreenMode = fullscreenMode;    
@@ -54,6 +56,10 @@ class TheWall extends PApplet {
     
     _font = createFont("Digital-7",30);
     _wallBuffer = createGraphics(width,height);
+  }
+  
+  void startTimer(){
+    _startTime = millis();
   }
  
   void showCalibrationImage(){
@@ -84,6 +90,13 @@ class TheWall extends PApplet {
         _wallBuffer.text(msg,(width/2)-textWidth(msg)/2,height/2);
       }
     }
+    
+    if(_startTime!=0){
+      String msg = nf((millis()-_startTime)/1000.,3,1);
+      _wallBuffer.fill(255);
+      _wallBuffer.text(msg,0,30);
+    }
+    
     _wallBuffer.endDraw();
     image(_wallBuffer,0,0,width,height);
   }

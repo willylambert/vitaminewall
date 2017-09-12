@@ -1,4 +1,4 @@
-/**
+  /**
     VITAMINE WALL 
     Copyright (C) 2016 Willy LAMBERT @willylambert
 
@@ -58,6 +58,7 @@ class Dot{
     return _dotType;
   }
   
+  
   void display(PGraphics g){
     if(_bShow){
       if(_bBlinking){
@@ -65,8 +66,10 @@ class Dot{
         g.fill(0,255-map(millis()%300,0,300,0,300),0,255-map(millis()%300,0,300,0,300));
       }else{
         if(_dotType==1){
+          //Do not touch area - red
           g.fill(255,0,0);
         }else{
+          //Touch area - green
           g.fill(0,255,0);
         }
       }
@@ -86,8 +89,12 @@ class Dot{
     return _bDetected;
   }
   
-  void touched(){
+  void touch(){
     _bTouched = true;
+  }
+  
+  void unTouch(){
+    _bTouched = false;
   }
 
   int getX(){

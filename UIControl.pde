@@ -86,6 +86,7 @@ public class UIControl extends PApplet {
       }else{
         if (theEvent.getController().getName() == "go") {
           _camView.play();
+          _theWall.startTimer();
         }
       }
     }

@@ -158,6 +158,7 @@ public class CameraView extends PApplet {
         println("Game is started !!");
         //Game is started !!
         //We only analyse detected dots - for 
+        boolean bDoNotTouchTouched = false;
         for (Dot dot : _dots) {
          //test if we have motion dot per dot
          int pixelsCount=0;
@@ -171,8 +172,19 @@ public class CameraView extends PApplet {
          println("dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
          if(pixelsCount > kSENSIVITY){
            println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
-           dot.touched();
+           dot.touch();
+             //Do not touch dot touched !!!
+           if(dot.getType()==1){
+             bDoNotTouchTouched = true;
+           }
          }
+        }
+        
+        if(bDoNotTouchTouched){
+          //Restart game without reseting timer - or add a penality ?
+          for (Dot dot : _dots) {
+            dot.unTouch();    
+          }
         }
       }
       
