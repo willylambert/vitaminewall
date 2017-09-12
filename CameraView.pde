@@ -28,8 +28,8 @@ public class CameraView extends PApplet {
   static final int kDOT_SIZE = 20;
   
   // How different must a pixel be to be detected as a "motion" pixel
-  float kTHRESHOLD = 40;
-  float kSENSIVITY = 200; //number of pixels changed to light a dot
+  float kTHRESHOLD = 20;
+  float kSENSIVITY = 120; //number of pixels changed to light a dot
   
   DetectionResult _detectionResult;
   
@@ -126,66 +126,80 @@ public class CameraView extends PApplet {
       mCamCtrl.beginDraw();
       mCamCtrl.background(0);
       
-      //we divide image from cam in cells having dot size
-      for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
-        for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
-          int pixelsCount=0;
-          for(int x=xCell;x<xCell+kDOT_SIZE;x++){
-            for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
-              if(dotIsActive(x,y)) {    
-                pixelsCount++;
-                mFeedback.pixels[x + y*mVideo.width] = color(255);
-              }else{
-                mFeedback.pixels[x + y*mVideo.width] = mPrevFrame.pixels[x + y*mVideo.width];   
+      //For better performance, we don't analyse full screen when game is started
+      if(!_bPlay){      
+        //we divide image from cam in cells having dot size
+        for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
+          for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
+            int pixelsCount=0;
+            for(int x=xCell;x<xCell+kDOT_SIZE;x++){
+              for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
+                if(dotIsActive(x,y)) {    
+                  pixelsCount++;
+                  mFeedback.pixels[x + y*mVideo.width] = color(255);
+                }else{
+                  mFeedback.pixels[x + y*mVideo.width] = mPrevFrame.pixels[x + y*mVideo.width];   
+                }
+              }
+            }
+            if(pixelsCount > kSENSIVITY){
+              mCamCtrl.fill(255);
+              mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
+              if(_bEnableDetection){
+                //println("dot detected",xCell, yCell, pixelsCount);
+                if(pixelsCount > _detectionResult.getBestScore()){                
+                  _detectionResult.setResult(xCell, yCell, pixelsCount);
+                  println("detection Result updated",xCell, yCell, pixelsCount);
+                }                
               }
             }
           }
-          if(pixelsCount > kSENSIVITY){
-            mCamCtrl.fill(255);
-            mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
-            if(_bEnableDetection){
-              //println("dot detected",xCell, yCell, pixelsCount);
-              if(pixelsCount > _detectionResult.getBestScore()){                
-                _detectionResult.setResult(xCell, yCell, pixelsCount);
-                println("detection Result updated",xCell, yCell, pixelsCount);
-              }                
-            }
-          }
         }
-      }
-
-      if(_bPlay){
+      }else{
         println("Game is started !!");
         //Game is started !!
         //We only analyse detected dots - for 
         boolean bDoNotTouchTouched = false;
+        int nbUntouchedDots = 0;
         for (Dot dot : _dots) {
-         //test if we have motion dot per dot
-         int pixelsCount=0;
-         for(int x=dot.getXcam();x<dot.getXcam()+kDOT_SIZE;x++){
-           for(int y=dot.getYcam();y<dot.getYcam()+kDOT_SIZE;y++){
-              if(dotIsActive(x,y)) {    
-                pixelsCount++;
-              }                               
-           }
-         }
-         println("dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
-         if(pixelsCount > kSENSIVITY){
-           println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
-           dot.touch();
-             //Do not touch dot touched !!!
-           if(dot.getType()==1){
-             bDoNotTouchTouched = true;
-           }
-         }
+          if(!dot.isTouched()){
+            //test if we have motion dot per dot
+            int pixelsCount=0;
+            for(int x=dot.getXcam();x<dot.getXcam()+kDOT_SIZE;x++){
+              for(int y=dot.getYcam();y<dot.getYcam()+kDOT_SIZE;y++){
+                 if(dotIsActive(x,y)) {    
+                   pixelsCount++;
+                 }                               
+              }
+            }
+             
+            println("dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
+            if(pixelsCount > kSENSIVITY){
+              println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
+              dot.touch();
+               //Do not touch dot touched !!!
+              if(dot.getType()==1){
+                bDoNotTouchTouched = true;
+              }
+            }else{
+              nbUntouchedDots++;
+            }
+          }  
         }
         
         if(bDoNotTouchTouched){
           //Restart game without reseting timer - or add a penality ?
-          for (Dot dot : _dots) {
+          gWall.restartGame();
+          for (Dot dot : _dots) {            
             dot.unTouch();    
           }
         }
+        
+        //No more dot to touch : Game WON !!
+        if(nbUntouchedDots==0){
+          gWall.gameWon();        
+        }
+   
       }
       
       mCamCtrl.endDraw();

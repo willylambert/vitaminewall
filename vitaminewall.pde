@@ -38,7 +38,6 @@ ScrollableList _selCam;
 
 CameraView _camView;
 Calibration _calibration;
-TheWall _theWall;
 
 ArrayList<String> _camerasList;
 

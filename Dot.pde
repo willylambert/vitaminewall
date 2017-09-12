@@ -58,6 +58,9 @@ class Dot{
     return _dotType;
   }
   
+  boolean isTouched(){
+    return _bTouched;
+  }
   
   void display(PGraphics g){
     if(_bShow){

@@ -30,10 +30,18 @@ class TheWall extends PApplet {
   ArrayList<Dot> _dots = new ArrayList<Dot>();
   
   int _startTime;
+  float _gameWonTime;
+  
+  //used to display restart label during 2 sec. this variable is used as a countdown
+  int _showRestartLabel; 
+
+  //used to display game won during 2 sec. this variable is used as a countdown
+  int _showGameWonLabel;   
   
   TheWall(String calibrationImg,int fullscreenMode){
     _calibrationImgPath = calibrationImg;   
-    _fullscreenMode = fullscreenMode;    
+    _fullscreenMode = fullscreenMode; 
+    _showRestartLabel = 0;
   }
   
   public void settings(){
@@ -54,13 +62,28 @@ class TheWall extends PApplet {
     _dots = null;
     surface.setResizable(true);
     
-    _font = createFont("Digital-7",30);
+    _font = createFont("Digital-7",40);
     _wallBuffer = createGraphics(width,height);
   }
   
   void startTimer(){
     _startTime = millis();
   }
+ 
+  /**
+  * When climber touch a do not touch area
+  **/
+  void restartGame(){
+    _showRestartLabel = 200;
+  }
+
+  /**
+  * When climber touch a do not touch area
+  **/
+  void gameWon(){
+    _showGameWonLabel = 200;
+    _gameWonTime = millis()-_startTime;
+  } 
  
   void showCalibrationImage(){
     _wallImg = loadImage(_calibrationImgPath);
@@ -86,8 +109,8 @@ class TheWall extends PApplet {
       }else{
         //Welcome message
         _wallBuffer.textFont(_font);
-        String msg = "Move this window to the 2nd display and maximize it"; 
-        _wallBuffer.text(msg,(width/2)-textWidth(msg)/2,height/2);
+        String msg = "Camera should fully see this screen"; 
+        _wallBuffer.text(msg,(width/2)-_wallBuffer.textWidth(msg)/2,height/2);
       }
     }
     
@@ -95,6 +118,20 @@ class TheWall extends PApplet {
       String msg = nf((millis()-_startTime)/1000.,3,1);
       _wallBuffer.fill(255);
       _wallBuffer.text(msg,0,30);
+    }
+    
+    if(_showRestartLabel>0){
+      String msg = "Ho No !!!!!! Try Again, Time is running !";
+      _showRestartLabel--;
+      _wallBuffer.fill(255);
+      _wallBuffer.text(msg,(width/2)-_wallBuffer.textWidth(msg)/2,height/2);
+    }
+    
+    if(_showGameWonLabel>0){
+      String msg = "Congrats !! Game won in " + nf(_gameWonTime/1000.,3,1);
+      _showRestartLabel--;
+      _wallBuffer.fill(255);
+      _wallBuffer.text(msg,(width/2)-_wallBuffer.textWidth(msg)/2,height/2);
     }
     
     _wallBuffer.endDraw();
