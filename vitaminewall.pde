@@ -16,9 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-import controlP5.*;
-import java.util.Map;
-
 //Camera
 CameraView gCamView;
 
@@ -28,21 +25,6 @@ TheWall gWall;
 //Controls
 UIControl gUIControl;
 
-ControlP5 _cp5;
-controlP5.Button _btnCalibrate;
-controlP5.Button _btnGo;
-controlP5.Button _btnWindow;
-controlP5.Button _btnFullScreen1;
-controlP5.Button _btnFullScreen2;
-ScrollableList _selCam;
-
-CameraView _camView;
-Calibration _calibration;
-
-ArrayList<String> _camerasList;
-
-PFont _font;
-
 void setup(){  
   //Camera feedback applet
   String[] camArgs = {"--location=0,0", "ClimbWall"};
@@ -51,7 +33,7 @@ void setup(){
   
   //The Wall
   String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};
-  gWall = new TheWall("C:\\Users\\w.lambert.DURAND\\Documents\\GitHub\\vitaminewall\\wall2.png",2);
+  gWall = new TheWall("C:\\Users\\w.lambert.DURAND\\Documents\\GitHub\\vitaminewall\\wall1.png",2);
   PApplet.runSketch(wallArgs, gWall);
   
   //Controls

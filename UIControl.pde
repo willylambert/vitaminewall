@@ -26,12 +26,17 @@ public class UIControl extends PApplet {
   controlP5.Button _btnCalibrate;
   controlP5.Button _btnGo;
   ScrollableList _selCam;
+  ScrollableList _selLevel;
+  Textfield _textFieldPlayer;
 
   CameraView _camView;
   Calibration _calibration;
   TheWall _theWall;
 
+  HallOfFame _hallOfFame;
+
   ArrayList<String> _camerasList;
+  ArrayList<String> _levelList;
 
   PFont _font;
 
@@ -39,10 +44,11 @@ public class UIControl extends PApplet {
     _camView = camView;
     _theWall = theWall;
     _camerasList = new ArrayList<String>();
+    _levelList = new ArrayList<String>();
   }
 
   public void settings() {
-    size(640, 120);
+    size(640, 240);
   }
 
   public void setup() {
@@ -52,12 +58,23 @@ public class UIControl extends PApplet {
     _font = createFont("Digital-7", 15);
 
     //Sel Camera
-    _selCam = _cp5.addScrollableList("sel-cam").setPosition(100, 10).setSize(100, 300).setItemHeight(30).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font);
+    _selCam = _cp5.addScrollableList("sel-cam").setPosition(0, 10).setSize(100, 300).setItemHeight(30).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font);
+    
+    //Select level
+    _selLevel = _cp5.addScrollableList("sel-level").setPosition(250, 10).setSize(100, 300).setItemHeight(30).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font);
 
     _btnCalibrate = _cp5.addButton("calibrate").setPosition(width-210, 10).setSize(100, 30).setFont(_font).setVisible(true);
 
     // Start Game button
     _btnGo = _cp5.addButton("go").setPosition(width-105, 10).setSize(100, 30).setFont(_font).setVisible(false);
+
+    _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 50).setSize(200, 20).setFont(_font);  
+    Label label = _textFieldPlayer.getCaptionLabel(); 
+    label.setText("Player : "); 
+    label.align(ControlP5.LEFT_OUTSIDE, CENTER);
+    label.getStyle().setPaddingLeft(-10);
+
+    _hallOfFame = new HallOfFame();
 
     String[] allCameras = Capture.list();
     
@@ -70,23 +87,45 @@ public class UIControl extends PApplet {
 
     for (Map.Entry camera : camerasFilteredList.entrySet()) {
       _camerasList.add(camera.getKey().toString());
-    }
+    }    
     
     _selCam.addItems(_camerasList);
+    
+    //Levels
+    _levelList.add("Level #1");
+    _levelList.add("Level #2");
+    _levelList.add("Level #3");
+    _selLevel.addItems(_levelList);
+  }
+
+  void getPlayerName() {
+    //Get player name
+    _textFieldPlayer.setFocus(true);
   }
 
   void controlEvent(ControlEvent theEvent) {
     if (theEvent.getController().getName() == "sel-cam") {
-      int camIndex = (int)theEvent.getController().getValue();
-      
+      int camIndex = (int)theEvent.getController().getValue();    
       _camView.setCamera(_camerasList.get(camIndex).toString());
-    }else{      
-      if (theEvent.getController().getName() == "calibrate") {
-        calibrateTheWall();
-      }else{
-        if (theEvent.getController().getName() == "go") {
-          _camView.play();
-          _theWall.startTimer();
+    }else{
+      if (theEvent.getController().getName() == "sel-level") {
+        int levelIndex = (int)theEvent.getController().getValue();      
+        _theWall.setLevel(levelIndex);
+      } else{      
+        if (theEvent.getController().getName() == "calibrate") {
+          calibrateTheWall();
+        }else{
+          if (theEvent.getController().getName() == "go") {
+            _camView.play();
+            _theWall.startGame();
+          }else{
+            if (theEvent.getController().getName() == "player") {              
+              String playerName = _textFieldPlayer.getText();
+              println(playerName + " won in " + _theWall.getWonTime() + " ms");
+              _hallOfFame.add((int)theEvent.getController().getValue(), _theWall.getWonTime(), playerName);
+              _theWall.displayHallOfFame(_hallOfFame);
+            }
+          }
         }
       }
     }

@@ -16,15 +16,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-class Climber{
-  int score;
-  String name;
-  int rank;
+class Player{
+  int _score;
+  String _name;
 
-  Climber(){
-    name = "--";
-    score = MAX_INT;
-    rank = -1;
+  Player(int score, String name){
+    _name = name;
+    _score = score;
+  }
+  
+  String toString(){
+    return nf(_score/1000.,3,1) + " " + _name; 
   }
 
 }

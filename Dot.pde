@@ -1,4 +1,4 @@
-  /**
+      /**
     VITAMINE WALL 
     Copyright (C) 2016 Willy LAMBERT @willylambert
 
@@ -24,6 +24,10 @@ class Dot{
   
   int _dotType; // => type : 0 => Not defined, 1 => Do Not Touch, 2 => To be Touched
   
+  int _order; // => at level 2, dot must be touched in specific order
+  
+  int _dotSize;
+  
   boolean _bTouched; // => true/false : touched
   boolean _bBlinking; // Used to animate a dot and detect its position
   boolean _bShow;
@@ -35,6 +39,7 @@ class Dot{
     _dotType = dotType;
     _bShow = true;
     _bDetected = false;
+    _dotSize = Calibration.kDOT_SIZE;
   }
 
   void setCamCoordinates(int camX,int camY){
@@ -62,33 +67,49 @@ class Dot{
     return _bTouched;
   }
   
-  void display(PGraphics g){
+  void setFont(PFont font){
+    g.textFont(font);
+  }
+  
+  void setOrder(int order){
+    _order = order;
+  }
+  
+  void display(PGraphics g,boolean bDisplayOrder,boolean bShowRedDot){
     if(_bShow){
       if(_bBlinking){
         //change color each 300ms to try to detect his position
         g.fill(0,255-map(millis()%300,0,300,0,300),0,255-map(millis()%300,0,300,0,300));
+        g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
       }else{
-        if(_dotType==1){
+        if(_dotType==1 && bShowRedDot){
           //Do not touch area - red
           g.fill(255,0,0);
+          g.rect(_x, _y, _dotSize, _dotSize, 7);
         }else{
           //Touch area - green
           g.fill(0,255,0);
+          g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
         }
+      }      
+      if(_bTouched && _dotSize>Calibration.kDOT_SIZE/10){
+        _dotSize -= max(sqrt(Calibration.kDOT_SIZE*2 - _dotSize),0);
+        //g.fill(255,255,255);
+        //g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
+        //g.rect(_x+5, _y+5, _dotSize, _dotSize, 7);
       }
-      g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
-      if(_bTouched){
+      if(bDisplayOrder){
         g.fill(255,255,255);
-        g.rect(_x+5, _y+5, Calibration.kDOT_SIZE-10, Calibration.kDOT_SIZE-10, 7);
+        g.text(_order, _x+30, _y+55);
       }
     }
   }
 
   void setDetected(boolean bDetected){
-    _bDetected = bDetected;
+    _bDetected = bDetected;  
   }
   
-  boolean getDetected(){
+    boolean getDetected(){
     return _bDetected;
   }
   

@@ -1,4 +1,4 @@
-public class Calibration{
+  public class Calibration{
    
   ArrayList<Dot> _dots = new ArrayList<Dot>();
   
@@ -6,15 +6,7 @@ public class Calibration{
   TheWall _theWall;
   
   static final int _hueRange = 360; 
-  
-  // How different must a pixel be to be a "motion" pixel
-  static final float kTHRESHOLD = 35;
-  static final float kSENSIVITY = 30; //number of pixels changed to light a dot
-  
-  // 640 x 480 resolution is enough fr camera to do motion detection
-  static final int kCAM_WIDTH = 640;
-  static final int kCAM_HEIGHT = 480;
-  
+
   // dots size in pixels
   static final int kDOT_SIZE = 80;
   
@@ -32,6 +24,8 @@ public class Calibration{
     //Step 1 : analyse calibration image to get wall aeras with a 20x20 res
     _theWall.showCalibrationImage();
     PImage wallImg = _theWall.getWallImg();
+
+    _dots.clear();
 
     // read it by 20x20 pixels area
     //do we detect a "touch" or a "do not touch" area ?
@@ -53,11 +47,11 @@ public class Calibration{
             }
           }
         }
-        if(redCount > kDOT_SIZE*kDOT_SIZE/2){
+        if(redCount > kDOT_SIZE*kDOT_SIZE/4){
           println("Red dot at ["+xDot+","+yDot+"]");
           _dots.add(new Dot(xDot,yDot,1));
         }else{
-          if(greenCount > kDOT_SIZE*kDOT_SIZE/2){
+          if(greenCount > kDOT_SIZE*kDOT_SIZE/4){
             println("Green dot at ["+xDot+","+yDot+"]");
             _dots.add(new Dot(xDot,yDot,2));
           }
@@ -68,6 +62,8 @@ public class Calibration{
     // ask the wall to display the result of calibration step 1
     _theWall.showCalibrationResult(_dots);
  
+     delay(2000);
+ 
     //Step 2 : we have a list of dots from image POV
     
     //We need to show dot one by one during detection
@@ -76,10 +72,10 @@ public class Calibration{
     }
     
     //Start blinking one by one to get cameras coordinates for each one        
-    //delay(2000);
+    delay(2000);
 
     for (Dot dot : _dots) {
-      delay(1000);
+      delay(500);
 
       //Init cam for a new detection run
       _camView.setDetection(true);
@@ -90,13 +86,14 @@ public class Calibration{
       
       //get area which get the most activity during detection run
       //wait for detection result
-      
       DetectionResult detectionResult =_camView.getDetectionResult();
       
       int startDt = millis();
-      while(detectionResult.getBestScore() < 200 && millis()-startDt < 1000){               
+      while(detectionResult.getBestScore() < 200 && millis()-startDt < 750){               
         detectionResult = _camView.getDetectionResult();
       }
+      
+      println("Best Score is ",detectionResult.getBestScore()," for dot[",detectionResult.getX(),",",detectionResult.getY());
       
       if(detectionResult.getBestScore() >= 200){
         println("Dot detected !",detectionResult.getX(),detectionResult.getY(),detectionResult.getBestScore());
@@ -106,11 +103,15 @@ public class Calibration{
       dot.hide();      
     }
  
+   int i=1;
     for (Dot dot : _dots) {
       if(dot.getDetected()){ 
         dot.setBlink(false);
-        dot.show();        
-      }
+        dot.show();
+        if(dot.getType()==2){
+          dot.setOrder(i++);
+        }
+      }      
     }        
         
     // ask the wall to display the result of calibration
