@@ -80,9 +80,8 @@ class TheWall extends PApplet {
     println("Game Started");
     _bShowHallOfFame = false;
     _bGameWon = false;
-    _startTime = millis();
-  }
-  
+    _startTime = 0;
+  }  
   
   int getStartTime(){
     return _startTime;
@@ -91,7 +90,7 @@ class TheWall extends PApplet {
  //Untouch all dots
   void resetDotStatus(){
     for (Dot dot : _dots) {
-      dot.setDetected(false);
+      dot.unTouch();
     }
   }
 
@@ -105,6 +104,7 @@ class TheWall extends PApplet {
   void restartGame() {
     _showRestartLabel = 200;
     _bGameWon = false;
+    resetDotStatus();
   }
 
   /**
@@ -157,9 +157,16 @@ class TheWall extends PApplet {
 
     if (!_bGameWon) {
       if (_dots != null) {      
+        
+        //First dot is used to trigger the timer
+        if(_dots.get(0).isTouched() && _startTime==0){
+          _startTime = millis();
+        }
+        
         for (Dot dot : _dots) {
           dot.display(_wallBuffer, (_level>1?true:false), (_level<2?true:false));
         }
+
       } else {
         if (_wallImg != null) {
           _wallBuffer.image(_wallImg, 0, 0);
@@ -197,7 +204,7 @@ class TheWall extends PApplet {
       
     }else{
        //Game Won !!
-      String msg = "Pas mal... " + nf(_gameWonTime/1000., 3, 1);
+      String msg = "Bien joué ;-)  " + nf(_gameWonTime/1000., 3, 1);
       _wallBuffer.fill(255);
       _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);
       

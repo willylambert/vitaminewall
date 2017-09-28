@@ -96,6 +96,7 @@ public class CameraView extends PApplet {
 
     //How many dots to touch there is ?
     _nbUntouchedDots = this.getNbDotsToTouch();
+    println(_nbUntouchedDots + " green dots"); 
   }
   
   private int getNbDotsToTouch(){
@@ -173,15 +174,19 @@ public class CameraView extends PApplet {
         }
       }
       
-      if(_bPlay && millis()-gWall.getStartTime()>2000){
+      if(_bPlay){
         //Game is started !!
                 
         //We only analyse detected dots - for 
         boolean bDoNotTouchTouched = false;
         
+        boolean bTimerIsStarted = (gWall.getStartTime()>0?true:false);
+        
+        int dotIdx = 0;
         for (Dot dot : _dots) {
           if(dot.getDetected()){
-            if(!dot.isTouched()){
+            //The first dot trigger timer
+            if(!dot.isTouched() && bTimerIsStarted || dotIdx==0 && !bTimerIsStarted){
               //test if we have motion dot per dot
               int pixelsCount=0;
               for(int x=dot.getXcam();x<dot.getXcam()+kDOT_SIZE;x++){
@@ -208,6 +213,7 @@ public class CameraView extends PApplet {
               }
             }  
           }
+          dotIdx++;
         }
         
         if(bDoNotTouchTouched){

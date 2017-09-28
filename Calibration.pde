@@ -10,6 +10,8 @@
   // dots size in pixels
   static final int kDOT_SIZE = 80;
   
+  PShape _shapePlay = loadShape("play.svg");
+  
   Calibration(CameraView camView,TheWall theWall){
      _camView = camView;
      _theWall = theWall;
@@ -26,6 +28,10 @@
     PImage wallImg = _theWall.getWallImg();
 
     _dots.clear();
+    
+    //First dot is used to start the game
+    //Set on the right side, half-height
+    _dots.add(new Dot(wallImg.width-2*kDOT_SIZE,wallImg.height/2,2,_shapePlay,null));
 
     // read it by 20x20 pixels area
     //do we detect a "touch" or a "do not touch" area ?
@@ -49,11 +55,11 @@
         }
         if(redCount > kDOT_SIZE*kDOT_SIZE/4){
           println("Red dot at ["+xDot+","+yDot+"]");
-          _dots.add(new Dot(xDot,yDot,1));
+          _dots.add(new Dot(xDot,yDot,1,null,null));
         }else{
           if(greenCount > kDOT_SIZE*kDOT_SIZE/4){
             println("Green dot at ["+xDot+","+yDot+"]");
-            _dots.add(new Dot(xDot,yDot,2));
+            _dots.add(new Dot(xDot,yDot,2,null,null));
           }
         }
       }
@@ -72,7 +78,7 @@
     }
     
     //Start blinking one by one to get cameras coordinates for each one        
-    delay(2000);
+    delay(1000);
 
     for (Dot dot : _dots) {
       delay(500);
@@ -93,7 +99,7 @@
         detectionResult = _camView.getDetectionResult();
       }
       
-      println("Best Score is ",detectionResult.getBestScore()," for dot[",detectionResult.getX(),",",detectionResult.getY());
+      println("Best Score is ",detectionResult.getBestScore()," for dot[",detectionResult.getX(),",",detectionResult.getY(),"]");
       
       if(detectionResult.getBestScore() >= 200){
         println("Dot detected !",detectionResult.getX(),detectionResult.getY(),detectionResult.getBestScore());
@@ -103,7 +109,7 @@
       dot.hide();      
     }
  
-   int i=1;
+    int i=1;
     for (Dot dot : _dots) {
       if(dot.getDetected()){ 
         dot.setBlink(false);

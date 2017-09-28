@@ -28,18 +28,23 @@ class Dot{
   
   int _dotSize;
   
+  PShape _shapeTouch;
+  PShape _shapeUnTouch;
+  
   boolean _bTouched; // => true/false : touched
   boolean _bBlinking; // Used to animate a dot and detect its position
   boolean _bShow;
   boolean _bDetected;
   
-  Dot(int x,int y, int dotType){
+  Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch){
     _x = x;
     _y = y;
     _dotType = dotType;
     _bShow = true;
     _bDetected = false;
     _dotSize = Calibration.kDOT_SIZE;
+    _shapeUnTouch = shapeUnTouch;
+    _shapeTouch = shapeTouch;
   }
 
   void setCamCoordinates(int camX,int camY){
@@ -91,6 +96,9 @@ class Dot{
           g.fill(0,255,0);
           g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
         }
+        if(_shapeUnTouch!=null && !_bTouched){
+          g.shape(_shapeUnTouch,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+        }
       }      
       if(_bTouched && _dotSize>Calibration.kDOT_SIZE/10){
         _dotSize -= max(sqrt(Calibration.kDOT_SIZE*2 - _dotSize),0);
@@ -119,6 +127,7 @@ class Dot{
   
   void unTouch(){
     _bTouched = false;
+    _dotSize = Calibration.kDOT_SIZE;
   }
 
   int getX(){
