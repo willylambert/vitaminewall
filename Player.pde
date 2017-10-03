@@ -26,7 +26,7 @@ class Player{
   }
   
   String toString(){
-    return nf(_score/1000.,3,1) + " " + _name; 
+    return nf(_score/1000.,0,1) + " sec. " + _name; 
   }
 
 }

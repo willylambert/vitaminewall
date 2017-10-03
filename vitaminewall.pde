@@ -25,6 +25,9 @@ TheWall gWall;
 //Controls
 UIControl gUIControl;
 
+//Data - load data.json
+Data gData;
+
 void setup(){  
   //Camera feedback applet
   String[] camArgs = {"--location=0,0", "ClimbWall"};
@@ -40,4 +43,8 @@ void setup(){
   String[] controlArgs = {"--location=0,500", "ClimbWall"};
   gUIControl = new UIControl(gCamView,gWall);
   PApplet.runSketch(controlArgs, gUIControl);
+  
+  //Data
+  gData = new Data();
+  
 }

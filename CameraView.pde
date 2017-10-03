@@ -90,13 +90,15 @@ public class CameraView extends PApplet {
   
   public void play(){    
     _bEnableDetection = false;
-    _bPlay = true;
-  
+   
     gWall.resetDotStatus();
 
     //How many dots to touch there is ?
     _nbUntouchedDots = this.getNbDotsToTouch();
-    println(_nbUntouchedDots + " green dots"); 
+    println(_nbUntouchedDots + " green dots");
+    
+    delay(1000);
+    _bPlay = true;
   }
   
   private int getNbDotsToTouch(){
@@ -224,6 +226,7 @@ public class CameraView extends PApplet {
           }
           _nbUntouchedDots = getNbDotsToTouch();
           gWall.setRemainingGreenDots(_nbUntouchedDots);
+          delay(1000);
         }
         
         //No more dot to touch : Game WON !!

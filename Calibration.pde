@@ -10,8 +10,6 @@
   // dots size in pixels
   static final int kDOT_SIZE = 80;
   
-  PShape _shapePlay = loadShape("play.svg");
-  
   Calibration(CameraView camView,TheWall theWall){
      _camView = camView;
      _theWall = theWall;
@@ -21,56 +19,10 @@
   * Association wall calibration image to dots coordinates detected by camera view
   **/
   public int calibrate(){
+    println("calibrate");
     int ret = 0;
 
-    //Step 1 : analyse calibration image to get wall aeras with a 20x20 res
-    _theWall.showCalibrationImage();
-    PImage wallImg = _theWall.getWallImg();
-
-    _dots.clear();
-    
-    //First dot is used to start the game
-    //Set on the right side, half-height
-    _dots.add(new Dot(wallImg.width-2*kDOT_SIZE,wallImg.height/2,2,_shapePlay,null));
-
-    // read it by 20x20 pixels area
-    //do we detect a "touch" or a "do not touch" area ?
-    for(int xDot=0;xDot<wallImg.width-kDOT_SIZE;xDot+=kDOT_SIZE){
-      for(int yDot=0;yDot<wallImg.height-kDOT_SIZE;yDot+=kDOT_SIZE){
-        //We are on a dot - analyse it pixel per pixel
-        int redCount = 0;
-        int greenCount = 0;
-        for(int x=xDot;x<xDot+kDOT_SIZE;x++){          
-          for(int y=yDot;y<yDot+kDOT_SIZE;y++){
-            int loc = x + y*wallImg.width;            // what is the 1D pixel location
-            color current = wallImg.pixels[loc];      // what is the current color
-            if(red(current) > 200 && green(current) < 100 && blue(current) < 100){
-              redCount++;
-            }else{
-              if(green(current) > 200 && red(current) < 100 && blue(current) < 100){
-                greenCount++;
-              }
-            }
-          }
-        }
-        if(redCount > kDOT_SIZE*kDOT_SIZE/4){
-          println("Red dot at ["+xDot+","+yDot+"]");
-          _dots.add(new Dot(xDot,yDot,1,null,null));
-        }else{
-          if(greenCount > kDOT_SIZE*kDOT_SIZE/4){
-            println("Green dot at ["+xDot+","+yDot+"]");
-            _dots.add(new Dot(xDot,yDot,2,null,null));
-          }
-        }
-      }
-    }
-    
-    // ask the wall to display the result of calibration step 1
-    _theWall.showCalibrationResult(_dots);
- 
-     delay(2000);
- 
-    //Step 2 : we have a list of dots from image POV
+    _dots = gData.getCurrentWall().getDots();
     
     //We need to show dot one by one during detection
     for (Dot dot : _dots) {
@@ -121,6 +73,7 @@
     }        
         
     // ask the wall to display the result of calibration
+    println("calibration done");
     _theWall.showCalibrationResult(_dots);
     _camView.setDots(_dots);
                             

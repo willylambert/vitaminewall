@@ -22,12 +22,13 @@ class Dot{
   
   int _x, _y; // => coordinates from the Wall POV
   
-  int _dotType; // => type : 0 => Not defined, 1 => Do Not Touch, 2 => To be Touched
+  int _dotType; // => type : 0 => Start, 1 => Do Not Touch, 2 => To be Touched
   
   int _order; // => at level 2, dot must be touched in specific order
   
   int _dotSize;
-  
+
+  PShape _shapePlay = loadShape("play.svg");
   PShape _shapeTouch;
   PShape _shapeUnTouch;
   
@@ -36,15 +37,20 @@ class Dot{
   boolean _bShow;
   boolean _bDetected;
   
-  Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch){
+  Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch, int order){
     _x = x;
     _y = y;
     _dotType = dotType;
+    _order = order;
     _bShow = true;
     _bDetected = false;
     _dotSize = Calibration.kDOT_SIZE;
     _shapeUnTouch = shapeUnTouch;
     _shapeTouch = shapeTouch;
+    
+    if(dotType==0){
+      _shapeUnTouch = _shapePlay;
+    }
   }
 
   void setCamCoordinates(int camX,int camY){
@@ -80,6 +86,17 @@ class Dot{
     _order = order;
   }
   
+  JSONObject getJSON(){
+    JSONObject json = new JSONObject();
+    
+    json.setInt("x",_x);
+    json.setInt("y",_y);
+    json.setInt("type",_dotType);
+    json.setInt("order",_order);
+    
+    return json;
+  }
+  
   void display(PGraphics g,boolean bDisplayOrder,boolean bShowRedDot){
     if(_bShow){
       if(_bBlinking){
@@ -87,26 +104,27 @@ class Dot{
         g.fill(0,255-map(millis()%300,0,300,0,300),0,255-map(millis()%300,0,300,0,300));
         g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
       }else{
-        if(_dotType==1 && bShowRedDot){
-          //Do not touch area - red
+        //Do not touch area - red
+        if(_dotType==1 && bShowRedDot){          
           g.fill(255,0,0);
           g.rect(_x, _y, _dotSize, _dotSize, 7);
-        }else{
+        }else{          
           //Touch area - green
-          g.fill(0,255,0);
-          g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
+          if(_dotType==2){
+            g.fill(0,255,0);
+            g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
+          }
         }
+        
         if(_shapeUnTouch!=null && !_bTouched){
           g.shape(_shapeUnTouch,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }
       }      
       if(_bTouched && _dotSize>Calibration.kDOT_SIZE/10){
         _dotSize -= max(sqrt(Calibration.kDOT_SIZE*2 - _dotSize),0);
-        //g.fill(255,255,255);
-        //g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
-        //g.rect(_x+5, _y+5, _dotSize, _dotSize, 7);
       }
-      if(bDisplayOrder){
+      //Order could be only displayed for green dot
+      if(bDisplayOrder && _dotType==2){
         g.fill(255,255,255);
         g.text(_order, _x+30, _y+55);
       }

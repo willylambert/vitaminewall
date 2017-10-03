@@ -36,6 +36,8 @@ class TheWall extends PApplet {
   int _gameWonTime;
   boolean _bGameWon;
   boolean _bShowHallOfFame;
+  boolean _bRecordNewWall;
+  boolean _bReadyToGo;
   
   HallOfFame _hallOfFame;
 
@@ -51,6 +53,8 @@ class TheWall extends PApplet {
     _fullscreenMode = fullscreenMode; 
     _showRestartLabel = 0;   
     _bShowHallOfFame = false;
+    _bRecordNewWall = false;
+    _bReadyToGo = false;
   }
 
   public void settings() {
@@ -78,10 +82,43 @@ class TheWall extends PApplet {
 
   void startGame() {
     println("Game Started");
+    _bReadyToGo = false;
     _bShowHallOfFame = false;
     _bGameWon = false;
     _startTime = 0;
   }  
+  
+  /**
+  * Record a new wall
+  **/
+  void newWall(){
+    _bRecordNewWall = true;
+    _dots = new ArrayList<Dot>();
+    gData.getCurrentWall().setScreen(width,height);
+}
+  
+  /**
+  * Stop dots creation
+  **/
+  void endCreationWall(){
+    _bRecordNewWall = false; 
+    gData.setDots(_dots);
+  }
+  
+  void mousePressed() {
+    if (mouseButton == LEFT) {
+      if(_dots.size()==0){
+         //First dot is start Dot
+        _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,0,null,null,_dots.size()));
+      }else{
+        //green dot
+        _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,2,null,null,_dots.size()));
+      }
+    } else if (mouseButton == RIGHT) {
+      //red dot
+      _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,1,null,null,_dots.size()));
+    }
+  }
   
   int getStartTime(){
     return _startTime;
@@ -102,6 +139,7 @@ class TheWall extends PApplet {
    * When climber touch a do not touch area
    **/
   void restartGame() {
+    _bReadyToGo = false;
     _showRestartLabel = 200;
     _bGameWon = false;
     resetDotStatus();
@@ -122,21 +160,19 @@ class TheWall extends PApplet {
     return _gameWonTime;
   }
 
-  void showCalibrationImage() {
-     _bShowHallOfFame = false;
-    _bGameWon = false;
-    _wallImg = loadImage(_calibrationImgPath);
-    //Strech image to full screen
-    println("resize", width, height);
-    _wallImg.resize(width, height);
+  void setDots(ArrayList<Dot> dots) {
+   _dots = dots;   
   }
 
   void showCalibrationResult(ArrayList<Dot> dots) {
+    println("showCalibrationResult");
+    _bReadyToGo = true;
     _dots = dots;
     for (Dot dot : _dots) {
       dot.setFont(_font);
     }
-  }
+    println("dots count",_dots.size());
+}
 
   void displayHallOfFame(HallOfFame hall){
     _bShowHallOfFame = true;
@@ -155,61 +191,68 @@ class TheWall extends PApplet {
     _wallBuffer.beginDraw();
     _wallBuffer.background(0);
 
-    if (!_bGameWon) {
-      if (_dots != null) {      
-        
-        //First dot is used to trigger the timer
-        if(_dots.get(0).isTouched() && _startTime==0){
-          _startTime = millis();
-        }
-        
-        for (Dot dot : _dots) {
-          dot.display(_wallBuffer, (_level>1?true:false), (_level<2?true:false));
-        }
-
-      } else {
-        if (_wallImg != null) {
-          _wallBuffer.image(_wallImg, 0, 0);
-        } else {
-          //Welcome message
-          _wallBuffer.textFont(_font);
-          String msg = "Camera should fully see this screen"; 
-          _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
-          _wallBuffer.rect(0, 0, 50, 50);
-          _wallBuffer.rect(width-50, 0, 50, 50);
-          _wallBuffer.rect(width-50, height-50, 50, 50);
-          _wallBuffer.rect(0, height-50, 50, 50);
-        }
+    if(_bRecordNewWall){
+      _wallBuffer.fill(255,255,255);
+      _wallBuffer.ellipse(mouseX, mouseY, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
+      for (Dot dot : _dots) {
+        dot.display(_wallBuffer, true, true);
       }
-
-      //Print Timer
-      if (_startTime!=0) {
-        String msg = nf((millis()-_startTime)/1000., 3, 1);
-        _wallBuffer.fill(255);
-        _wallBuffer.text(msg, 10, 40);
-
-        /*
-        msg = nf(_remainingGreenDots,2);
-         _wallBuffer.fill(255);
-         _wallBuffer.text(msg,width/2,30);
-         */
-      }
-
-      if (_showRestartLabel>0) {
-        String msg = ":-( Vite recommence, le chrono tourne !";
-        _showRestartLabel--;
-        _wallBuffer.fill(255);
-        _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
-      }
-      
     }else{
-       //Game Won !!
-      String msg = "Bien joué ;-)  " + nf(_gameWonTime/1000., 3, 1);
-      _wallBuffer.fill(255);
-      _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);
-      
-      if(_bShowHallOfFame){
-        _hallOfFame.display(_wallBuffer);
+      if(_bReadyToGo){
+        String msg = "ON Y VA ?"; 
+        _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
+      }else{
+        if (!_bGameWon) {
+          if (_dots != null) {                         
+            
+            //First dot is used to trigger the timer
+            if(_dots.get(0).isTouched() && _startTime==0){
+              _startTime = millis();
+            }
+            
+            for (Dot dot : _dots) {
+              dot.display(_wallBuffer, (_level>1?true:false), (_level==3?false:true));
+            }
+    
+          } else {
+            if (_wallImg != null) {
+              _wallBuffer.image(_wallImg, 0, 0);
+            } else {
+              //Welcome message
+              _wallBuffer.textFont(_font);
+              String msg = "La camera me voit ?"; 
+              _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
+              _wallBuffer.rect(0, 0, 50, 50);
+              _wallBuffer.rect(width-50, 0, 50, 50);
+              _wallBuffer.rect(width-50, height-50, 50, 50);
+              _wallBuffer.rect(0, height-50, 50, 50);
+            }
+          }
+        
+          //Print Timer
+          if (_startTime!=0) {
+            String msg = nf((millis()-_startTime)/1000., 3, 1);
+            _wallBuffer.fill(255);
+            _wallBuffer.text(msg, 10, 40);
+          }
+    
+          if (_showRestartLabel>0) {
+            String msg = "On recommence, le chrono tourne !";
+            _showRestartLabel--;
+            _wallBuffer.fill(255);
+            _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
+          }
+          
+        }else{
+           //Game Won !!
+          String msg = "Bravo, pas mal : " + nf(_gameWonTime/1000., 0, 1) + " sec.";
+          _wallBuffer.fill(255);
+          _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);
+          
+          if(_bShowHallOfFame){
+            _hallOfFame.display(_wallBuffer);
+          }
+        }
       }
     }
     
