@@ -92,7 +92,7 @@ public class UIControl extends PApplet {
     _wallIndex = _cp5.addTextfield("wall-index").setPosition(400, 40).setSize(20, 20).setFont(_font).setVisible(false);
     _wallName = _cp5.addTextfield("wall-name").setPosition(450, 40).setSize(100, 20).setFont(_font).setVisible(false);
 
-    _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 150).setSize(200, 20).setFont(_font).setVisible(false);  
+    _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 180).setSize(200, 20).setFont(_font).setVisible(false);  
     Label label = _textFieldPlayer.getCaptionLabel(); 
     label.setText("Player : "); 
     label.align(ControlP5.LEFT_OUTSIDE, CENTER);

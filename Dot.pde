@@ -86,6 +86,10 @@ class Dot{
     _order = order;
   }
   
+  int getOrder(){
+    return _order;
+  }
+  
   JSONObject getJSON(){
     JSONObject json = new JSONObject();
     
@@ -124,7 +128,7 @@ class Dot{
         _dotSize -= max(sqrt(Calibration.kDOT_SIZE*2 - _dotSize),0);
       }
       //Order could be only displayed for green dot
-      if(bDisplayOrder && _dotType==2){
+      if(bDisplayOrder && _dotType==2 && !_bTouched){
         g.fill(255,255,255);
         g.text(_order, _x+30, _y+55);
       }

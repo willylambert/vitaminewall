@@ -134,6 +134,10 @@ class TheWall extends PApplet {
   void setLevel(int level) {
     _level = level;
   }
+  
+  int getLevel(){
+    return _level;
+  }
 
   /**
    * When climber touch a do not touch area

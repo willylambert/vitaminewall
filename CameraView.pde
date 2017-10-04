@@ -36,6 +36,7 @@ public class CameraView extends PApplet {
   boolean _bEnableDetection;
   boolean _bPlay;
   int _nbUntouchedDots;
+  int _nextDotOrderToTouch; //se for level 2 & 3 : dots must be touched in a specific order
   
   // Variable for capture device
   Capture mVideo;
@@ -96,7 +97,11 @@ public class CameraView extends PApplet {
     //How many dots to touch there is ?
     _nbUntouchedDots = this.getNbDotsToTouch();
     println(_nbUntouchedDots + " green dots");
-    
+    if(gWall.getLevel()>1){
+      _nextDotOrderToTouch = 1;
+    }else{
+      _nextDotOrderToTouch = 0;//disabled
+    }
     delay(1000);
     _bPlay = true;
   }
@@ -146,7 +151,7 @@ public class CameraView extends PApplet {
       mCamCtrl.background(0);
       
       //For better performance, we don't analyse full screen when game is started
-      if(true || !_bPlay){      
+      if(!_bPlay){      
         //we divide image from cam in cells having dot size
         for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
           for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
@@ -200,16 +205,30 @@ public class CameraView extends PApplet {
               }
                
               if(pixelsCount > kSENSIVITY){
-                println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount); 
-                dot.touch();
+                println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount);                 
                  //Do not touch dot touched !!!
-                if(dot.getType()==1){
-                  bDoNotTouchTouched = true;
+                if(dot.getType()==0){
+                  dot.touch();
                 }else{
-                  if(dot.getType()==2){
-                    _nbUntouchedDots--;
-                    gWall.setRemainingGreenDots(_nbUntouchedDots);
-                    println("untouched dot count",_nbUntouchedDots);
+                  if(dot.getType()==1){
+                    dot.touch();
+                    bDoNotTouchTouched = true;
+                    if(_nextDotOrderToTouch>0){
+                      _nextDotOrderToTouch=1;
+                    }
+                  }else{
+                    if(dot.getType()==2){
+                      if(_nextDotOrderToTouch==0 || _nextDotOrderToTouch==dot.getOrder()){
+                        dot.touch();
+                        _nbUntouchedDots--;                      
+                        gWall.setRemainingGreenDots(_nbUntouchedDots);
+                        if(_nextDotOrderToTouch>0){
+                          _nextDotOrderToTouch++;
+                        }
+                        println("Next dot order",_nextDotOrderToTouch);
+                        println("untouched dot count",_nbUntouchedDots);
+                      }
+                    }
                   }
                 }
               }
