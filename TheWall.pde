@@ -144,7 +144,7 @@ class TheWall extends PApplet {
    **/
   void restartGame() {
     _bReadyToGo = false;
-    _showRestartLabel = 200;
+    _showRestartLabel = 100;
     _bGameWon = false;
     resetDotStatus();
   }
@@ -249,7 +249,7 @@ class TheWall extends PApplet {
           
         }else{
            //Game Won !!
-          String msg = "Bravo, pas mal : " + nf(_gameWonTime/1000., 0, 1) + " sec.";
+          String msg = "Bravo, pas mal... " + nf(_gameWonTime/1000., 0, 1) + " secondes !!";
           _wallBuffer.fill(255);
           _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);
           

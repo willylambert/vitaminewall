@@ -31,8 +31,25 @@ class HallOfFame{
     _font = createFont("Digital-7", 15);
   }
   
-  void add(int level,int time,String playerName){
-    _levels.get(level).add(new Player(time,playerName));
+  void add(int level,int time,String playerName){    
+    //new score
+    println("We have a new winner ! for level " + level,playerName);
+    int i = 0;
+    boolean betterScoreFound = false;
+    for(Player player : _levels.get(i-1)){        
+      if( time < player.getScore() ){
+        //Yes ! new entry into hall of fame !
+        _levels.get(level).add(i,new Player(time,playerName));
+        betterScoreFound = true;
+        break;
+      }
+      i++;
+    }
+    
+    //insert at the end
+    if(!betterScoreFound){
+      _levels.get(level-1).add(new Player(time,playerName));
+    }
   }
   
   void display(PGraphics g){
@@ -40,7 +57,7 @@ class HallOfFame{
     g.fill(255);
     for(int i=0;i<_levels.size();i++){
       int j = 0;
-      g.text("Niveau " + i+1,i*g.width/3,(j+1)*75);
+      g.text("Niveau " + (i+1),i*g.width/3,(j+1)*75);
       for(Player player : _levels.get(i)){
         //display player result
         g.text(player.toString(),i*g.width/3,(j+2)*75);

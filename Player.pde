@@ -25,6 +25,10 @@ class Player{
     _score = score;
   }
   
+  int getScore(){
+    return _score;
+  }
+  
   String toString(){
     return nf(_score/1000.,0,1) + " sec. " + _name; 
   }

@@ -175,7 +175,7 @@ public class UIControl extends PApplet {
                   _textFieldPlayer.setVisible(true);
                   String playerName = _textFieldPlayer.getText();
                   println(playerName + " won in " + _theWall.getWonTime() + " ms");
-                  _hallOfFame.add((int)theEvent.getController().getValue(), _theWall.getWonTime(), playerName);
+                  _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), playerName);
                   _theWall.displayHallOfFame(_hallOfFame);
                 }else{
                   if (theEvent.getController().getName() == "new-wall") {                              

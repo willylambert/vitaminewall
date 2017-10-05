@@ -87,6 +87,9 @@ public class CameraView extends PApplet {
   public void setDetection(boolean bStatus){
     _bEnableDetection = bStatus;
     _detectionResult = new DetectionResult(0,0,0);
+    if(bStatus){
+      _bPlay = false;
+    }
   }
   
   public void play(){    
