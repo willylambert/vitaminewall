@@ -36,10 +36,10 @@ class HallOfFame{
     println("We have a new winner ! for level " + level,playerName);
     int i = 0;
     boolean betterScoreFound = false;
-    for(Player player : _levels.get(i-1)){        
+    for(Player player : _levels.get(level-1)){        
       if( time < player.getScore() ){
         //Yes ! new entry into hall of fame !
-        _levels.get(level).add(i,new Player(time,playerName));
+        _levels.get(level-1).add(i,new Player(time,playerName));
         betterScoreFound = true;
         break;
       }

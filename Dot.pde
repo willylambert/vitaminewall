@@ -28,7 +28,9 @@ class Dot{
   
   int _dotSize;
 
-  PShape _shapePlay = loadShape("play.svg");
+  PShape _shapePlay = loadShape(dataPath("play.svg"));
+  PShape _shapeSkull = loadShape(dataPath("skull.svg"));
+  PShape _shapeDiamond = loadShape(dataPath("diamond.svg"));
   PShape _shapeTouch;
   PShape _shapeUnTouch;
   
@@ -37,6 +39,9 @@ class Dot{
   boolean _bShow;
   boolean _bDetected;
   
+  int _passedTime;
+  boolean _bRedDotIsRed;
+  
   Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch, int order){
     _x = x;
     _y = y;
@@ -44,9 +49,12 @@ class Dot{
     _order = order;
     _bShow = true;
     _bDetected = false;
-    _dotSize = Calibration.kDOT_SIZE;
+    _dotSize = Calibration.kDOT_SIZE*2;
     _shapeUnTouch = shapeUnTouch;
     _shapeTouch = shapeTouch;
+    
+    //Default color for red dot
+    _bRedDotIsRed = false;
     
     if(dotType==0){
       _shapeUnTouch = _shapePlay;
@@ -110,13 +118,31 @@ class Dot{
       }else{
         //Do not touch area - red
         if(_dotType==1 && bShowRedDot){          
-          g.fill(255,0,0);
-          g.rect(_x, _y, _dotSize, _dotSize, 7);
+          if(_bTouched && (_passedTime == 0 || millis() - _passedTime > 250)){
+            _passedTime = millis();
+            _bRedDotIsRed = !_bRedDotIsRed;
+          }          
+          if(_bRedDotIsRed){
+            g.fill(255,0,0);
+            g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+30, Calibration.kDOT_SIZE-20, Calibration.kDOT_SIZE-20);
+          }else{
+            g.fill(0,0,0);
+          }          
+                 
+          g.shape(_shapeSkull,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }else{          
           //Touch area - green
           if(_dotType==2){
-            g.fill(0,255,0);
-            g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
+            g.fill(255,255,255);
+            if(_bTouched){
+              if(_dotSize>0){
+                _dotSize -= sqrt(Calibration.kDOT_SIZE*4 - _dotSize/4)/4;
+                g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
+              }                    
+            }else{
+              g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
+            }
+            g.shape(_shapeDiamond,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
           }
         }
         
@@ -124,9 +150,6 @@ class Dot{
           g.shape(_shapeUnTouch,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }
       }      
-      if(_bTouched && _dotSize>Calibration.kDOT_SIZE/10){
-        _dotSize -= max(sqrt(Calibration.kDOT_SIZE*2 - _dotSize),0);
-      }
       //Order could be only displayed for green dot
       if(bDisplayOrder && _dotType==2 && !_bTouched){
         g.fill(255,255,255);
@@ -149,7 +172,7 @@ class Dot{
   
   void unTouch(){
     _bTouched = false;
-    _dotSize = Calibration.kDOT_SIZE;
+    _dotSize = Calibration.kDOT_SIZE*2;
   }
 
   int getX(){

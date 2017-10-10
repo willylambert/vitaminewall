@@ -146,7 +146,7 @@ class TheWall extends PApplet {
     _bReadyToGo = false;
     _showRestartLabel = 100;
     _bGameWon = false;
-    resetDotStatus();
+    //resetDotStatus();
   }
 
   /**
@@ -203,6 +203,7 @@ class TheWall extends PApplet {
       }
     }else{
       if(_bReadyToGo){
+        _wallBuffer.fill(255,255,255);
         String msg = "ON Y VA ?"; 
         _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
       }else{

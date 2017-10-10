@@ -17,6 +17,7 @@
 **/
 
 import processing.video.*;
+import processing.sound.*;
 
 public class CameraView extends PApplet {
 
@@ -55,7 +56,7 @@ public class CameraView extends PApplet {
   int mLastDetectionTime;
   
   ArrayList<Dot> _dots = new ArrayList<Dot>();
-
+  
    public void settings(){
     size(kCAM_WIDTH*2, kCAM_HEIGHT);    
    }
@@ -209,12 +210,14 @@ public class CameraView extends PApplet {
                
               if(pixelsCount > kSENSIVITY){
                 println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount);                 
-                 //Do not touch dot touched !!!
-                if(dot.getType()==0){
+                 //Start Play Game !!!
+                if(dot.getType()==0){                  
                   dot.touch();
+                  gGoSoundfile.play();
                 }else{
-                  if(dot.getType()==1){
+                  if(dot.getType()==1){                    
                     dot.touch();
+                    gLooserSoundfile.play();
                     bDoNotTouchTouched = true;
                     if(_nextDotOrderToTouch>0){
                       _nextDotOrderToTouch=1;
@@ -223,6 +226,7 @@ public class CameraView extends PApplet {
                     if(dot.getType()==2){
                       if(_nextDotOrderToTouch==0 || _nextDotOrderToTouch==dot.getOrder()){
                         dot.touch();
+                        gTouchSoundfile.play();
                         _nbUntouchedDots--;                      
                         gWall.setRemainingGreenDots(_nbUntouchedDots);
                         if(_nextDotOrderToTouch>0){
@@ -242,19 +246,21 @@ public class CameraView extends PApplet {
         
         if(bDoNotTouchTouched){
           //Restart game without reseting timer - or add a penality ?
-          gWall.restartGame();          
+          gWall.restartGame();
+          delay(2000);
           for (Dot dot : _dots) {            
             dot.unTouch();    
           }
           _nbUntouchedDots = getNbDotsToTouch();
           gWall.setRemainingGreenDots(_nbUntouchedDots);
-          delay(1000);
+          delay(500);
         }
         
         //No more dot to touch : Game WON !!
         if(_nbUntouchedDots==0){
-          delay(1000); //let's dot touch animation time to run
+          delay(500); //let's dot touch animation time to run          
           gWall.gameWon();
+          gEndSoundfile.play();
           _bPlay = false;
         }
    
