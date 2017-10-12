@@ -75,7 +75,7 @@ class TheWall extends PApplet {
     _dots = null;
     surface.setResizable(true);
 
-    _font = createFont("Digital-7", 50);
+      _font = createFont("Digital-7", 50);
     _wallBuffer = createGraphics(width, height);
     _cp5 = new ControlP5(this);
   }

@@ -30,7 +30,7 @@ class Dot{
 
   PShape _shapePlay = loadShape(dataPath("play.svg"));
   PShape _shapeSkull = loadShape(dataPath("skull.svg"));
-  PShape _shapeDiamond = loadShape(dataPath("diamond.svg"));
+  PShape _shapeDiamond = loadShape(dataPath("pill.svg"));
   PShape _shapeTouch;
   PShape _shapeUnTouch;
   
@@ -41,6 +41,8 @@ class Dot{
   
   int _passedTime;
   boolean _bRedDotIsRed;
+  
+  PFont _font;
   
   Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch, int order){
     _x = x;
@@ -55,6 +57,9 @@ class Dot{
     
     //Default color for red dot
     _bRedDotIsRed = false;
+    
+    _font = createFont("Digital-7", 30);
+    g.textFont(_font);
     
     if(dotType==0){
       _shapeUnTouch = _shapePlay;
@@ -87,7 +92,7 @@ class Dot{
   }
   
   void setFont(PFont font){
-    g.textFont(font);
+    //g.textFont(font);
   }
   
   void setOrder(int order){
@@ -113,7 +118,7 @@ class Dot{
     if(_bShow){
       if(_bBlinking){
         //change color each 300ms to try to detect his position
-        g.fill(0,255-map(millis()%300,0,300,0,300),0,255-map(millis()%300,0,300,0,300));
+        g.fill(255,255-map(millis()%300,0,300,0,300),255,255-map(millis()%300,0,300,0,300));
         g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
       }else{
         //Do not touch area - red
@@ -152,8 +157,9 @@ class Dot{
       }      
       //Order could be only displayed for green dot
       if(bDisplayOrder && _dotType==2 && !_bTouched){
-        g.fill(255,255,255);
-        g.text(_order, _x+30, _y+55);
+        g.fill(0,0,0);
+        g.textSize(20);
+        g.text(_order, _x+50, _y+20);
       }
     }
   }

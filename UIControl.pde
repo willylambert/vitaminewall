@@ -121,6 +121,8 @@ public class UIControl extends PApplet {
   void loadData(){
     //Walls loaded from data.json
     ArrayList<Wall> walls = gData.getWalls();
+    _wallList.clear();
+    _selWall.clear();
     for (Wall wall : walls) {
       _wallList.add(wall.getName());
     }
@@ -192,7 +194,7 @@ public class UIControl extends PApplet {
                       _theWall.endCreationWall();
                       gData.getCurrentWall().setName("Wall #" + _wallIndex.getText());
                       gData.saveWall(Integer.parseInt(_wallIndex.getText()));
-                      _btnNewWall.setVisible(true);
+                      //_btnNewWall.setVisible(true);
                       _btnSaveWall.setVisible(false);
                       _wallIndex.setVisible(false);
                       gData.loadData(); //reload data from json

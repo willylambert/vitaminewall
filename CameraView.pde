@@ -29,8 +29,8 @@ public class CameraView extends PApplet {
   static final int kDOT_SIZE = 20;
   
   // How different must a pixel be to be detected as a "motion" pixel
-  float kTHRESHOLD = 50;
-  float kSENSIVITY = 100; //number of pixels changed to light a dot
+  float kTHRESHOLD = 45;
+  float kSENSIVITY = 90; //number of pixels changed to light a dot
   
   DetectionResult _detectionResult;
   
