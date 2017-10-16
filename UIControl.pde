@@ -88,8 +88,8 @@ public class UIControl extends PApplet {
     _btnNewWall = _cp5.addButton("new-wall").setPosition(150, 40).setSize(100, 20).setFont(_font).setVisible(false);
 
     // Save Wall Button
-    _btnSaveWall = _cp5.addButton("save-wall").setPosition(250, 40).setSize(100, 30).setFont(_font).setVisible(false);
-    _wallIndex = _cp5.addTextfield("wall-index").setPosition(400, 40).setSize(20, 20).setFont(_font).setVisible(false);
+    _btnSaveWall = _cp5.addButton("save-wall").setPosition(300, 40).setSize(100, 20).setFont(_font).setVisible(false);
+    _wallIndex = _cp5.addTextfield("wall-index").setPosition(450, 40).setSize(20, 20).setFont(_font).setVisible(false);
     _wallName = _cp5.addTextfield("wall-name").setPosition(450, 40).setSize(100, 20).setFont(_font).setVisible(false);
 
     _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 180).setSize(200, 20).setFont(_font).setVisible(false);  
@@ -174,17 +174,20 @@ public class UIControl extends PApplet {
                 _camView.play();
               }else{
                 if (theEvent.getController().getName() == "player") {              
-                  _textFieldPlayer.setVisible(true);
-                  String playerName = _textFieldPlayer.getText();
-                  println(playerName + " won in " + _theWall.getWonTime() + " ms");
-                  _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), playerName);
-                  _theWall.displayHallOfFame(_hallOfFame);
+                  if(_theWall.displayHallOfFameIsDisplayed()){
+                    //Hall of fame is already displayed, show readyToGo Screen
+                    _theWall.displayReadyToGo();
+                  }else{
+                    String playerName = _textFieldPlayer.getText();
+                    println(playerName + " won in " + _theWall.getWonTime() + " ms");
+                    _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), playerName);
+                    _theWall.displayHallOfFame(_hallOfFame);
+                  }
                 }else{
                   if (theEvent.getController().getName() == "new-wall") {                              
                     gData.newWall();
                     _theWall.newWall();
                     
-                    //_btnNewWall.setVisible(false);
                     _btnSaveWall.setVisible(true);
                     _wallIndex.setVisible(true);
                     _wallIndex.setText(nf(gData.getWalls().size()));
@@ -194,11 +197,8 @@ public class UIControl extends PApplet {
                       _theWall.endCreationWall();
                       gData.getCurrentWall().setName("Wall #" + _wallIndex.getText());
                       gData.saveWall(Integer.parseInt(_wallIndex.getText()));
-                      //_btnNewWall.setVisible(true);
-                      _btnSaveWall.setVisible(false);
-                      _wallIndex.setVisible(false);
                       gData.loadData(); //reload data from json
-                      loadData(); //refresh wall list
+                      loadData(); //refresh wall list                                            
                     }else{
                       if (theEvent.getController().getName() == "sel-wall") {       
                         int wallIndex = (int)theEvent.getController().getValue();

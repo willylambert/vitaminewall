@@ -54,7 +54,7 @@ class Dot{
     _dotSize = Calibration.kDOT_SIZE*2;
     _shapeUnTouch = shapeUnTouch;
     _shapeTouch = shapeTouch;
-    
+      
     //Default color for red dot
     _bRedDotIsRed = false;
     
@@ -63,7 +63,7 @@ class Dot{
     
     if(dotType==0){
       _shapeUnTouch = _shapePlay;
-    }
+    }    
   }
 
   void setCamCoordinates(int camX,int camY){
@@ -116,6 +116,7 @@ class Dot{
   
   void display(PGraphics g,boolean bDisplayOrder,boolean bShowRedDot){
     if(_bShow){
+      g.shapeMode(CENTER);
       if(_bBlinking){
         //change color each 300ms to try to detect his position
         g.fill(255,255-map(millis()%300,0,300,0,300),255,255-map(millis()%300,0,300,0,300));
@@ -134,7 +135,7 @@ class Dot{
             g.fill(0,0,0);
           }          
                  
-          g.shape(_shapeSkull,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+          g.shape(_shapeSkull,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }else{          
           //Touch area - green
           if(_dotType==2){
@@ -142,12 +143,13 @@ class Dot{
             if(_bTouched){
               if(_dotSize>0){
                 _dotSize -= sqrt(Calibration.kDOT_SIZE*4 - _dotSize/4)/4;
-                g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);
+                g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);                
+                g.shape(_shapeDiamond,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,_dotSize,_dotSize);
               }                    
             }else{
               g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
-            }
-            g.shape(_shapeDiamond,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+              g.shape(_shapeDiamond,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+            }            
           }
         }
         
@@ -156,7 +158,7 @@ class Dot{
         }
       }      
       //Order could be only displayed for green dot
-      if(bDisplayOrder && _dotType==2 && !_bTouched){
+      if(bDisplayOrder && _dotType==2 && !_bTouched && _order>0){
         g.fill(0,0,0);
         g.textSize(20);
         g.text(_order, _x+50, _y+20);

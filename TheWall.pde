@@ -27,6 +27,7 @@ class TheWall extends PApplet {
   PGraphics _wallBuffer;
 
   PFont _font;
+  PShape _shapeReadyToGo;
 
   int _fullscreenMode; //0 => no fullscreen, 1 => display #1, 2 => display #2
 
@@ -40,11 +41,12 @@ class TheWall extends PApplet {
   boolean _bReadyToGo;
   
   HallOfFame _hallOfFame;
+  ReadyToGo _readyToGo;
 
   //used to display restart label during 2 sec. this variable is used as a countdown
   int _showRestartLabel; 
 
-  int _remainingGreenDots;
+  int _remainingGreenDots;  
 
   int _level;
 
@@ -54,7 +56,7 @@ class TheWall extends PApplet {
     _showRestartLabel = 0;   
     _bShowHallOfFame = false;
     _bRecordNewWall = false;
-    _bReadyToGo = false;
+    _bReadyToGo = false;    
   }
 
   public void settings() {
@@ -75,9 +77,10 @@ class TheWall extends PApplet {
     _dots = null;
     surface.setResizable(true);
 
-      _font = createFont("Digital-7", 50);
-    _wallBuffer = createGraphics(width, height);
+    _font = createFont("Digital-7", 50);
+    _wallBuffer = createGraphics(width, height);    
     _cp5 = new ControlP5(this);
+    _readyToGo = new ReadyToGo(g);
   }
 
   void startGame() {
@@ -171,6 +174,7 @@ class TheWall extends PApplet {
   void showCalibrationResult(ArrayList<Dot> dots) {
     println("showCalibrationResult");
     _bReadyToGo = true;
+
     _dots = dots;
     for (Dot dot : _dots) {
       dot.setFont(_font);
@@ -181,6 +185,14 @@ class TheWall extends PApplet {
   void displayHallOfFame(HallOfFame hall){
     _bShowHallOfFame = true;
     _hallOfFame = hall;    
+  }
+  
+  void displayReadyToGo(){
+    _bReadyToGo = true;
+  }
+  
+  boolean displayHallOfFameIsDisplayed(){
+    return _bShowHallOfFame;
   }
 
   void setRemainingGreenDots(int nb) {
@@ -194,6 +206,7 @@ class TheWall extends PApplet {
   void draw() {
     _wallBuffer.beginDraw();
     _wallBuffer.background(0);
+    _wallBuffer.textFont(_font);
 
     if(_bRecordNewWall){
       _wallBuffer.fill(255,255,255);
@@ -203,12 +216,13 @@ class TheWall extends PApplet {
       }
     }else{
       if(_bReadyToGo){
-        _wallBuffer.fill(255,255,255);
+        _readyToGo.display(_wallBuffer,frameCount);
+        /*_wallBuffer.fill(255);
         String msg = "ON Y VA ?"; 
-        _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
+        _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);*/
       }else{
         if (!_bGameWon) {
-          if (_dots != null) {                         
+          if (_dots != null && _dots.size()>0) {                         
             
             //First dot is used to trigger the timer
             if(_dots.get(0).isTouched() && _startTime==0){
@@ -224,13 +238,7 @@ class TheWall extends PApplet {
               _wallBuffer.image(_wallImg, 0, 0);
             } else {
               //Welcome message
-              _wallBuffer.textFont(_font);
-              String msg = "La camera me voit ?"; 
-              _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
-              _wallBuffer.rect(0, 0, 50, 50);
-              _wallBuffer.rect(width-50, 0, 50, 50);
-              _wallBuffer.rect(width-50, height-50, 50, 50);
-              _wallBuffer.rect(0, height-50, 50, 50);
+              _readyToGo.display(_wallBuffer,frameCount);
             }
           }
         
@@ -244,7 +252,7 @@ class TheWall extends PApplet {
           if (_showRestartLabel>0) {
             String msg = "On recommence, le chrono tourne !";
             _showRestartLabel--;
-            _wallBuffer.fill(255);
+            _wallBuffer.fill(255);            
             _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
           }
           

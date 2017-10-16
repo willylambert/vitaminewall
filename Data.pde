@@ -29,7 +29,6 @@ class Data{
         wall.setName(name);
         for(int d=0;d<dots.size();d++){
           JSONObject dotItem = dots.getJSONObject(d);
-          print(dotItem);
           int x = dotItem.getInt("x");
           int y = dotItem.getInt("y");
           int type = dotItem.getInt("type");
