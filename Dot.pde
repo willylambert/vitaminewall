@@ -115,8 +115,7 @@ class Dot{
   }
   
   void display(PGraphics g,boolean bDisplayOrder,boolean bShowRedDot){
-    if(_bShow){
-      g.shapeMode(CENTER);
+    if(_bShow){      
       if(_bBlinking){
         //change color each 300ms to try to detect his position
         g.fill(255,255-map(millis()%300,0,300,0,300),255,255-map(millis()%300,0,300,0,300));
@@ -142,7 +141,7 @@ class Dot{
             g.fill(255,255,255);
             if(_bTouched){
               if(_dotSize>0){
-                _dotSize -= sqrt(Calibration.kDOT_SIZE*4 - _dotSize/4)/4;
+                _dotSize -= sqrt(Calibration.kDOT_SIZE*4 - _dotSize/4)/2;
                 g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);                
                 g.shape(_shapeDiamond,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,_dotSize,_dotSize);
               }                    

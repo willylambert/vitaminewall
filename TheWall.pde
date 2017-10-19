@@ -78,7 +78,7 @@ class TheWall extends PApplet {
     surface.setResizable(true);
 
     _font = createFont("Digital-7", 50);
-    _wallBuffer = createGraphics(width, height);    
+    _wallBuffer = createGraphics(width, height);
     _cp5 = new ControlP5(this);
     _readyToGo = new ReadyToGo(g);
   }
@@ -89,6 +89,7 @@ class TheWall extends PApplet {
     _bShowHallOfFame = false;
     _bGameWon = false;
     _startTime = 0;
+    _wallBuffer.textFont(_font);   
   }  
   
   /**
@@ -149,7 +150,6 @@ class TheWall extends PApplet {
     _bReadyToGo = false;
     _showRestartLabel = 100;
     _bGameWon = false;
-    //resetDotStatus();
   }
 
   /**
@@ -206,7 +206,7 @@ class TheWall extends PApplet {
   void draw() {
     _wallBuffer.beginDraw();
     _wallBuffer.background(0);
-    _wallBuffer.textFont(_font);
+    _wallBuffer.shapeMode(CENTER);
 
     if(_bRecordNewWall){
       _wallBuffer.fill(255,255,255);
@@ -217,9 +217,6 @@ class TheWall extends PApplet {
     }else{
       if(_bReadyToGo){
         _readyToGo.display(_wallBuffer,frameCount);
-        /*_wallBuffer.fill(255);
-        String msg = "ON Y VA ?"; 
-        _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);*/
       }else{
         if (!_bGameWon) {
           if (_dots != null && _dots.size()>0) {                         
