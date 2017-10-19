@@ -29,9 +29,13 @@ public class CameraView extends PApplet {
   static final int kDOT_SIZE = 20;
   
   // How different must a pixel be to be detected as a "motion" pixel
-  float kTHRESHOLD = 45;
-  float kSENSIVITY = 90; //number of pixels changed to light a dot
+  //Default values
+  static final float kTHRESHOLD = 45;
+  static final float kSENSIVITY = 90; //number of pixels changed to light a dot
   
+  float _detectionThreshold = kTHRESHOLD;
+  float _detectionSensivity = kSENSIVITY;
+    
   DetectionResult _detectionResult;
   
   boolean _bEnableDetection;
@@ -91,6 +95,8 @@ public class CameraView extends PApplet {
     if(bStatus){
       _bPlay = false;
     }
+    _detectionThreshold = gUIControl.getDetectionThreshold();
+    _detectionSensivity = gUIControl.getDetectionSensivity();
   }
   
   public void play(){    
@@ -134,7 +140,7 @@ public class CameraView extends PApplet {
     float r2 = red(previous); float g2 = green(previous); float b2 = blue(previous);
     float diff = dist(r1,g1,b1,r2,g2,b2);
 
-    return (diff > kTHRESHOLD);
+    return (diff > _detectionThreshold);
   }
 
   public void draw(){
@@ -154,8 +160,12 @@ public class CameraView extends PApplet {
       mCamCtrl.beginDraw();
       mCamCtrl.background(0);
       
-      //For better performance, we don't analyse full screen when game is started
-      if(!_bPlay){      
+      //For better performance, detection feedback is only displayed when game is not started
+      if(!_bPlay){
+        //Realtime update of detection levels
+        _detectionThreshold = gUIControl.getDetectionThreshold();
+        _detectionSensivity = gUIControl.getDetectionSensivity();
+
         //we divide image from cam in cells having dot size
         for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
           for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
@@ -170,7 +180,7 @@ public class CameraView extends PApplet {
                 }
               }
             }
-            if(pixelsCount > kSENSIVITY){
+            if(pixelsCount > _detectionSensivity){
               //Highlight area detected - use or feedback
               mCamCtrl.fill(255);
               mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);

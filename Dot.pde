@@ -160,7 +160,7 @@ class Dot{
       //Order could be only displayed for green dot
       if(bDisplayOrder && _dotType==2 && !_bTouched && _order>0){
         g.fill(0,0,0);
-        g.textSize(20);
+        g.textSize(25);
         g.text(_order, _x+50, _y+20);
       }
     }

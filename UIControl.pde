@@ -30,6 +30,8 @@ public class UIControl extends PApplet {
   controlP5.Button _btnGoLevel3;
   controlP5.Button _btnNewWall;
   controlP5.Button _btnSaveWall;
+  controlP5.Slider _sliderDetectionThreshold;
+  controlP5.Slider _sliderDetectionSensivity;
   
   ScrollableList _selCam;
   ScrollableList _selLevel;
@@ -61,7 +63,7 @@ public class UIControl extends PApplet {
   }
 
   public void settings() {
-    size(640, 240);
+    size(1024, 240);
   }
 
   public void setup() {
@@ -78,6 +80,12 @@ public class UIControl extends PApplet {
    
    //Calibrate
    _btnCalibrate = _cp5.addButton("calibrate").setPosition(150, 70).setSize(100, 20).setFont(_font).setVisible(false);
+   
+   //Detection level
+   _sliderDetectionThreshold = _cp5.addSlider("slider-threshold").setPosition(250,10).setSize(100,20).setRange(10,100).setValue(CameraView.kTHRESHOLD);
+   
+   //Sensivity : number of pixels changed to detect a touched dot
+   _sliderDetectionSensivity = _cp5.addSlider("slider-sensivity").setPosition(450,10).setSize(100,20).setRange(10,CameraView.kDOT_SIZE*CameraView.kDOT_SIZE).setValue(CameraView.kSENSIVITY);
    
     // Start Game button
     _btnGoLevel1 = _cp5.addButton("go-level-1").setPosition(0, 130).setSize(100, 20).setFont(_font).setVisible(false);
@@ -128,6 +136,14 @@ public class UIControl extends PApplet {
     }
     _selWall.addItems(_wallList);
 
+  }
+
+  float getDetectionThreshold(){
+    return _sliderDetectionThreshold.getValue();
+  }
+
+  float getDetectionSensivity(){
+    return _sliderDetectionSensivity.getValue();
   }
 
   void getPlayerName() {
