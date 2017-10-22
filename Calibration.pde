@@ -30,7 +30,7 @@
     }
     
     //Start blinking one by one to get cameras coordinates for each one        
-    delay(1000);
+    delay(2000);
 
     for (Dot dot : _dots) {
       delay(500);

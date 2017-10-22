@@ -73,10 +73,10 @@ public class UIControl extends PApplet {
     _font = createFont("Digital-7", 15);
 
     //Sel Camera
-    _selCam = _cp5.addScrollableList("sel-cam").setPosition(0, 10).setSize(100, 300).setItemHeight(20).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font);
+    _selCam = _cp5.addScrollableList("sel-cam").setPosition(0, 10).setSize(220, 100).setBarHeight(20).setItemHeight(20).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font);
     
     //Select wall
-    _selWall = _cp5.addScrollableList("sel-wall").setPosition(0, 40).setSize(100, 300).setItemHeight(20).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font).setVisible(false);
+    _selWall = _cp5.addScrollableList("sel-wall").setPosition(0, 40).setSize(100, 100).setBarHeight(20).setItemHeight(20).setType(ScrollableList.DROPDOWN).setOpen(false).setFont(_font).setVisible(false);
    
    //Calibrate
    _btnCalibrate = _cp5.addButton("calibrate").setPosition(150, 70).setSize(100, 20).setFont(_font).setVisible(false);
@@ -85,12 +85,12 @@ public class UIControl extends PApplet {
    _sliderDetectionThreshold = _cp5.addSlider("slider-threshold").setPosition(250,10).setSize(100,20).setRange(10,100).setValue(CameraView.kTHRESHOLD);
    
    //Sensivity : number of pixels changed to detect a touched dot
-   _sliderDetectionSensivity = _cp5.addSlider("slider-sensivity").setPosition(450,10).setSize(100,20).setRange(10,CameraView.kDOT_SIZE*CameraView.kDOT_SIZE).setValue(CameraView.kSENSIVITY);
+   _sliderDetectionSensivity = _cp5.addSlider("slider-sensivity").setPosition(450,10).setSize(100,20).setRange(10,CameraView.kDOT_SIZE*CameraView.kDOT_SIZE/2).setValue(CameraView.kSENSIVITY);
    
     // Start Game button
-    _btnGoLevel1 = _cp5.addButton("go-level-1").setPosition(0, 130).setSize(100, 20).setFont(_font).setVisible(false);
-    _btnGoLevel2 = _cp5.addButton("go-level-2").setPosition(150, 130).setSize(100, 20).setFont(_font).setVisible(false);
-    _btnGoLevel3 = _cp5.addButton("go-level-3").setPosition(300, 130).setSize(100, 20).setFont(_font).setVisible(false);
+    _btnGoLevel1 = _cp5.addButton("go-level-1").setPosition(0, 100).setSize(100, 20).setFont(_font).setVisible(false);
+    _btnGoLevel2 = _cp5.addButton("go-level-2").setPosition(150, 100).setSize(100, 20).setFont(_font).setVisible(false);
+    _btnGoLevel3 = _cp5.addButton("go-level-3").setPosition(300, 100).setSize(100, 20).setFont(_font).setVisible(false);
 
     // New Wall Button
     _btnNewWall = _cp5.addButton("new-wall").setPosition(150, 40).setSize(100, 20).setFont(_font).setVisible(false);
@@ -100,7 +100,7 @@ public class UIControl extends PApplet {
     _wallIndex = _cp5.addTextfield("wall-index").setPosition(450, 40).setSize(20, 20).setFont(_font).setVisible(false);
     _wallName = _cp5.addTextfield("wall-name").setPosition(450, 40).setSize(100, 20).setFont(_font).setVisible(false);
 
-    _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 180).setSize(200, 20).setFont(_font).setVisible(false);  
+    _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 130).setSize(200, 20).setFont(_font).setVisible(false);  
     Label label = _textFieldPlayer.getCaptionLabel(); 
     label.setText("Player : "); 
     label.align(ControlP5.LEFT_OUTSIDE, CENTER);

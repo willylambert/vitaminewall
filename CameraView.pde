@@ -66,6 +66,7 @@ public class CameraView extends PApplet {
    }
   
    public void setup(){ 
+    frameRate(60);
     mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, 30);
     _detectionResult = new DetectionResult(0,0,0);
 
