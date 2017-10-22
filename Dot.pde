@@ -118,7 +118,7 @@ class Dot{
     if(_bShow){      
       if(_bBlinking){
         //change color each 300ms to try to detect his position
-        g.fill(255,255-map(millis()%300,0,300,0,300),255,255-map(millis()%300,0,300,0,300));
+        g.fill(255,255,255,255-map(millis()%300,0,300,0,300));
         g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
       }else{
         //Do not touch area - red
