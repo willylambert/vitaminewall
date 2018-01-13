@@ -54,7 +54,7 @@ void setup(){
   
   //The Wall
   String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};
-  gWall = new TheWall("C:\\Users\\w.lambert.DURAND\\Documents\\GitHub\\vitaminewall\\wall1.png",2);
+  gWall = new TheWall(2);
   PApplet.runSketch(wallArgs, gWall);
   
   //Controls
