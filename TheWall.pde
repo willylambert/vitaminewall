@@ -21,7 +21,6 @@ class TheWall extends PApplet {
   ControlP5 _cp5;
   Textfield _textFieldPlayer;
 
-  String _calibrationImgPath;
   PImage _wallImg;
 
   PGraphics _wallBuffer;
@@ -50,8 +49,7 @@ class TheWall extends PApplet {
 
   int _level;
 
-  TheWall(String calibrationImg, int fullscreenMode) {
-    _calibrationImgPath = calibrationImg;   
+  TheWall(int fullscreenMode) {  
     _fullscreenMode = fullscreenMode; 
     _showRestartLabel = 0;   
     _bShowHallOfFame = false;
