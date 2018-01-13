@@ -2,6 +2,8 @@
 
 Vitamine Wall combines projected graphics and body detection for funny climbing experience for everyone ! 
 
+[![Vitamine Wall](http://bricolab-aidal.fr/wp-content/uploads/2017/02/VitamineWall.png)](https://vimeo.com/202650498 "Vitamine Wall - Click to Watch!")
+
 ## Run it
 
 * Download Processing version 3 : https://processing.org/
