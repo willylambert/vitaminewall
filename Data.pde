@@ -1,7 +1,15 @@
 class Data{
 
-  JSONObject json;
+  String _filename = "data.json";
+  JSONObject _json;
   ArrayList<Wall> _walls = new ArrayList<Wall>();
+      
+  //Default values
+  static final float kTHRESHOLD = 40; //How different must a pixel be to be detected as a "motion" pixel
+  static final float kSENSIVITY = 80; //Number of pixels changed to light a dot
+  
+  float _sensivity = kTHRESHOLD;
+  float _threshold = kSENSIVITY;
   
   Wall _currentWall;
   
@@ -14,10 +22,14 @@ class Data{
     
     if (dataFile(filename).exists())
     {
-      json = loadJSONObject(filename);
-      println("load from data.json");
+      _json = loadJSONObject(filename);
+
+      if(!_json.isNull("sensivity") && !_json.isNull("threshold")) {
+        _sensivity = _json.getFloat("sensivity");
+        _threshold = _json.getFloat("threshold");
+      }
       
-      JSONArray walls = json.getJSONArray("walls");
+      JSONArray walls = _json.getJSONArray("walls");
       
       _walls.clear();
       
@@ -63,15 +75,23 @@ class Data{
   }
   
   /**
+  * Save Detection level to disk
+  **/
+  void saveDetectionLevels(){
+    _json.setFloat("sensivity",_sensivity);
+    _json.setFloat("threshold",_threshold);
+    saveJSONObject(_json,dataPath(_filename));
+  }
+  
+  /**
   * Save current dots to a new wall
   **/
   void saveWall(int index){
-     println("saveWall");
-     String filename = "data.json";
-     json = new JSONObject();
+     
+     _json = new JSONObject();
 
-     if (dataFile(filename).exists()){
-        json = loadJSONObject(filename);
+     if (dataFile(_filename).exists()){
+        _json = loadJSONObject(_filename);
         println("load from data.json");
      }
      
@@ -88,25 +108,38 @@ class Data{
        jsonDots.setJSONObject(i,dots.get(i).getJSON());
      }
      
-     println("set dots");
      wall.setJSONArray("dots",jsonDots);
      
      JSONArray jsonWall;
 
-     jsonWall = json.getJSONArray("walls");
+     jsonWall = _json.getJSONArray("walls");
      
      if(jsonWall==null){
       jsonWall = new JSONArray();
      }
      
-     println("set json wall",jsonWall);
      jsonWall.setJSONObject(index,wall);
-     println("save json");
      
-     json.setJSONArray("walls",jsonWall); 
+     _json.setJSONArray("walls",jsonWall); 
      
-     saveJSONObject(json,dataPath(filename));    
+     saveJSONObject(_json,dataPath(_filename));    
      
+  }
+  
+  float getSensivity(){
+    return _sensivity;
+  }
+  
+  void setSensivity(float sensivity){
+    _sensivity = sensivity;
+  }
+  
+  float getThreshold(){
+    return _threshold;
+  }
+  
+  void setThreshold(float threshold){
+    _threshold = threshold;
   }
     
   void setDots(ArrayList<Dot> dots){

@@ -47,6 +47,9 @@ void setup(){
   gWinSoundfile = new SoundFile(this, dataPath("win.wav"));
   gLooserSoundfile = new SoundFile(this,dataPath("looser.wav"));
   
+  //Data
+  gData = new Data();
+  
   //Camera feedback applet
   String[] camArgs = {"--location=0,0", "ClimbWall"};
   gCamView = new CameraView();
@@ -60,9 +63,6 @@ void setup(){
   //Controls
   String[] controlArgs = {"--location=0,500", "ClimbWall"};
   gUIControl = new UIControl(gCamView,gWall);
-  PApplet.runSketch(controlArgs, gUIControl);
-  
-  //Data
-  gData = new Data();
+  PApplet.runSketch(controlArgs, gUIControl);   
   
 }

@@ -37,7 +37,6 @@ class ReadyToGo{
     
     //each 24 frames
     if (frmCount % 24 == 0) {
-      println("add dot");
       Dot dot = new Dot(int(random(0,g.width)),int(random(g.height*0.5,g.height*0.7)),int(random(1,3)),null,null,0);
       _dots.add(dot);
       

@@ -29,12 +29,8 @@ public class CameraView extends PApplet {
   static final int kDOT_SIZE = 20;
   
   // How different must a pixel be to be detected as a "motion" pixel
-  //Default values
-  static final float kTHRESHOLD = 45;
-  static final float kSENSIVITY = 90; //number of pixels changed to light a dot
-  
-  float _detectionThreshold = kTHRESHOLD;
-  float _detectionSensivity = kSENSIVITY;
+  float _detectionThreshold;
+  float _detectionSensivity;
     
   DetectionResult _detectionResult;
   
@@ -98,11 +94,16 @@ public class CameraView extends PApplet {
     }
     _detectionThreshold = gUIControl.getDetectionThreshold();
     _detectionSensivity = gUIControl.getDetectionSensivity();
+    
+    //Save detection level to json
+    gData.setThreshold(_detectionThreshold);
+    gData.setSensivity(_detectionSensivity);
+    gData.saveDetectionLevels();
   }
   
   public void play(){    
     _bEnableDetection = false;
-   
+
     gWall.resetDotStatus();
 
     //How many dots to touch there is ?
@@ -219,7 +220,7 @@ public class CameraView extends PApplet {
                 }
               }
                
-              if(pixelsCount > kSENSIVITY){
+              if(pixelsCount > _detectionSensivity){
                 println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount);                 
                  //Start Play Game !!!
                 if(dot.getType()==0){                  

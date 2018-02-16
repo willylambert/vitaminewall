@@ -82,10 +82,10 @@ public class UIControl extends PApplet {
    _btnCalibrate = _cp5.addButton("calibrate").setPosition(150, 70).setSize(100, 20).setFont(_font).setVisible(false);
    
    //Detection level
-   _sliderDetectionThreshold = _cp5.addSlider("slider-threshold").setPosition(250,10).setSize(100,20).setRange(10,100).setValue(CameraView.kTHRESHOLD);
+   _sliderDetectionThreshold = _cp5.addSlider("slider-threshold").setPosition(250,10).setSize(100,20).setRange(10,100).setValue(gData.getThreshold());
    
    //Sensivity : number of pixels changed to detect a touched dot
-   _sliderDetectionSensivity = _cp5.addSlider("slider-sensivity").setPosition(450,10).setSize(100,20).setRange(10,CameraView.kDOT_SIZE*CameraView.kDOT_SIZE/2).setValue(CameraView.kSENSIVITY);
+   _sliderDetectionSensivity = _cp5.addSlider("slider-sensivity").setPosition(450,10).setSize(100,20).setRange(10,CameraView.kDOT_SIZE*CameraView.kDOT_SIZE/2).setValue(gData.getSensivity());
    
     // Start Game button
     _btnGoLevel1 = _cp5.addButton("go-level-1").setPosition(0, 100).setSize(100, 20).setFont(_font).setVisible(false);
@@ -218,7 +218,6 @@ public class UIControl extends PApplet {
                     }else{
                       if (theEvent.getController().getName() == "sel-wall") {       
                         int wallIndex = (int)theEvent.getController().getValue();
-                        println("sel-wall");
                         gData.setCurrentWall(wallIndex);
                         _theWall.setDots(gData.getCurrentWall().getDots());
                         _btnCalibrate.setVisible(true);
