@@ -18,7 +18,8 @@
 
 class Dot{
   
-  int _camX,_camY; // => coordinates from the Camera POV
+  int _camMinX,_camMinY,_camMaxX,_camMaxY; // => coordinates from the Camera POV
+  
   
   int _x, _y; // => coordinates from the Wall POV
   
@@ -66,9 +67,11 @@ class Dot{
     }    
   }
 
-  void setCamCoordinates(int camX,int camY){
-    _camX = camX;
-    _camY = camY;
+  void setCamCoordinates(int camX,int camY, int camMaxX, int camMaxY){
+    _camMinX = camX;
+    _camMinY = camY;
+    _camMaxX = camMaxX;
+    _camMaxY = camMaxY;
   }
   
   void setBlink(boolean bBlink){
@@ -191,11 +194,19 @@ class Dot{
   }
 
   int getXcam(){
-    return _camX;
+    return _camMinX;
   }
   
   int getYcam(){
-    return _camY;
+    return _camMinY;
+  }
+
+  int getXcamMax(){
+    return _camMaxX;
+  }
+  
+  int getYcamMax(){
+    return _camMaxY;
   }
 
 }  

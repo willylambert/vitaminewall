@@ -116,7 +116,7 @@ public class UIControl extends PApplet {
       String[] cameraInfo = split(allCameras[i], ',');
       camerasFilteredList.put(cameraInfo[0],i);
     }
-
+    
     for (Map.Entry camera : camerasFilteredList.entrySet()) {
       _camerasList.add(camera.getKey().toString());
     }    

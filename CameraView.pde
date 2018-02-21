@@ -79,7 +79,7 @@ public class CameraView extends PApplet {
    }
    
    public void setCamera(String cameraName){     
-    //we assume that video stream was already start in setup()
+    //Assume that video stream was already started in setup()
     mVideo.stop();
     
     mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, cameraName,30);
@@ -95,7 +95,7 @@ public class CameraView extends PApplet {
     _detectionThreshold = gUIControl.getDetectionThreshold();
     _detectionSensivity = gUIControl.getDetectionSensivity();
     
-    //Save detection level to json
+    //Save detection levels to json
     gData.setThreshold(_detectionThreshold);
     gData.setSensivity(_detectionSensivity);
     gData.saveDetectionLevels();
@@ -147,7 +147,7 @@ public class CameraView extends PApplet {
 
   public void draw(){
     if(mVideo.available()){
-     
+      
       //Store previous video frame for comparison
       mPrevFrame.copy(mVideo,0,0,mVideo.width,mVideo.height,0,0,mVideo.width,mVideo.height); 
 
@@ -162,8 +162,10 @@ public class CameraView extends PApplet {
       mCamCtrl.beginDraw();
       mCamCtrl.background(0);
       
-      //For better performance, detection feedback is only displayed when game is not started
+      //For better performance, detection feedback is only displayed when game is not started      
       if(!_bPlay){
+        //Detection phase
+        
         //Realtime update of detection levels
         _detectionThreshold = gUIControl.getDetectionThreshold();
         _detectionSensivity = gUIControl.getDetectionSensivity();
@@ -187,10 +189,7 @@ public class CameraView extends PApplet {
               mCamCtrl.fill(255);
               mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
               if(_bEnableDetection){
-                if(pixelsCount > _detectionResult.getBestScore()){                
-                  _detectionResult.setResult(xCell, yCell, pixelsCount);
-                  println("detection Result updated",xCell, yCell, pixelsCount);
-                }                
+                _detectionResult.setResult(xCell, yCell, pixelsCount);                
               }
             }
           }
@@ -207,13 +206,14 @@ public class CameraView extends PApplet {
         
         int dotIdx = 0;
         for (Dot dot : _dots) {
+          //Only process video-dots with corresponding camera-dots
           if(dot.getDetected()){
             //The first dot trigger timer
             if(!dot.isTouched() && bTimerIsStarted || dotIdx==0 && !bTimerIsStarted){
-              //test if we have motion dot per dot
+              //test if we have motion, pixel per pixel
               int pixelsCount=0;
-              for(int x=dot.getXcam();x<dot.getXcam()+kDOT_SIZE;x++){
-                for(int y=dot.getYcam();y<dot.getYcam()+kDOT_SIZE;y++){
+              for(int x=dot.getXcam();x<dot.getXcamMax();x++){
+                for(int y=dot.getYcam();y<dot.getYcamMax();y++){
                    if(dotIsActive(x,y)) {    
                      pixelsCount++;
                    }                               

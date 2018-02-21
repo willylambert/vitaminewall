@@ -32,7 +32,9 @@
     //Start blinking one by one to get cameras coordinates for each one        
     delay(2000);
 
+    int dotIdx = 0;
     for (Dot dot : _dots) {
+      dotIdx++;
       delay(500);
 
       //Init cam for a new detection run
@@ -43,8 +45,7 @@
       dot.setBlink(true);
       
       //get area which get the most activity during detection run
-      //wait for detection result
-      DetectionResult detectionResult =_camView.getDetectionResult();
+      DetectionResult detectionResult = _camView.getDetectionResult();
       
       int startDt = millis();
       while(detectionResult.getBestScore() < 200 && millis()-startDt < 750){               
@@ -54,8 +55,12 @@
       println("Best Score is ",detectionResult.getBestScore()," for dot[",detectionResult.getX(),",",detectionResult.getY(),"]");
       
       if(detectionResult.getBestScore() >= 200){
-        println("Dot detected !",detectionResult.getX(),detectionResult.getY(),detectionResult.getBestScore());
-        dot.setCamCoordinates(detectionResult.getX(),detectionResult.getY());
+        println("Dot "+dotIdx+" detected ! Best is ["+detectionResult.getX()+","+detectionResult.getY()+",s="+detectionResult.getBestScore()+"]");
+        detectionResult.cleanDetectionResult();
+        println("Dot "+dotIdx+" detected ! Area is ["+detectionResult.getMinX()+","+detectionResult.getMinY()+"] ["+detectionResult.getMaxX()+","+detectionResult.getMaxY()+"]");
+
+        // (x,y) => best camera-dot, last parameter => all linked camera-dots
+        dot.setCamCoordinates(detectionResult.getMinX(),detectionResult.getMinY(),detectionResult.getMaxX(),detectionResult.getMaxY());
         dot.setDetected(true);
       }
       dot.hide();      
