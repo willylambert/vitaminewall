@@ -70,8 +70,8 @@ public class CameraView extends PApplet {
    
     mPrevFrame = createImage(mVideo.width,mVideo.height,RGB);
     mCurrFrame = createImage(mVideo.width,mVideo.height,RGB);
-    mFeedback = createImage(mVideo.width,mVideo.height, RGB); 
-    mCamCtrl = createGraphics(mVideo.width,mVideo.height);
+    mFeedback  = createImage(mVideo.width,mVideo.height, RGB); 
+    mCamCtrl   = createGraphics(mVideo.width,mVideo.height);
    }
    
    PImage getCurrentFrame(){
