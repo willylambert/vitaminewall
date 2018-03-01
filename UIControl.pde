@@ -94,7 +94,7 @@ public class UIControl extends PApplet {
     _btnGoLevel3 = _cp5.addButton("go-level-3").setPosition(300, 100).setSize(100, 20).setFont(_font).setVisible(false);
 
     // Stop game button
-    _btnStop = _cp5.addButton("stop").setPosition(150, 130).setSize(100, 20).setFont(_font).setVisible(false);
+    _btnStop = _cp5.addButton("stop").setPosition(450, 100).setSize(100, 20).setFont(_font).setVisible(true);
 
     // New Wall Button
     _btnNewWall = _cp5.addButton("new-wall").setPosition(150, 40).setSize(100, 20).setFont(_font).setVisible(false);
@@ -187,7 +187,7 @@ public class UIControl extends PApplet {
           }else{
             if (theEvent.getController().getName() == "go-level-1") {
               println("UIControl::controlEvent(): go-level-1!");
-              _btnStop.setVisible(true);
+              //_btnStop.setVisible(true);
               _btnGoLevel1.setVisible(false);
               _btnGoLevel2.setVisible(false);
               _btnGoLevel3.setVisible(false);
@@ -197,7 +197,7 @@ public class UIControl extends PApplet {
             }else{ //<>//
               if (theEvent.getController().getName() == "go-level-2") {
                 println("UIControl::controlEvent(): go-level-2!");
-                _btnStop.setVisible(true);
+                //_btnStop.setVisible(true);
                 _btnGoLevel1.setVisible(false);
                 _btnGoLevel2.setVisible(false);
                 _btnGoLevel3.setVisible(false);
@@ -207,7 +207,7 @@ public class UIControl extends PApplet {
               }else{
                 if (theEvent.getController().getName() == "go-level-3") {
                   println("UIControl::controlEvent(): go-level-3!");
-                  _btnStop.setVisible(true);
+                  //_btnStop.setVisible(true);
                   _btnGoLevel1.setVisible(false);
                   _btnGoLevel2.setVisible(false);
                   _btnGoLevel3.setVisible(false);
@@ -261,7 +261,7 @@ public class UIControl extends PApplet {
                           _btnGoLevel1.setVisible(false);
                           _btnGoLevel2.setVisible(false);
                           _btnGoLevel3.setVisible(false);
-                          _btnStop.setVisible(false);
+                          //_btnStop.setVisible(false);
                         }
                       }
                     }
