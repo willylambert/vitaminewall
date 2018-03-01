@@ -28,6 +28,7 @@ public class UIControl extends PApplet {
   controlP5.Button _btnGoLevel1;
   controlP5.Button _btnGoLevel2;
   controlP5.Button _btnGoLevel3;
+  controlP5.Button _btnStop;
   controlP5.Button _btnNewWall;
   controlP5.Button _btnSaveWall;
   controlP5.Slider _sliderDetectionThreshold;
@@ -92,6 +93,9 @@ public class UIControl extends PApplet {
     _btnGoLevel2 = _cp5.addButton("go-level-2").setPosition(150, 100).setSize(100, 20).setFont(_font).setVisible(false);
     _btnGoLevel3 = _cp5.addButton("go-level-3").setPosition(300, 100).setSize(100, 20).setFont(_font).setVisible(false);
 
+    // Stop game button
+    _btnStop = _cp5.addButton("stop").setPosition(450, 100).setSize(100, 20).setFont(_font).setVisible(true);
+
     // New Wall Button
     _btnNewWall = _cp5.addButton("new-wall").setPosition(150, 40).setSize(100, 20).setFont(_font).setVisible(false);
 
@@ -150,6 +154,11 @@ public class UIControl extends PApplet {
     //Get player name
     _textFieldPlayer.setVisible(true);
     _textFieldPlayer.setFocus(true);
+    //Disable others
+    _btnGoLevel1.setVisible(false);
+    _btnGoLevel2.setVisible(false);
+    _btnGoLevel3.setVisible(false);
+    _btnStop.setVisible(false);
   }
 
   void controlEvent(ControlEvent theEvent) {
@@ -170,58 +179,90 @@ public class UIControl extends PApplet {
         if (theEvent.getController().getName() == "calibrate") {
           println("calibrateTheWall");
           calibrateTheWall();
-          _btnGoLevel1.setVisible(true);
-          _btnGoLevel2.setVisible(true);
-          _btnGoLevel3.setVisible(true);
+          // Now, btnGoLevel* are visible;
         }else{
-          if (theEvent.getController().getName() == "go-level-1") {
-            _theWall.setLevel(1);            
-            _theWall.startGame();
-            _camView.play();
+          if (theEvent.getController().getName() == "stop") {
+            println("UIControl::controlEvent(): stop!");
+            _theWall.stopGame();
           }else{
-            if (theEvent.getController().getName() == "go-level-2") {
-              _theWall.setLevel(2);              
+            if (theEvent.getController().getName() == "go-level-1") {
+              println("UIControl::controlEvent(): go-level-1!");
+              //_btnStop.setVisible(true);
+              _btnGoLevel1.setVisible(false);
+              _btnGoLevel2.setVisible(false);
+              _btnGoLevel3.setVisible(false);
+              _theWall.setLevel(1);             //<>//
               _theWall.startGame();
               _camView.play();
-            }else{
-              if (theEvent.getController().getName() == "go-level-3") {
-                _theWall.setLevel(3);                
-                _theWall.startGame();
+            }else{ //<>//
+              if (theEvent.getController().getName() == "go-level-2") {
+                println("UIControl::controlEvent(): go-level-2!");
+                //_btnStop.setVisible(true);
+                _btnGoLevel1.setVisible(false);
+                _btnGoLevel2.setVisible(false);
+                _btnGoLevel3.setVisible(false);
+                _theWall.setLevel(2);              
+                _theWall.startGame(); //<>//
                 _camView.play();
               }else{
-                if (theEvent.getController().getName() == "player") {              
-                  if(_theWall.displayHallOfFameIsDisplayed()){
-                    //Hall of fame is already displayed, show readyToGo Screen
-                    _theWall.displayReadyToGo();
-                  }else{
-                    String playerName = _textFieldPlayer.getText();
-                    println(playerName + " won in " + _theWall.getWonTime() + " ms");
-                    _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), playerName);
-                    _theWall.displayHallOfFame(_hallOfFame);
-                  }
-                }else{
-                  if (theEvent.getController().getName() == "new-wall") {                              
-                    gData.newWall();
-                    _theWall.newWall();
-                    
-                    _btnSaveWall.setVisible(true);
-                    _wallIndex.setVisible(true);
-                    _wallIndex.setText(nf(gData.getWalls().size()));
-                    
-                  }else{
-                    if (theEvent.getController().getName() == "save-wall") {              
-                      _theWall.endCreationWall();
-                      gData.getCurrentWall().setName("Wall #" + _wallIndex.getText());
-                      gData.saveWall(Integer.parseInt(_wallIndex.getText()));
-                      gData.loadData(); //reload data from json
-                      loadData(); //refresh wall list                                            
+                if (theEvent.getController().getName() == "go-level-3") {
+                  println("UIControl::controlEvent(): go-level-3!");
+                  //_btnStop.setVisible(true);
+                  _btnGoLevel1.setVisible(false);
+                  _btnGoLevel2.setVisible(false);
+                  _btnGoLevel3.setVisible(false);
+                  _theWall.setLevel(3);                
+                  _theWall.startGame();
+                  _camView.play();
+                 }else{
+                  if (theEvent.getController().getName() == "player") {        
+                    println("UIControl::controlEvent(): player!");
+                    if(_theWall.displayHallOfFameIsDisplayed()){
+                      //Hall of fame is already displayed, show readyToGo Screen
+                      //_theWall.displayReadyToGo();
+                      //Hall of fame is already displayed, show current wall
+                      _theWall.setDots(gData.getCurrentWall().getDots());
                     }else{
-                      if (theEvent.getController().getName() == "sel-wall") {       
-                        int wallIndex = (int)theEvent.getController().getValue();
-                        gData.setCurrentWall(wallIndex);
-                        _theWall.setDots(gData.getCurrentWall().getDots());
-                        _btnCalibrate.setVisible(true);
-                        _btnNewWall.setVisible(true);                    
+                      String playerName = _textFieldPlayer.getText();
+                      println(playerName + " won in " + _theWall.getWonTime() + " ms");
+                      _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), playerName);
+                      _theWall.displayHallOfFame(_hallOfFame);
+                      _btnGoLevel1.setVisible(true);
+                      _btnGoLevel2.setVisible(true);
+                      _btnGoLevel3.setVisible(true);
+                      _textFieldPlayer.setVisible(false);
+                    }
+                  }else{
+                    if (theEvent.getController().getName() == "new-wall") {    
+                      println("UIControl::controlEvent(): new-wall!");
+                      gData.newWall();
+                      _theWall.newWall();
+                      
+                      _btnSaveWall.setVisible(true);
+                      _wallIndex.setVisible(true);
+                      _wallIndex.setText(nf(gData.getWalls().size()));
+                      
+                    }else{
+                      if (theEvent.getController().getName() == "save-wall") {   
+                        println("UIControl::controlEvent(): save-wall!");
+                        _theWall.endCreationWall();
+                        gData.getCurrentWall().setName("Wall #" + _wallIndex.getText());
+                        gData.saveWall(Integer.parseInt(_wallIndex.getText()));
+                        gData.loadData(); //reload data from json
+                        loadData(); //refresh wall list                                            
+                      }else{
+                        if (theEvent.getController().getName() == "sel-wall") {
+                          println("UIControl::controlEvent(): sel-wall!");
+                          int wallIndex = (int)theEvent.getController().getValue();
+                          gData.setCurrentWall(wallIndex);
+                          _theWall.setDots(gData.getCurrentWall().getDots());
+                          _btnCalibrate.setVisible(true);
+                          _btnNewWall.setVisible(true);             
+                          _btnGoLevel1.setVisible(false);
+                          _btnGoLevel2.setVisible(false);
+                          _btnGoLevel3.setVisible(false);
+                          //_btnStop.setVisible(false);
+                        }
                       }
                     }
                   }

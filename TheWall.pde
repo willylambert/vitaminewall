@@ -90,6 +90,15 @@ class TheWall extends PApplet {
     _wallBuffer.textFont(_font);   
   }  
   
+  void stopGame() {
+    println("Game Stoped!");
+    _bReadyToGo = false;
+    _bShowHallOfFame = true;
+    _bGameWon = false;
+    _startTime = 0;
+    _wallBuffer.textFont(_font);   
+  }  
+  
   /**
   * Record a new wall
   **/
@@ -100,7 +109,7 @@ class TheWall extends PApplet {
 }
   
   /**
-  * Stop dots creation
+  * Stop dots creation - Stop to record a new wall
   **/
   void endCreationWall(){
     _bRecordNewWall = false; 
@@ -186,6 +195,7 @@ class TheWall extends PApplet {
   }
   
   void displayReadyToGo(){
+    _bShowHallOfFame = false;
     _bReadyToGo = true;
   }
   

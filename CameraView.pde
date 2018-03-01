@@ -40,7 +40,7 @@ public class CameraView extends PApplet {
   int _nextDotOrderToTouch; //se for level 2 & 3 : dots must be touched in a specific order
   
   // Variable for capture device
-  Capture mVideo;
+  Capture _video;
    
   // Previous Frame
   PImage  mPrevFrame;
@@ -62,16 +62,15 @@ public class CameraView extends PApplet {
    }
   
    public void setup(){ 
-    frameRate(60);
-    mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, 30);
+     frameRate(10);
     _detectionResult = new DetectionResult(0,0,0);
 
-    mVideo.start();  
+    _video = null;
    
-    mPrevFrame = createImage(mVideo.width,mVideo.height,RGB);
-    mCurrFrame = createImage(mVideo.width,mVideo.height,RGB);
-    mFeedback = createImage(mVideo.width,mVideo.height, RGB); 
-    mCamCtrl = createGraphics(mVideo.width,mVideo.height);
+    mPrevFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
+    mCurrFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
+    mFeedback  = createImage(kCAM_WIDTH,kCAM_HEIGHT, RGB); 
+    mCamCtrl   = createGraphics(kCAM_WIDTH,kCAM_HEIGHT);
    }
    
    PImage getCurrentFrame(){
@@ -79,12 +78,25 @@ public class CameraView extends PApplet {
    }
    
    public void setCamera(String cameraName){     
-    //Assume that video stream was already started in setup()
-    mVideo.stop();
+    if(_video != null){
+      _video.stop();
+    }
     
-    mVideo = new Capture(this, kCAM_WIDTH,kCAM_HEIGHT, cameraName,30);
-    mVideo.start();  
+    _video = new Capture(this,kCAM_WIDTH,kCAM_HEIGHT, cameraName);
+    _video.start();  
    }
+ 
+  public void removeOrphanDetectionResult(){
+    _bEnableDetection = false;
+    _detectionResult.removeOrphanDetectionResult();
+    _bEnableDetection = true;
+  }
+
+   public void cleanDetectionResult(){
+    _bEnableDetection = false;
+    _detectionResult.cleanDetectionResult();
+    _bEnableDetection = true;
+  }
  
   public void setDetection(boolean bStatus){
     _bEnableDetection = bStatus;
@@ -133,7 +145,7 @@ public class CameraView extends PApplet {
   }
 
   private boolean dotIsActive(int x,int y){
-    int loc = x + y*mVideo.width; // what is the 1D pixel location              
+    int loc = x + y*_video.width; // what is the 1D pixel location              
     color current = mCurrFrame.pixels[loc];      // what is the current color
     color previous = mPrevFrame.pixels[loc];     // what is the previous color
   
@@ -146,15 +158,15 @@ public class CameraView extends PApplet {
   }
 
   public void draw(){
-    if(mVideo.available()){
+    if(_video!=null && _video.available()){
       
       //Store previous video frame for comparison
-      mPrevFrame.copy(mVideo,0,0,mVideo.width,mVideo.height,0,0,mVideo.width,mVideo.height); 
+      mPrevFrame.copy(_video,0,0,_video.width,_video.height,0,0,_video.width,_video.height); 
 
-      mVideo.read();
+      _video.read();
             
       //Updated frame 
-      mCurrFrame.copy(mVideo,0,0,mVideo.width,mVideo.height,0,0,mVideo.width,mVideo.height); 
+      mCurrFrame.copy(_video,0,0,_video.width,_video.height,0,0,_video.width,_video.height); 
             
       mPrevFrame.loadPixels(); 
       mCurrFrame.loadPixels();
@@ -178,9 +190,9 @@ public class CameraView extends PApplet {
               for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
                 if(dotIsActive(x,y)) {    
                   pixelsCount++;
-                  mFeedback.pixels[x + y*mVideo.width] = color(255);
+                  mFeedback.pixels[x + y*_video.width] = color(255);
                 }else{
-                  mFeedback.pixels[x + y*mVideo.width] = mPrevFrame.pixels[x + y*mVideo.width];   
+                  mFeedback.pixels[x + y*_video.width] = mPrevFrame.pixels[x + y*_video.width];   
                 }
               }
             }

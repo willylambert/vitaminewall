@@ -49,7 +49,7 @@ class Dot{
     _x = x;
     _y = y;
     _dotType = dotType;
-    _order = order;
+    this.setOrder(order);
     _bShow = true;
     _bDetected = false;
     _dotSize = Calibration.kDOT_SIZE*2;
@@ -160,10 +160,12 @@ class Dot{
         }
       }      
       //Order could be only displayed for green dot
-      if(bDisplayOrder && _dotType==2 && !_bTouched && _order>0){
+      if(bDisplayOrder && _dotType==2 && !_bTouched && this.getOrder()>0){
         g.fill(0,0,0);
-        g.textSize(25);
-        g.text(_order, _x+50, _y+20);
+        //g.textSize(25);
+        g.textSize(60);
+        //g.text(this.getOrder(), _x+50, _y+20);
+        g.text(this.getOrder(), _x, _y);
       }
     }
   }

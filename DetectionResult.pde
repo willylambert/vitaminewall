@@ -36,16 +36,25 @@ public class DetectionResult{
     _activeDots.put(dotKey,dot);
     }
   }  
-  
-  HashMap<String, int[]> getDetectedDots(){
-    return _activeDots;
-  }
-  
+
   /**
   * Only keep camera-dot next to best dot
   * Identify area coordinates
   **/
   void cleanDetectionResult(){
+    _activeDots.clear();
+    _minX = Integer.MAX_VALUE;
+    _minY = Integer.MAX_VALUE;
+    _maxX = 0;
+    _maxY = 0; 
+    _bestScore = 0;
+  }  
+  
+  /**
+  * Only keep camera-dot next to best dot
+  * Identify area coordinates
+  **/
+  void removeOrphanDetectionResult(){
     for (Map.Entry camDot :_activeDots.entrySet()) {
       int[] dot = (int[])camDot.getValue();
       if(dot[0] > _xBestActiveDot-2*CameraView.kDOT_SIZE && dot[0] < _xBestActiveDot+2*CameraView.kDOT_SIZE && 
