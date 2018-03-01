@@ -1,10 +1,10 @@
-# Vitamine Wall : Augmented Climbing Wall
+# Vitamin' Wall : Augmented Climbing Wall
 
-Vitamine Wall combines projected graphics and body detection for funny climbing experience for everyone ! 
+Vitamin' Wall combines projected graphics and body detection for funny climbing experience for everyone ! 
 
-[![Vitamine Wall](http://bricolab-aidal.fr/wp-content/uploads/2017/02/VitamineWall.png)](https://vimeo.com/202650498 "Vitamine Wall - Click to Watch!")
+[![Vitamin' Wall](http://bricolab-aidal.fr/wp-content/uploads/2017/02/VitamineWall.png)](https://vimeo.com/202650498 "Vitamine Wall - Click to Watch!")
 
-[Watch Vitamine Wall in action !](https://vimeo.com/202650498)
+[Watch Vitamin' Wall in action !](https://vimeo.com/202650498)
 
 ## Run it
 
