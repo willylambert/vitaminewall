@@ -54,6 +54,8 @@ public class UIControl extends PApplet {
   PFont _font;
   
   int _showStep;
+  
+  int _ctrlBckColor;
 
   UIControl(CameraView camView, TheWall theWall) {
     _camView = camView;
@@ -94,7 +96,7 @@ public class UIControl extends PApplet {
     _btnGoLevel3 = _cp5.addButton("go-level-3").setPosition(300, 100).setSize(100, 20).setFont(_font).setVisible(false);
 
     // Stop game button
-    _btnStop = _cp5.addButton("stop").setPosition(450, 100).setSize(100, 20).setFont(_font).setVisible(true);
+    _btnStop = _cp5.addButton("end-game").setPosition(450, 100).setSize(100, 20).setFont(_font).setVisible(true);
 
     // New Wall Button
     _btnNewWall = _cp5.addButton("new-wall").setPosition(150, 40).setSize(100, 20).setFont(_font).setVisible(false);
@@ -103,6 +105,8 @@ public class UIControl extends PApplet {
     _btnSaveWall = _cp5.addButton("save-wall").setPosition(300, 40).setSize(100, 20).setFont(_font).setVisible(false);
     _wallIndex = _cp5.addTextfield("wall-index").setPosition(450, 40).setSize(20, 20).setFont(_font).setVisible(false);
     _wallName = _cp5.addTextfield("wall-name").setPosition(450, 40).setSize(100, 20).setFont(_font).setVisible(false);
+
+    _ctrlBckColor = _cp5.getController("go-level-1").getColor().getBackground();
 
     _textFieldPlayer = _cp5.addTextfield("player").setPosition(100, 130).setSize(200, 20).setFont(_font).setVisible(false);  
     Label label = _textFieldPlayer.getCaptionLabel(); 
@@ -181,35 +185,40 @@ public class UIControl extends PApplet {
           calibrateTheWall();
           // Now, btnGoLevel* are visible;
         }else{
-          if (theEvent.getController().getName() == "stop") {
+          if (theEvent.getController().getName() == "end-game") {
             println("UIControl::controlEvent(): stop!");
-            _theWall.stopGame();
-          }else{
+            _camView.stopGame();
+            _theWall.displayHallOfFame(_hallOfFame);
+            _btnGoLevel1.show();
+            _btnGoLevel2.show();
+            _btnGoLevel3.show();
+          }else{ //<>//
             if (theEvent.getController().getName() == "go-level-1") {
               println("UIControl::controlEvent(): go-level-1!");
-              //_btnStop.setVisible(true);
-              _btnGoLevel1.setVisible(false);
+              _btnStop.setVisible(true);               //<>//
+              //_btnGoLevel1.setVisible(false);
               _btnGoLevel2.setVisible(false);
               _btnGoLevel3.setVisible(false);
-              _theWall.setLevel(1);             //<>//
+              
+              _theWall.setLevel(1);
               _theWall.startGame();
               _camView.play();
             }else{ //<>//
               if (theEvent.getController().getName() == "go-level-2") {
                 println("UIControl::controlEvent(): go-level-2!");
                 //_btnStop.setVisible(true);
-                _btnGoLevel1.setVisible(false);
+                //_btnGoLevel1.setVisible(false);
                 _btnGoLevel2.setVisible(false);
-                _btnGoLevel3.setVisible(false);
+                //_btnGoLevel3.setVisible(false);
                 _theWall.setLevel(2);              
-                _theWall.startGame(); //<>//
+                _theWall.startGame();
                 _camView.play();
               }else{
                 if (theEvent.getController().getName() == "go-level-3") {
                   println("UIControl::controlEvent(): go-level-3!");
                   //_btnStop.setVisible(true);
-                  _btnGoLevel1.setVisible(false);
-                  _btnGoLevel2.setVisible(false);
+                  //_btnGoLevel1.setVisible(false);
+                  //_btnGoLevel2.setVisible(false);
                   _btnGoLevel3.setVisible(false);
                   _theWall.setLevel(3);                
                   _theWall.startGame();
@@ -218,9 +227,7 @@ public class UIControl extends PApplet {
                   if (theEvent.getController().getName() == "player") {        
                     println("UIControl::controlEvent(): player!");
                     if(_theWall.displayHallOfFameIsDisplayed()){
-                      //Hall of fame is already displayed, show readyToGo Screen
-                      //_theWall.displayReadyToGo();
-                      //Hall of fame is already displayed, show current wall
+                      //Hall of fame is already displayed, show current wall to start a new round
                       _theWall.setDots(gData.getCurrentWall().getDots());
                     }else{
                       String playerName = _textFieldPlayer.getText();
@@ -261,7 +268,7 @@ public class UIControl extends PApplet {
                           _btnGoLevel1.setVisible(false);
                           _btnGoLevel2.setVisible(false);
                           _btnGoLevel3.setVisible(false);
-                          //_btnStop.setVisible(false);
+                          _btnStop.setVisible(false);
                         }
                       }
                     }
@@ -286,6 +293,15 @@ public class UIControl extends PApplet {
     _btnGoLevel1.setVisible(true);
     _btnGoLevel2.setVisible(true);
     _btnGoLevel3.setVisible(true);
+  }
+
+  void setLock(Controller theController, boolean theValue) {
+    theController.setLock(theValue);
+    if(theValue) {
+      theController.setColorBackground(color(100,100));
+    } else {
+      theController.setColorBackground(color(_ctrlBckColor));
+    }
   }
 
   void draw() {
