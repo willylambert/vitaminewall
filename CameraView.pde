@@ -129,6 +129,12 @@ public class CameraView extends PApplet {
     delay(1000);
     _bPlay = true;
   }
+
+  public void stopGame(){    
+    _bEnableDetection = false;
+    _bPlay = false;
+    gWall.resetDotStatus();
+  }
   
   private int getNbDotsToTouch(){
     int nbUntouchedDots = 0;
@@ -175,7 +181,7 @@ public class CameraView extends PApplet {
       mCamCtrl.background(0);
       
       //For better performance, detection feedback is only displayed when game is not started      
-      if(!_bPlay){
+      //if(!_bPlay){
         //Detection phase
         
         //Realtime update of detection levels
@@ -206,7 +212,7 @@ public class CameraView extends PApplet {
             }
           }
         }
-      }
+      //}
       
       if(_bPlay){
         //Game is started !!

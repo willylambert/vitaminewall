@@ -20,7 +20,7 @@ class TheWall extends PApplet {
 
   ControlP5 _cp5;
   Textfield _textFieldPlayer;
-
+  
   PImage _wallImg;
 
   PGraphics _wallBuffer;
@@ -89,16 +89,7 @@ class TheWall extends PApplet {
     _startTime = 0;
     _wallBuffer.textFont(_font);   
   }  
-  
-  void stopGame() {
-    println("Game Stoped!");
-    _bReadyToGo = false;
-    _bShowHallOfFame = true;
-    _bGameWon = false;
-    _startTime = 0;
-    _wallBuffer.textFont(_font);   
-  }  
-  
+   
   /**
   * Record a new wall
   **/
@@ -226,7 +217,8 @@ class TheWall extends PApplet {
       if(_bReadyToGo){
         _readyToGo.display(_wallBuffer,frameCount);
       }else{
-        if (!_bGameWon) {
+        if(!_bGameWon) {
+          //Game is running !
           if (_dots != null && _dots.size()>0) {                         
             
             //First dot is used to trigger the timer
@@ -265,13 +257,14 @@ class TheWall extends PApplet {
            //Game Won !!
           String msg = "Bravo, pas mal... " + nf(_gameWonTime/1000., 0, 1) + " secondes !!";
           _wallBuffer.fill(255);
-          _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);
-          
-          if(_bShowHallOfFame){
-            _hallOfFame.display(_wallBuffer);
-          }
+          _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);          
         }
       }
+    }
+    
+    if(_bShowHallOfFame){
+      _wallBuffer.fill(255);
+      _hallOfFame.display(_wallBuffer);
     }
     
     _wallBuffer.endDraw();
