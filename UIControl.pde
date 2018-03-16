@@ -116,9 +116,15 @@ public class UIControl extends PApplet {
 
     _hallOfFame = new HallOfFame();
 
-    String[] allCameras = Capture.list();
-    
+    loadData();
+  }
+
+  /**
+  * Build cameras list - called from draw() as Capture.List() can take a while
+  **/
+  void loadCameras(){
     HashMap<String,Object> camerasFilteredList = new HashMap<String,Object>();
+    String[] allCameras = Capture.list();
 
     for (int i=0; i<allCameras.length; i++) {
       String[] cameraInfo = split(allCameras[i], ',');
@@ -130,8 +136,6 @@ public class UIControl extends PApplet {
     }    
     
     _selCam.addItems(_camerasList);
-
-    loadData();
   }
 
   void loadData(){
@@ -305,6 +309,19 @@ public class UIControl extends PApplet {
   }
 
   void draw() {
-    background(128);
+    if(_camerasList.size()==0){
+      background(255);
+      textAlign(CENTER);
+      textFont(_font);
+      fill(0);
+      text("Loading cameras...",width/2,height/2);
+      _cp5.hide();
+      if(frameCount==2){
+        loadCameras();
+      }
+    }else{
+      _cp5.show();
+      background(128);
+    }    
   }
 }

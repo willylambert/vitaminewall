@@ -41,6 +41,8 @@ public class CameraView extends PApplet {
   
   // Variable for capture device
   Capture _video;
+  
+   PFont _font;
    
   // Previous Frame
   PImage  mPrevFrame;
@@ -66,6 +68,8 @@ public class CameraView extends PApplet {
     _detectionResult = new DetectionResult(0,0,0);
 
     _video = null;
+    
+    _font = createFont("Digital-7", 50);
    
     mPrevFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
     mCurrFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
@@ -302,6 +306,12 @@ public class CameraView extends PApplet {
       image(mFeedback,0,0,kCAM_WIDTH,kCAM_HEIGHT);      
 
       image(mCamCtrl,kCAM_WIDTH,0,kCAM_WIDTH,kCAM_HEIGHT);      
+    }else{
+      background(255);
+      textAlign(CENTER);
+      textFont(_font);
+      fill(0);
+      text("pick a video camera in Control Panel",width/2,height/2);
     }
   }
 
