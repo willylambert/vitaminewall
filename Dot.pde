@@ -156,7 +156,7 @@ class Dot{
         }
         
         if(_shapeUnTouch!=null && !_bTouched){
-          g.shape(_shapeUnTouch,_x,_y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+          g.shape(_shapeUnTouch,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }
       }      
       //Order could be only displayed for green dot

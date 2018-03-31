@@ -66,6 +66,9 @@ public class CameraView extends PApplet {
    public void setup(){ 
      frameRate(10);
     _detectionResult = new DetectionResult(0,0,0);
+    
+    _detectionThreshold = gData.getThreshold();
+    _detectionSensivity = gData.getSensivity();
 
     _video = null;
     
@@ -108,13 +111,8 @@ public class CameraView extends PApplet {
     if(bStatus){
       _bPlay = false;
     }
-    _detectionThreshold = gUIControl.getDetectionThreshold();
-    _detectionSensivity = gUIControl.getDetectionSensivity();
-    
-    //Save detection levels to json
-    gData.setThreshold(_detectionThreshold);
-    gData.setSensivity(_detectionSensivity);
-    gData.saveDetectionLevels();
+    _detectionThreshold = gData.getThreshold();
+    _detectionSensivity = gData.getSensivity();
   }
   
   public void play(){    
@@ -184,44 +182,37 @@ public class CameraView extends PApplet {
       mCamCtrl.beginDraw();
       mCamCtrl.background(0);
       
-      //For better performance, detection feedback is only displayed when game is not started      
-      //if(!_bPlay){
-        //Detection phase
-        
-        //Realtime update of detection levels
-        _detectionThreshold = gUIControl.getDetectionThreshold();
-        _detectionSensivity = gUIControl.getDetectionSensivity();
+      //Detection phase      
 
-        //we divide image from cam in cells having dot size
-        for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
-          for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
-            int pixelsCount=0;
-            for(int x=xCell;x<xCell+kDOT_SIZE;x++){
-              for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
-                if(dotIsActive(x,y)) {    
-                  pixelsCount++;
-                  mFeedback.pixels[x + y*_video.width] = color(255);
-                }else{
-                  mFeedback.pixels[x + y*_video.width] = mPrevFrame.pixels[x + y*_video.width];   
-                }
-              }
-            }
-            if(pixelsCount > _detectionSensivity){
-              //Highlight area detected - use or feedback
-              mCamCtrl.fill(255);
-              mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
-              if(_bEnableDetection){
-                _detectionResult.setResult(xCell, yCell, pixelsCount);                
+      //we divide image from cam in cells having dot size
+      for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
+        for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
+          int pixelsCount=0;
+          for(int x=xCell;x<xCell+kDOT_SIZE;x++){
+            for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
+              if(dotIsActive(x,y)) {    
+                pixelsCount++;
+                mFeedback.pixels[x + y*_video.width] = color(255);
+              }else{
+                mFeedback.pixels[x + y*_video.width] = mPrevFrame.pixels[x + y*_video.width];   
               }
             }
           }
+          if(pixelsCount > _detectionSensivity){
+            //Highlight area detected - use or feedback
+            mCamCtrl.fill(255);
+            mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
+            if(_bEnableDetection){
+              _detectionResult.setResult(xCell, yCell, pixelsCount);                
+            }
+          }
         }
-      //}
+      }
       
       if(_bPlay){
         //Game is started !!
                 
-        //We only analyse detected dots - for 
+        //We only analyse detected dots 
         boolean bDoNotTouchTouched = false;
         
         boolean bTimerIsStarted = (gWall.getStartTime()>0?true:false);
@@ -315,6 +306,12 @@ public class CameraView extends PApplet {
     }
   }
 
+  /**
+  * If TheWall window as focus, forward input to control window
+  **/
+  void keyPressed() {
+    gUIControl.enterText(key,keyCode);
+  }  
   
   void setDots(ArrayList<Dot> dots){
     _dots = dots;

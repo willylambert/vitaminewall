@@ -6,7 +6,7 @@ class Data{
       
   //Default values
   static final float kTHRESHOLD = 40; //How different must a pixel be to be detected as a "motion" pixel
-  static final float kSENSIVITY = 80; //Number of pixels changed to light a dot
+  static final float kSENSIVITY = 70; //Number of pixels changed to light a dot
   
   float _sensivity = kTHRESHOLD;
   float _threshold = kSENSIVITY;

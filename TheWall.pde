@@ -17,9 +17,6 @@
  **/
 
 class TheWall extends PApplet {
-
-  ControlP5 _cp5;
-  Textfield _textFieldPlayer;
   
   PImage _wallImg;
 
@@ -77,7 +74,6 @@ class TheWall extends PApplet {
 
     _font = createFont("Digital-7", 50);
     _wallBuffer = createGraphics(width, height);
-    _cp5 = new ControlP5(this);
     _readyToGo = new ReadyToGo(g);
   }
 
@@ -106,6 +102,13 @@ class TheWall extends PApplet {
     _bRecordNewWall = false; 
     gData.setDots(_dots);
   }
+
+  /**
+  * If TheWall window as focus, forward input to control window
+  **/
+  void keyPressed() {
+    gUIControl.enterText(key,keyCode);
+  }  
   
   void mousePressed() {
     if (mouseButton == LEFT) {
@@ -113,11 +116,11 @@ class TheWall extends PApplet {
          //First dot is start Dot
         _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,0,null,null,_dots.size()));
       }else{
-        //green dot
+        //green dot (pills)
         _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,2,null,null,_dots.size()));
       }
     } else if (mouseButton == RIGHT) {
-      //red dot
+      //red dot (skull)
       _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,1,null,null,_dots.size()));
     }
   }
