@@ -28,9 +28,26 @@ public class CameraView extends PApplet {
   // dots size in pixels
   static final int kDOT_SIZE = 20;
   
+  // calibration : pick color on camera feedback  
+  static final int kPICK_MOTION_DOT = 0;
+  static final int kPICK_RED_DOT = 1;
+  static final int kPICK_GREEN_DOT = 2;
+   
+  int _redDotPickedColor = -1;
+  int _greenDotPickedColor = -1;
+  
+  // Calibration could be done by displaying dots on wall with VP (kCALIBRATION_VP)
+  // or by colored stickers : green = touch dot / red = not touch dot (kCALIBRATION_COLOR_STICKERS)
+  int _calibrationMode;
+  
   // How different must a pixel be to be detected as a "motion" pixel
   float _detectionThreshold;
   float _detectionSensivity;
+  
+  // "Green" : area's color to touch
+  float _greenColorDetectionSensivity;
+  // "Red" : aera's color to avoid
+  float _redColorDetectionSensivity;
     
   DetectionResult _detectionResult;
   
@@ -38,6 +55,8 @@ public class CameraView extends PApplet {
   boolean _bPlay;
   int _nbUntouchedDots;
   int _nextDotOrderToTouch; //se for level 2 & 3 : dots must be touched in a specific order
+  
+  String _instructionMessage = "";
   
   // Variable for capture device
   Capture _video;
@@ -84,6 +103,10 @@ public class CameraView extends PApplet {
      return mCurrFrame;
    }
    
+   public void setInstructionMessage(String msg){
+     _instructionMessage = msg;
+   }
+   
    public void setCamera(String cameraName){     
     if(_video != null){
       _video.stop();
@@ -104,18 +127,47 @@ public class CameraView extends PApplet {
     _detectionResult.cleanDetectionResult();
     _bEnableDetection = true;
   }
+  
+  public boolean redAndGreenDotsColorsAreDefined(){
+     return (_redDotPickedColor!=-1 && _greenDotPickedColor!=-1);
+  }
  
-  public void setDetection(boolean bStatus){
+  public void setDetection(boolean bStatus,int calibrationMode,boolean bInitResult){
     _bEnableDetection = bStatus;
-    _detectionResult = new DetectionResult(0,0,0);
+    if(bInitResult){
+      _detectionResult = new DetectionResult(0,0,0);
+    }
+    _calibrationMode = calibrationMode;
+    _redDotPickedColor = -1;
+    _greenDotPickedColor = -1;
+       
     if(bStatus){
       _bPlay = false;
     }
     _detectionThreshold = gData.getThreshold();
     _detectionSensivity = gData.getSensivity();
   }
-  
-  public void play(){    
+   
+  /**
+  * Set color detection sensivity - used to calibration based on colored stickers
+  **/
+  public void setGreenColorSensivity(float sensivity){
+    _greenColorDetectionSensivity = sensivity;
+  }
+
+  /**
+  * Set color detection sensivity - used to calibration based on colored stickers
+  **/
+  public void setRedColorSensivity(float sensivity){
+    _redColorDetectionSensivity = sensivity;
+  }    
+    
+  public void play(){
+    println("Start game");
+    for (Dot dot : _dots) {
+      println("dot #" +dot.getOrder() + " detected:" + dot.getDetected() + " type:" + dot.getType());
+    }
+    
     _bEnableDetection = false;
 
     gWall.resetDotStatus();
@@ -151,6 +203,62 @@ public class CameraView extends PApplet {
   public DetectionResult getDetectionResult(){
     return _detectionResult;
   }
+    
+  /**
+  * Return Picked Color as int - or -1 if color is undefined
+  **/  
+  public int getRedPickedDotColor(){
+    return _redDotPickedColor;
+  }
+
+  /**
+  * Return Picked Color as int - or -1 if color is undefined
+  **/  
+  public int getGreenPickedDotColor(){
+    return _greenDotPickedColor;
+  }
+  
+  private boolean dotIsRed(int x,int y){
+    if(_redDotPickedColor!=-1){
+      int loc = x + y*_video.width; // what is the 1D pixel location              
+      color current = mCurrFrame.pixels[loc]; // what is the current color
+      
+      float red = current >> 16 & 0xFF;
+      float green = current >> 8 & 0xFF;
+      float blue = current & 0xFF;
+  
+      float refRed = _redDotPickedColor >> 16 & 0xFF;
+      float refGreen = _redDotPickedColor >> 8 & 0xFF;
+      float refBlue = _redDotPickedColor & 0xFF;
+  
+      float diff = dist(red,green,blue,refRed,refGreen,refBlue);  
+      
+      return (diff < _redColorDetectionSensivity);
+    }else{
+      return false;
+    }
+  }
+
+  private boolean dotIsGreen(int x,int y){
+    if(_greenDotPickedColor!=-1){
+      int loc = x + y*_video.width; // what is the 1D pixel location              
+      color current = mCurrFrame.pixels[loc]; // what is the current color    
+  
+      float red = current >> 16 & 0xFF;
+      float green = current >> 8 & 0xFF;
+      float blue = current & 0xFF;
+  
+      float refRed = _greenDotPickedColor >> 16 & 0xFF;
+      float refGreen = _greenDotPickedColor >> 8 & 0xFF;
+      float regBlue = _greenDotPickedColor & 0xFF;
+  
+      float diff = dist(red,green,blue,refRed,refGreen,regBlue);  
+      
+      return (diff < _greenColorDetectionSensivity);
+    }else{
+      return false;
+    }
+  }
 
   private boolean dotIsActive(int x,int y){
     int loc = x + y*_video.width; // what is the 1D pixel location              
@@ -182,29 +290,58 @@ public class CameraView extends PApplet {
       mCamCtrl.beginDraw();
       mCamCtrl.background(0);
       
-      //Detection phase      
+      //Detection phase - always running
 
       //we divide image from cam in cells having dot size
       for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
         for(int yCell=0;yCell<kCAM_HEIGHT;yCell+=kDOT_SIZE){
-          int pixelsCount=0;
+          int pixelsCount = 0;
+          int redPixelsCount = 0;
+          int greenPixelsCount = 0;
           for(int x=xCell;x<xCell+kDOT_SIZE;x++){
-            for(int y=yCell;y<yCell+kDOT_SIZE;y++){                
+            for(int y=yCell;y<yCell+kDOT_SIZE;y++){                                             
               if(dotIsActive(x,y)) {    
                 pixelsCount++;
-                mFeedback.pixels[x + y*_video.width] = color(255);
+                mFeedback.pixels[x + y*_video.width] = color(0,0,255);
               }else{
+                if(dotIsGreen(x,y)){
+                  mFeedback.pixels[x + y*_video.width] = color(0,255,0);
+                  greenPixelsCount++;
+                }else{
+                  if(dotIsRed(x,y)){
+                    mFeedback.pixels[x + y*_video.width] = color(255,0,0);
+                    redPixelsCount++;
+                  }
+                }
                 mFeedback.pixels[x + y*_video.width] = mPrevFrame.pixels[x + y*_video.width];   
               }
             }
           }
           if(pixelsCount > _detectionSensivity){
-            //Highlight area detected - use or feedback
+            //Highlight area detected - use for feedback
             mCamCtrl.fill(255);
             mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
             if(_bEnableDetection){
-              _detectionResult.setResult(xCell, yCell, pixelsCount);                
+              _detectionResult.setResult(xCell, yCell, pixelsCount,kPICK_MOTION_DOT);                
             }
+          }else{
+            // Highlight Red Dot
+            if(_redDotPickedColor!=-1 && redPixelsCount > 10){
+              mCamCtrl.fill(255,0,0);
+              mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);              
+              if(_bEnableDetection){
+                _detectionResult.setResult(xCell, yCell, pixelsCount,kPICK_RED_DOT);                
+              }
+            }else{
+              // Highlight Green Dot
+              if(_greenDotPickedColor!=-1 && greenPixelsCount > 10){
+                mCamCtrl.fill(0,255,0);
+                mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
+                if(_bEnableDetection){
+                  _detectionResult.setResult(xCell, yCell, pixelsCount,kPICK_GREEN_DOT);                
+                }
+              }
+            }    
           }
         }
       }
@@ -293,10 +430,34 @@ public class CameraView extends PApplet {
       
       mCamCtrl.endDraw();
       mFeedback.updatePixels();
-      //Display current camera image for user feedback
+      
+      if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS){
+        if(_redDotPickedColor==-1){
+          // Pick 'red dot' color
+          _instructionMessage = "Click on a red dot";
+        }else{
+          if(_greenDotPickedColor==-1){
+            // Pick 'red dot' color
+            _instructionMessage = "Click on a green dot";
+          }else{
+            _instructionMessage = "";
+          }
+        }               
+      }
+    
+      //Display current camera image for user feedback (left pan)
       image(mFeedback,0,0,kCAM_WIDTH,kCAM_HEIGHT);      
 
+      //Display analysed frame from camera (right pan)
       image(mCamCtrl,kCAM_WIDTH,0,kCAM_WIDTH,kCAM_HEIGHT);      
+
+      if(_instructionMessage != ""){
+        textAlign(LEFT);
+        textFont(_font);
+        fill(0);
+        text(_instructionMessage,50,50);
+      }
+      
     }else{
       background(255);
       textAlign(CENTER);
@@ -312,6 +473,25 @@ public class CameraView extends PApplet {
   void keyPressed() {
     gUIControl.enterText(key,keyCode);
   }  
+  
+  void mousePressed(){
+      
+    if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS){
+      if(_redDotPickedColor==-1){
+        // First, pick 'red dot' color
+        _redDotPickedColor = get(mouseX,mouseY);
+        print("red picked color " +_redDotPickedColor); 
+      }else{
+        if(_greenDotPickedColor==-1){
+          // Pick 'green dot' color
+          _greenDotPickedColor = get(mouseX,mouseY);
+          print("green picked color " +_greenDotPickedColor);
+        }          
+      }               
+    }
+    
+    
+  }
   
   void setDots(ArrayList<Dot> dots){
     _dots = dots;

@@ -29,8 +29,15 @@ public class UIControl extends PApplet {
   VitaButton _btnDesignWall;
   VitaButton _btnSaveWall;
   
+  // Sensivity threshold
+  HScrollbar _redScrollBar;
+  HScrollbar _greenScrollBar;
+  
   boolean _bGetPlayerName;
   String _playerName;
+  
+  // Use green and red stickers for calibration
+  static final int kUSE_COLOR_STICKERS = -1;
      
   //Store the current selected wall index
   int _currentWallIndex;
@@ -77,6 +84,12 @@ public class UIControl extends PApplet {
     // Calibrate
     _btnCalibrate = new VitaButton("Calibrate",125,70,100,20,this.g);
     _btnCalibrate.setVisible(false);
+
+    // Color Sensivity
+    _redScrollBar = new HScrollbar(350,70,100,20,20,this.g);
+    _redScrollBar.setVisible(false);
+    _greenScrollBar = new HScrollbar(350,100,100,20,20,this.g);
+    _greenScrollBar.setVisible(false);
 
     // Design Wall Button
     _btnDesignWall = new VitaButton("Design",230,70,100,20,this.g);
@@ -133,7 +146,11 @@ public class UIControl extends PApplet {
       _btnWallList.add(new VitaButton(wall.getName(),btnWallXoffset,40,50,20,this.g));
       btnWallXoffset += 55 + 10;
     }
-    //_selWall.addItems(_wallList);
+  
+    // Wall could be designed with colored areas
+    // Green : area to touch
+    // Red : forbidden area
+    _btnWallList.add(new VitaButton("Color",btnWallXoffset,40,50,20,this.g));
 
   }
 
@@ -141,7 +158,7 @@ public class UIControl extends PApplet {
     _bGetPlayerName = true; 
     _playerName = "";
     
-    //Disable others
+    //Disable others //<>//
     _btnGoLevel1.setVisible(false);
     _btnGoLevel2.setVisible(false);
     _btnGoLevel3.setVisible(false);
@@ -154,7 +171,8 @@ public class UIControl extends PApplet {
   * then sent it both to theWall for display and to cameraVIew for analyse of movements
   **/
   void calibrateTheWall(){
-    _calibration = new Calibration(_camView,_theWall);
+    int calibrationMode = (_currentWallIndex == kUSE_COLOR_STICKERS ? Calibration.kCALIBRATION_COLOR_STICKERS : Calibration.kCALIBRATION_VP); 
+    _calibration = new Calibration(_camView,_theWall,calibrationMode);
     _calibration.calibrate();
     _btnGoLevel1.setVisible(true);
     _btnGoLevel2.setVisible(true);
@@ -188,17 +206,22 @@ public class UIControl extends PApplet {
     for(VitaButton btn : _btnWallList){      
       if(btn.MouseIsOver()){
         selectedBtn = btn;
-        _currentWallIndex = i;
-        gData.setCurrentWall(_currentWallIndex);
-        _theWall.setDots(gData.getCurrentWall().getDots());
+        // Last wall = wall designed by colored stickers
+        if(i == _btnWallList.size() -1 ){
+        _currentWallIndex = kUSE_COLOR_STICKERS;
+        _redScrollBar.setVisible(true);
+        _greenScrollBar.setVisible(true);
+        }else{
+          _currentWallIndex = i;        
+          gData.setCurrentWall(_currentWallIndex);
+          _theWall.setDots(gData.getCurrentWall().getDots());
+        }
         break;
       }else{
         i++;
       }
     }
     
-    println("Current wall index : " + _currentWallIndex);
-
     // Handle buttons toggling for wall selection
     if(selectedBtn!=null){
       for(VitaButton btn : _btnWallList){
@@ -206,7 +229,10 @@ public class UIControl extends PApplet {
       }
       selectedBtn.setSelected(true);
       _btnCalibrate.setVisible(true);
-      _btnDesignWall.setVisible(true);
+      // Design is only for VP mode
+      if(_currentWallIndex != kUSE_COLOR_STICKERS){
+        _btnDesignWall.setVisible(true);
+      }
     }
         
     //Calibrate selected Wall
@@ -252,7 +278,7 @@ public class UIControl extends PApplet {
       _btnSaveWall.setVisible(true);    
     }
     
-    //Design a new wall on current wall slot
+    //Save wall on current wall slot
     if(_btnSaveWall.MouseIsOver()){
       _theWall.endCreationWall();
       gData.getCurrentWall().setName("Wall #" + _currentWallIndex);
@@ -262,8 +288,17 @@ public class UIControl extends PApplet {
       //Ready to run calibration
       _btnCalibrate.setVisible(true); 
       _btnSaveWall.setVisible(false);    
-
     }
+    
+  }
+
+  /**
+  * Handle scrollBar
+  **/
+  void mouseReleased(){
+    // Set color sensivity
+    _camView.setGreenColorSensivity(_greenScrollBar.getValue());
+    _camView.setRedColorSensivity(_redScrollBar.getValue());
   }
 
   void keyPressed() {
@@ -306,6 +341,12 @@ public class UIControl extends PApplet {
       _btnDesignWall.display(mouseX,mouseY);
       _btnSaveWall.display(mouseX,mouseY);  
       
+      _redScrollBar.update(mouseX,mouseY,mousePressed);
+      _redScrollBar.display();
+
+      _greenScrollBar.update(mouseX,mouseY,mousePressed);
+      _greenScrollBar.display();
+      
       fill(0);
       textAlign(LEFT);
       text("Capture Device : ",20,15);
@@ -318,6 +359,16 @@ public class UIControl extends PApplet {
       for(VitaButton btn : _btnWallList){
         btn.display(mouseX,mouseY);
       }
+      
+      if(_camView.getRedPickedDotColor()!=-1){
+        fill(_camView.getRedPickedDotColor());
+        rect(350,70,20,20);        
+      }
+
+      if(_camView.getGreenPickedDotColor()!=-1){
+        fill(_camView.getGreenPickedDotColor());
+        rect(390,70,20,20);        
+      }      
       
       if(_bGetPlayerName){
         textAlign(LEFT);

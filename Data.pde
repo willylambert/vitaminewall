@@ -1,4 +1,4 @@
-class Data{
+  class Data{
 
   String _filename = "data.json";
   JSONObject _json;

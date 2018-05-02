@@ -1,4 +1,4 @@
-      /**
+        /**
     VITAMINE WALL 
     Copyright (C) 2016 Willy LAMBERT @willylambert
 
@@ -45,6 +45,11 @@ class Dot{
   
   PFont _font;
   
+  /**
+  * @param int x wall coordinate
+  * @param int y wall coordinate
+  * @param int dotType : 1 = red, 2 = green
+  **/
   Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch, int order){
     _x = x;
     _y = y;
@@ -136,7 +141,6 @@ class Dot{
           }else{
             g.fill(0,0,0);
           }          
-                 
           g.shape(_shapeSkull,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }else{          
           //Touch area - green

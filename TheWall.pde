@@ -93,7 +93,7 @@ class TheWall extends PApplet {
     _bRecordNewWall = true;
     _dots = new ArrayList<Dot>();
     gData.getCurrentWall().setScreen(width,height);
-}
+  }
   
   /**
   * Stop dots creation - Stop to record a new wall
@@ -172,9 +172,23 @@ class TheWall extends PApplet {
    _dots = dots;   
   }
 
+  /**
+  * Retrieve screen height
+  **/
+  float getHeight(){
+    return height;
+  }
+
+  /**
+  * Retrieve screen width
+  **/
+  float getWidth(){
+    return width;
+  }
+
   void showCalibrationResult(ArrayList<Dot> dots) {
     println("showCalibrationResult");
-    _bReadyToGo = true;
+    _bReadyToGo = false;
 
     _dots = dots;
     for (Dot dot : _dots) {

@@ -10,19 +10,74 @@
   // dots size in pixels
   static final int kDOT_SIZE = 80;
   
-  Calibration(CameraView camView,TheWall theWall){
+  static final int kCALIBRATION_VP = 1;
+  static final int kCALIBRATION_COLOR_STICKERS = 2;
+  
+  // Calibration could be done by displaying dots on wall with VP (kCALIBRATION_VP)
+  // or by colored stickers : green = touch dot / red = not touch dot (kCALIBRATION_COLOR_STICKERS)
+  int _calibrationMode;
+  
+  Calibration(CameraView camView,TheWall theWall, int calibrationMode){
      _camView = camView;
      _theWall = theWall;
+     _calibrationMode = calibrationMode;
+  }
+
+   /**
+  * Association wall calibration image to dots coordinates detected by camera view
+  **/
+  public int calibrate(){
+    int ret = 0;        
+
+    // Dots came from interactive editor
+    if(_calibrationMode == kCALIBRATION_VP){
+      _dots = gData.getCurrentWall().getDots();
+      ret = calibrateByMotionDetection();
+    }else{
+      if(_calibrationMode == kCALIBRATION_COLOR_STICKERS){
+        // Use physical colored dots sticked on wall
+        // Calibration process : 
+        // 1 : pick 'red dot' color
+        // 2 : pick 'green dot' color
+        // 3 : detect area with either 'green' or 'red' dots              
+
+        // Init cam for a new detection run
+        _camView.setDetection(true,_calibrationMode,true);
+        delay(500);
+
+
+        // Wait green and red dots colors are picked
+        while(!_camView.redAndGreenDotsColorsAreDefined()){
+          delay(500);
+        }
+
+        // Color are picked, stop detection and read result
+        _camView.setDetection(false,_calibrationMode,false);
+        
+        // Get Green / Red Dots
+        DetectionResult detectionResult = _camView.getDetectionResult();
+        
+        _dots = detectionResult.getDots();
+        
+        // Wait end
+        println("Detect colored dots : " + _dots.size());
+        
+        // ask the wall to display the result of calibration
+        println("calibration done");
+        _theWall.showCalibrationResult(_dots);
+        _camView.setDots(_dots);        
+      }
+    }
+    
+    return ret;
   }
  
   /**
   * Association wall calibration image to dots coordinates detected by camera view
   **/
-  public int calibrate(){
-    println("calibrate");
+  public int calibrateByMotionDetection(){
+    println("Calibrate by motion detection for " + _dots.size() + " dots");
     int ret = 0;
-
-    _dots = gData.getCurrentWall().getDots();
     
     //We need to show dot one by one during detection
     for (Dot dot : _dots) {
@@ -30,7 +85,7 @@
     }
               
     //Init cam for a new detection run
-    _camView.setDetection(true);
+    _camView.setDetection(true,_calibrationMode,true);
 
     int dotIdx = 0;
     for (Dot dot : _dots) {
