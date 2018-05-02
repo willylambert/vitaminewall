@@ -16,7 +16,6 @@ Check that the folder is named "vitaminewall" (same name as the main sketch `vit
 Then, you have to install the following libraries (Sketch => Import Library) :
 * Sound
 * Video
-* ControlP5
 
 Next steps :
 * Plug a webcam 
