@@ -43,33 +43,30 @@
 
         // Init cam for a new detection run
         _camView.setDetection(true,_calibrationMode,true);
-        delay(500);
-
-
-        // Wait green and red dots colors are picked
-        while(!_camView.redAndGreenDotsColorsAreDefined()){
-          delay(500);
-        }
-
-        // Color are picked, stop detection and read result
-        _camView.setDetection(false,_calibrationMode,false);
-        
-        // Get Green / Red Dots
-        DetectionResult detectionResult = _camView.getDetectionResult();
-        
-        _dots = detectionResult.getDots();
-        
-        // Wait end
-        println("Detect colored dots : " + _dots.size());
-        
-        // ask the wall to display the result of calibration
-        println("calibration done");
-        _theWall.showCalibrationResult(_dots);
-        _camView.setDots(_dots);        
       }
     }
     
     return ret;
+  }
+  
+  public void saveColorCalibrationResult(){
+   
+      // Color are picked, stop detection and read result
+      _camView.setDetection(false,_calibrationMode,false);
+      
+      // Get Green / Red Dots
+      DetectionResult detectionResult = _camView.getDetectionResult();
+      
+      _dots = detectionResult.getDots();
+      
+      // Wait end
+      println("Detect colored dots : " + _dots.size());
+      
+      // ask the wall to display the result of calibration
+      println("calibration done");
+      _theWall.showCalibrationResult(_dots);
+      _camView.setDots(_dots);        
+
   }
  
   /**

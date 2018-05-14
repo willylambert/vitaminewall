@@ -48,6 +48,9 @@ public class CameraView extends PApplet {
   float _greenColorDetectionSensivity;
   // "Red" : aera's color to avoid
   float _redColorDetectionSensivity;
+  
+  // Used to clean detected dots every X sec
+  int _timer;
     
   DetectionResult _detectionResult;
   
@@ -291,6 +294,12 @@ public class CameraView extends PApplet {
       mCamCtrl.background(0);
       
       //Detection phase - always running
+      //In color mode, results are cleaned every 2 sec.
+      if(millis() - _timer >= 2000)
+      {
+       _detectionResult.cleanDetectionResult(); 
+        _timer = millis();
+      }
 
       //we divide image from cam in cells having dot size
       for(int xCell=0;xCell<kCAM_WIDTH;xCell+=kDOT_SIZE){
