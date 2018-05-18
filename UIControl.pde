@@ -32,6 +32,7 @@ public class UIControl extends PApplet {
   // Sensivity threshold
   HScrollbar _redScrollBar;
   HScrollbar _greenScrollBar;
+  HScrollbar _sensivityScrollBar;
   
   boolean _bGetPlayerName;
   String _playerName;
@@ -84,8 +85,8 @@ public class UIControl extends PApplet {
     // Calibrate
     _btnCalibrate = new VitaButton("Calibrate",125,70,100,20,this.g);
     _btnCalibrate.setVisible(false);
-
-    // Color Sensivity
+    
+    // Color Sensivity 
     _redScrollBar = new HScrollbar(350,80,100,20,20,this.g);
     _redScrollBar.setVisible(false);
     _greenScrollBar = new HScrollbar(500,80,100,20,20,this.g);
@@ -133,7 +134,11 @@ public class UIControl extends PApplet {
       _camerasList.add(camera.getKey().toString());
       _btnCameraList.add(new VitaButton(camera.getKey().toString(),btnCamXoffset,0,220,20,this.g));
       btnCamXoffset += 220 + 10;
-    }    
+    }
+
+    // Camera Detection Sensivity
+    _sensivityScrollBar = new HScrollbar(btnCamXoffset+textWidth("Sensivity : "),10,100,20,20,this.g);
+    _sensivityScrollBar.setValue(gData.getSensivity());    
   }
 
   void loadData(){
@@ -187,6 +192,8 @@ public class UIControl extends PApplet {
       if(btn.MouseIsOver()){
         selectedBtn = btn;
         _camView.setCamera(_camerasList.get(camIndex).toString());
+        _sensivityScrollBar.setVisible(true);
+        
       }
       camIndex++;
     }
@@ -307,6 +314,11 @@ public class UIControl extends PApplet {
     // Set color sensivity
     _camView.setGreenColorSensivity(_greenScrollBar.getValue());
     _camView.setRedColorSensivity(_redScrollBar.getValue());
+    
+    _camView.setDetectionSensivity(_sensivityScrollBar.getValue());
+    
+    // Save data - only for movement detection sensivity
+    gData.setSensivity(_sensivityScrollBar.getValue());   
   }
 
   void keyPressed() {
@@ -355,7 +367,12 @@ public class UIControl extends PApplet {
       _greenScrollBar.update(mouseX,mouseY,mousePressed);
       _greenScrollBar.display();
       
+      _sensivityScrollBar.update(mouseX,mouseY,mousePressed);
+      _sensivityScrollBar.display();
+      
       fill(0);
+      text("Sensivity : ",_btnCameraList.size()*230+155,10);
+            
       textAlign(LEFT);
       text("Capture Device : ",20,15);
       for(VitaButton btn : _btnCameraList){

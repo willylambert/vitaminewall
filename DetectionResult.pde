@@ -106,6 +106,7 @@ public class DetectionResult{
         newDot =  new Dot(int(camDotValue[0]*widthRatio),int(camDotValue[1]*heightRatio),camDotValue[3],null,null,dots.size());
         newDot.setCamCoordinates(camDotValue[0],camDotValue[1],camDotValue[0]+CameraView.kDOT_SIZE,camDotValue[1]+CameraView.kDOT_SIZE);
         newDot.setDetected(true);
+        newDot.setOrder(dots.size());
         dots.add(newDot);
       }
     }

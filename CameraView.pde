@@ -42,6 +42,7 @@ public class CameraView extends PApplet {
   
   // How different must a pixel be to be detected as a "motion" pixel
   float _detectionThreshold;
+  
   float _detectionSensivity;
   
   // "Green" : area's color to touch
@@ -64,7 +65,7 @@ public class CameraView extends PApplet {
   // Variable for capture device
   Capture _video;
   
-   PFont _font;
+  PFont _font;
    
   // Previous Frame
   PImage  mPrevFrame;
@@ -94,7 +95,7 @@ public class CameraView extends PApplet {
 
     _video = null;
     
-    _font = createFont("Digital-7", 50);
+    _font = createFont("Digital-7", 40);
    
     mPrevFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
     mCurrFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
@@ -150,6 +151,13 @@ public class CameraView extends PApplet {
     _detectionThreshold = gData.getThreshold();
     _detectionSensivity = gData.getSensivity();
   }
+
+  /**
+  * Set detection sensivity
+  **/
+  public void setDetectionSensivity(float sensivity){
+    _detectionSensivity = sensivity;
+  }   
    
   /**
   * Set color detection sensivity - used to calibration based on colored stickers
@@ -273,7 +281,7 @@ public class CameraView extends PApplet {
     float r2 = red(previous); float g2 = green(previous); float b2 = blue(previous);
     float diff = dist(r1,g1,b1,r2,g2,b2);
 
-    return (diff > _detectionThreshold);
+    return (diff > _detectionSensivity);
   }
 
   public void draw(){
@@ -326,7 +334,7 @@ public class CameraView extends PApplet {
               }
             }
           }
-          if(pixelsCount > _detectionSensivity){
+          if(pixelsCount > _detectionThreshold){
             //Highlight area detected - use for feedback
             mCamCtrl.fill(255);
             mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
@@ -334,7 +342,7 @@ public class CameraView extends PApplet {
               _detectionResult.setResult(xCell, yCell, pixelsCount,kPICK_MOTION_DOT);                
             }
           }else{
-            // Highlight Red Dot
+            // Highlight Red Hold
             if(_redDotPickedColor!=-1 && redPixelsCount > 10){
               mCamCtrl.fill(255,0,0);
               mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);              
@@ -342,7 +350,7 @@ public class CameraView extends PApplet {
                 _detectionResult.setResult(xCell, yCell, pixelsCount,kPICK_RED_DOT);                
               }
             }else{
-              // Highlight Green Dot
+              // Highlight Green Hold
               if(_greenDotPickedColor!=-1 && greenPixelsCount > 10){
                 mCamCtrl.fill(0,255,0);
                 mCamCtrl.rect(xCell,yCell,kDOT_SIZE,kDOT_SIZE);
@@ -442,12 +450,12 @@ public class CameraView extends PApplet {
       
       if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS){
         if(_redDotPickedColor==-1){
-          // Pick 'red dot' color
-          _instructionMessage = "Click on a red dot";
+          // Pick 'red hold' color
+          _instructionMessage = "Pick a dead hold";
         }else{
           if(_greenDotPickedColor==-1){
-            // Pick 'red dot' color
-            _instructionMessage = "Click on a green dot";
+            // Pick 'green hold' color
+            _instructionMessage = "Pick a good hold";
           }else{
             _instructionMessage = "";
           }
@@ -463,8 +471,10 @@ public class CameraView extends PApplet {
       if(_instructionMessage != ""){
         textAlign(LEFT);
         textFont(_font);
+        fill(255);
+        rect(0,0,textWidth(_instructionMessage)+10,50);
         fill(0);
-        text(_instructionMessage,50,50);
+        text(_instructionMessage,10,40);
       }
       
     }else{

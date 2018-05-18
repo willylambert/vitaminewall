@@ -76,11 +76,20 @@ class HScrollbar {
       _g.rect(spos, ypos, sheight, sheight);
     }
   }
+  
+  /**
+  * Set value as percentage
+  */  
+  void setValue(float value){
+    spos = (value / 100) * swidth + xpos;  
+  }
 
+  /**
+  * Get value as percentage
+  **/
   float getValue() {
-    print("scrollValue : " +((spos - xpos)/swidth)*100); 
     // Convert spos to be values between
-    // 0 and the total width of the scrollbar
+    // 0 and the 100
     return ((spos - xpos)/swidth)*100;
   }
 }

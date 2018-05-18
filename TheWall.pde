@@ -71,9 +71,9 @@ class TheWall extends PApplet {
     _wallImg = null;
     _dots = null;
     surface.setResizable(true);
-
-    _font = createFont("Digital-7", 50);
+    
     _wallBuffer = createGraphics(width, height);
+    _font = createFont("Digital-7", 50);    
     _readyToGo = new ReadyToGo(g);
   }
 
@@ -82,8 +82,7 @@ class TheWall extends PApplet {
     _bReadyToGo = false;
     _bShowHallOfFame = false;
     _bGameWon = false;
-    _startTime = 0;
-    _wallBuffer.textFont(_font);   
+    _startTime = 0;    
   }  
    
   /**
@@ -169,7 +168,8 @@ class TheWall extends PApplet {
   }
 
   void setDots(ArrayList<Dot> dots) {
-   _dots = dots;   
+   _wallBuffer.textFont(_font);
+    _dots = dots;   
   }
 
   /**
@@ -191,9 +191,6 @@ class TheWall extends PApplet {
     _bReadyToGo = false;
 
     _dots = dots;
-    for (Dot dot : _dots) {
-      dot.setFont(_font);
-    }
     println("dots count",_dots.size());
 }
 

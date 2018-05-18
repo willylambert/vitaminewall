@@ -63,10 +63,7 @@ class Dot{
       
     //Default color for red dot
     _bRedDotIsRed = false;
-    
-    _font = createFont("Digital-7", 30);
-    g.textFont(_font);
-    
+      
     if(dotType==0){
       _shapeUnTouch = _shapePlay;
     }    
@@ -98,11 +95,7 @@ class Dot{
   boolean isTouched(){
     return _bTouched;
   }
-  
-  void setFont(PFont font){
-    //g.textFont(font);
-  }
-  
+   
   void setOrder(int order){
     _order = order;
   }
@@ -129,7 +122,7 @@ class Dot{
         g.fill(255,255,255,255-map(millis()%300,0,300,0,300));
         g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
       }else{
-        //Do not touch area - red
+        //Do not touch hold - red
         if(_dotType==1 && bShowRedDot){          
           if(_bTouched && (_passedTime == 0 || millis() - _passedTime > 250)){
             _passedTime = millis();
@@ -143,18 +136,16 @@ class Dot{
           }          
           g.shape(_shapeSkull,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }else{          
-          //Touch area - green
+          //Touch hold - green
           if(_dotType==2){
             g.fill(255,255,255);
             if(_bTouched){
               if(_dotSize>0){
                 _dotSize -= sqrt(Calibration.kDOT_SIZE*4 - _dotSize/4)/2;
                 g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);                
-                g.shape(_shapeDiamond,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,_dotSize,_dotSize);
               }                    
             }else{
               g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
-              g.shape(_shapeDiamond,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
             }            
           }
         }
@@ -163,13 +154,13 @@ class Dot{
           g.shape(_shapeUnTouch,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }
       }      
-      //Order could be only displayed for green dot
-      if(bDisplayOrder && _dotType==2 && !_bTouched && this.getOrder()>0){
-        g.fill(0,0,0);
-        //g.textSize(25);
-        g.textSize(60);
+      //Order could be only displayed for green hold
+      if(_dotType==2 && !_bTouched && this.getOrder()>0){
+        g.fill(0);
+        g.textSize(50);
         //g.text(this.getOrder(), _x+50, _y+20);
-        g.text(this.getOrder(), _x, _y);
+        textAlign(CENTER, CENTER);
+        g.text(this.getOrder(), _x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2);
       }
     }
   }
