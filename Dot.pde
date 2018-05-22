@@ -159,8 +159,8 @@ class Dot{
         g.fill(0);
         g.textSize(50);
         //g.text(this.getOrder(), _x+50, _y+20);
-        textAlign(CENTER, CENTER);
-        g.text(this.getOrder(), _x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2);
+        g.textAlign(CENTER,CENTER);
+        g.text(str(this.getOrder()), _x, _y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
       }
     }
   }

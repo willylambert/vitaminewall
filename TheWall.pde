@@ -167,8 +167,7 @@ class TheWall extends PApplet {
     return _gameWonTime;
   }
 
-  void setDots(ArrayList<Dot> dots) {
-   _wallBuffer.textFont(_font);
+  void setDots(ArrayList<Dot> dots) {   
     _dots = dots;   
   }
 
@@ -220,6 +219,7 @@ class TheWall extends PApplet {
     _wallBuffer.beginDraw();
     _wallBuffer.background(0);
     _wallBuffer.shapeMode(CENTER);
+    _wallBuffer.textFont(_font);
 
     if(_bRecordNewWall){
       _wallBuffer.fill(255,255,255);
