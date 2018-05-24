@@ -152,7 +152,7 @@ public class UIControl extends PApplet {
       btnWallXoffset += 55 + 10;
     }
   
-    // Wall could be designed with colored areas
+    // Wall could be designed with colored holds
     // Green : area to touch
     // Red : forbidden area
     _btnWallList.add(new VitaButton("Color",btnWallXoffset,40,50,20,this.g));
@@ -239,6 +239,9 @@ public class UIControl extends PApplet {
       if(_currentWallIndex != kUSE_COLOR_STICKERS){
         _btnCalibrate.setVisible(true);
         _btnDesignWall.setVisible(true);
+        _btnGoLevel1.setVisible(false);
+        _btnGoLevel2.setVisible(false);
+        _btnGoLevel3.setVisible(false);         
       }
     }
         

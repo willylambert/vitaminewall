@@ -168,7 +168,10 @@ class TheWall extends PApplet {
   }
 
   void setDots(ArrayList<Dot> dots) {   
-    _dots = dots;   
+    _dots = dots;
+    _bShowHallOfFame = false;
+    _bGameWon = false;
+    _startTime = 0;
   }
 
   /**
@@ -197,7 +200,7 @@ class TheWall extends PApplet {
     _bShowHallOfFame = true;
     _hallOfFame = hall;    
   }
-  
+   
   void displayReadyToGo(){
     _bShowHallOfFame = false;
     _bReadyToGo = true;

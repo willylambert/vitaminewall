@@ -411,8 +411,8 @@ public class CameraView extends PApplet {
                         if(_nextDotOrderToTouch>0){
                           _nextDotOrderToTouch++;
                         }
-                        println("Next dot order",_nextDotOrderToTouch);
-                        println("untouched dot count",_nbUntouchedDots);
+                        println("Next hold order",_nextDotOrderToTouch);
+                        println("untouched hold count",_nbUntouchedDots);
                       }
                     }
                   }
