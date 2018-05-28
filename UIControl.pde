@@ -185,7 +185,6 @@ public class UIControl extends PApplet {
     // Camera select pressed
     int camIndex = 0;
 
-
     /** SELECT CAMERA **/
     VitaButton selectedBtn = null;
     for(VitaButton btn : _btnCameraList){
@@ -249,13 +248,14 @@ public class UIControl extends PApplet {
     if(_btnCalibrate.MouseIsOver()){     
       if(_currentWallIndex != kUSE_COLOR_STICKERS){
         calibrateTheWall();
-      }else{
+        _btnGoLevel1.setVisible(true);
+        _btnGoLevel2.setVisible(true);
+        _btnGoLevel3.setVisible(true);
+    }else{
         // We used colored stickers - save calibration result
         _calibration.saveColorCalibrationResult();
+        _btnGoLevel1.setVisible(true);
       }
-      _btnGoLevel1.setVisible(true);
-      _btnGoLevel2.setVisible(true);
-      _btnGoLevel3.setVisible(true);      
     }
     
     //Start Game !
@@ -277,6 +277,7 @@ public class UIControl extends PApplet {
       _theWall.startGame();
       _camView.play();
       _btnStop.setVisible(true);
+      _theWall.setInstructions("TOUCHE UNE PREMIERE PRISE POUR LANCER LE CHRONO");
     }
     
     //Stop Game
@@ -284,8 +285,10 @@ public class UIControl extends PApplet {
       _camView.stopGame();
       _theWall.displayHallOfFame(_hallOfFame);
       _btnGoLevel1.setVisible(true);
-      _btnGoLevel2.setVisible(true);
-      _btnGoLevel3.setVisible(true);
+      if(_currentWallIndex != kUSE_COLOR_STICKERS){
+        _btnGoLevel2.setVisible(true);
+        _btnGoLevel3.setVisible(true);
+      }
     }
     
     //Design a new wall on current wall slot

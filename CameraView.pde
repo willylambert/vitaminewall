@@ -77,8 +77,11 @@ public class CameraView extends PApplet {
   
   PGraphics mCamCtrl;
   
-  //Use to disable detection during a short period of time after a dot is touched
+  // Use to disable detection during a short period of time after a dot is touched
   int mLastDetectionTime;
+  
+  // Used to pause game - value is frameCount before restart detection
+  int _pauseCount;
   
   ArrayList<Dot> _dots = new ArrayList<Dot>();
   
@@ -277,8 +280,14 @@ public class CameraView extends PApplet {
     color previous = mPrevFrame.pixels[loc];     // what is the previous color
   
     // compare colors (previous vs. current)
-    float r1 = red(current); float g1 = green(current); float b1 = blue(current);
-    float r2 = red(previous); float g2 = green(previous); float b2 = blue(previous);
+    float r1 = current >> 16 & 0xFF;
+    float g1 = current >> 8 & 0xFF;
+    float b1 = current & 0xFF;
+
+    float r2 = previous >> 16 & 0xFF;
+    float g2 = previous >> 8 & 0xFF;
+    float b2 = previous & 0xFF;
+    
     float diff = dist(r1,g1,b1,r2,g2,b2);
 
     return (diff > _detectionSensivity);
@@ -363,9 +372,9 @@ public class CameraView extends PApplet {
         }
       }
       
-      if(_bPlay){
+      if(_bPlay && _pauseCount==0){
         //Game is started !!
-                
+                              
         //We only analyse detected dots 
         boolean bDoNotTouchTouched = false;
         
@@ -376,7 +385,12 @@ public class CameraView extends PApplet {
           //Only process video-dots with corresponding camera-dots
           if(dot.getDetected()){
             //The first dot trigger timer
-            if(!dot.isTouched() && bTimerIsStarted || dotIdx==0 && !bTimerIsStarted){
+            if(!dot.isTouched() && bTimerIsStarted || (dotIdx==0 || _calibrationMode==Calibration.kCALIBRATION_COLOR_STICKERS) && !bTimerIsStarted){
+              if(!bTimerIsStarted && dot.isTouched()){
+                gWall.startTimer();
+                gWall.setInstructions("");
+              }
+              
               //test if we have motion, pixel per pixel
               int pixelsCount=0;
               for(int x=dot.getXcam();x<dot.getXcamMax();x++){
@@ -388,7 +402,9 @@ public class CameraView extends PApplet {
               }
                
               if(pixelsCount > _detectionSensivity){
-                println("TOUCHED dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount);                 
+                println("TOUCHED - dot cam",dot.getXcam(),dot.getYcam(),"has",pixelsCount);
+                // Pause detection during 1sec after each touch
+                _pauseCount = 10;
                  //Start Play Game !!!
                 if(dot.getType()==0){                  
                   dot.touch();
@@ -423,16 +439,16 @@ public class CameraView extends PApplet {
           dotIdx++;
         }
         
+        // dead hold touched
         if(bDoNotTouchTouched){
-          //Restart game without reseting timer - or add a penality ?
+          // Restart game without reseting timer
           gWall.restartGame();
-          delay(2000);
           for (Dot dot : _dots) {            
             dot.unTouch();    
           }
+
           _nbUntouchedDots = getNbDotsToTouch();
           gWall.setRemainingGreenDots(_nbUntouchedDots);
-          delay(500);
         }
         
         //No more dot to touch : Game WON !!
@@ -443,19 +459,23 @@ public class CameraView extends PApplet {
           _bPlay = false;
         }
    
+      }else{
+        if(_pauseCount>0){
+          _pauseCount--;
+        }
       }
       
       mCamCtrl.endDraw();
       mFeedback.updatePixels();
       
-      if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS){
-        if(_redDotPickedColor==-1){
+      if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS && _bEnableDetection && !_bPlay){
+        if(_redDotPickedColor == -1){
           // Pick 'red hold' color
-          _instructionMessage = "Pick a dead hold";
+          _instructionMessage = "COULEUR A EVITER";
         }else{
-          if(_greenDotPickedColor==-1){
+          if(_greenDotPickedColor == -1){
             // Pick 'green hold' color
-            _instructionMessage = "Pick a good hold";
+            _instructionMessage = "COULEUR A TOUCHER";
           }else{
             _instructionMessage = "";
           }
@@ -478,11 +498,14 @@ public class CameraView extends PApplet {
       }
       
     }else{
-      background(255);
-      textAlign(CENTER);
-      textFont(_font);
-      fill(0);
-      text("pick a video camera in Control Panel",width/2,height/2);
+      // Camera is not already chosen
+      if(_video == null){
+        background(255);
+        textAlign(CENTER);
+        textFont(_font);
+        fill(0);
+        text("SELECTIONNEZ UNE CAMERA",width/2,height/2);
+      }
     }
   }
 

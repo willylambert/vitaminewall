@@ -37,9 +37,9 @@
       if(_calibrationMode == kCALIBRATION_COLOR_STICKERS){
         // Use physical colored dots sticked on wall
         // Calibration process : 
-        // 1 : pick 'red dot' color
-        // 2 : pick 'green dot' color
-        // 3 : detect area with either 'green' or 'red' dots              
+        // 1 : pick 'dead hold' color
+        // 2 : pick 'good hold' color
+        // 3 : detect area with either 'dead' or 'good' dots              
 
         // Init cam for a new detection run
         _camView.setDetection(true,_calibrationMode,true);
@@ -57,6 +57,7 @@
       // Get Green / Red Dots
       DetectionResult detectionResult = _camView.getDetectionResult();
       
+      print("saveColorCalibrationResult getDots");
       _dots = detectionResult.getDots();
       
       // Wait end

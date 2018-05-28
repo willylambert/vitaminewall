@@ -136,7 +136,7 @@ class Dot{
           }          
           g.shape(_shapeSkull,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }else{          
-          //Touch hold - green
+          //Touch good hold
           if(_dotType==2){
             g.fill(255,255,255);
             if(_bTouched){
@@ -154,13 +154,14 @@ class Dot{
           g.shape(_shapeUnTouch,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }
       }      
-      //Order could be only displayed for green hold
+      //Order could be only displayed for good hold
       if(_dotType==2 && !_bTouched && this.getOrder()>0){
         g.fill(0);
-        g.textSize(50);
-        //g.text(this.getOrder(), _x+50, _y+20);
-        g.textAlign(CENTER,CENTER);
-        g.text(str(this.getOrder()), _x, _y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+        if(bDisplayOrder){
+          g.textSize(50);
+          g.textAlign(CENTER,CENTER);        
+          g.text(str(this.getOrder()), _x, _y,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
+        }
       }
     }
   }
