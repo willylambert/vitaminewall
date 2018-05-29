@@ -318,8 +318,8 @@ public class UIControl extends PApplet {
   **/
   void mouseReleased(){
     // Set color sensivity
-    _camView.setGreenColorSensivity(_greenScrollBar.getValue());
-    _camView.setRedColorSensivity(_redScrollBar.getValue());
+    _camView.setGoodHoldColorSensivity(_greenScrollBar.getValue());
+    _camView.setDeadHoldColorSensivity(_redScrollBar.getValue());
     
     _camView.setDetectionSensivity(_sensivityScrollBar.getValue());
     

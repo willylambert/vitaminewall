@@ -265,7 +265,7 @@ class TheWall extends PApplet {
         
           //Print Timer or instructions
           if (_startTime!=0) {
-            _instructions = nf((millis()-_startTime)/1000., 3, 1);                  
+            _instructions = nf((millis()-_startTime)/1000., 3, 1); 
           }
           _wallBuffer.fill(255);
           _wallBuffer.text(_instructions, 10, 40);

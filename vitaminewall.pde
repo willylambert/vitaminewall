@@ -49,20 +49,20 @@ void setup(){
   
   //Data
   gData = new Data();
-  
-  //Camera feedback applet
-  String[] camArgs = {"--location=0,0", "ClimbWall"};
-  gCamView = new CameraView();
-  PApplet.runSketch(camArgs, gCamView);
-  
+
   //The Wall
   String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};
   gWall = new TheWall(2);
   PApplet.runSketch(wallArgs, gWall);
   
+  //Camera feedback applet
+  String[] camArgs = {"--location=0,0", "ClimbWall"};
+  gCamView = new CameraView();
+  PApplet.runSketch(camArgs, gCamView);
+    
   //Controls
   String[] controlArgs = {"--location=0,500", "ClimbWall"};
   gUIControl = new UIControl(gCamView,gWall);
   PApplet.runSketch(controlArgs, gUIControl);   
-  
+
 }

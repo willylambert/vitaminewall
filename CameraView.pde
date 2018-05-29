@@ -45,14 +45,15 @@ public class CameraView extends PApplet {
   
   float _detectionSensivity;
   
-  // "Green" : area's color to touch
-  float _greenColorDetectionSensivity;
-  // "Red" : aera's color to avoid
-  float _redColorDetectionSensivity;
+  // "Good" : area's color to touch
+  float _goodHoldColorDetectionSensivity;
+  // "Dead" : aera's color to avoid
+  float _deadHoldColorDetectionSensivity;
   
   // Used to clean detected dots every X sec
   int _timer;
     
+  // Store and clean detection results  
   DetectionResult _detectionResult;
   
   boolean _bEnableDetection;
@@ -60,9 +61,10 @@ public class CameraView extends PApplet {
   int _nbUntouchedDots;
   int _nextDotOrderToTouch; //se for level 2 & 3 : dots must be touched in a specific order
   
+  // Instructions message to be displayed on "TheWall"
   String _instructionMessage = "";
   
-  // Variable for capture device
+  // Capture device
   Capture _video;
   
   PFont _font;
@@ -75,11 +77,9 @@ public class CameraView extends PApplet {
   // Detection feedback
   PImage mFeedback;
   
+  // Video feedback + detection feedback
   PGraphics mCamCtrl;
-  
-  // Use to disable detection during a short period of time after a dot is touched
-  int mLastDetectionTime;
-  
+   
   // Used to pause game - value is frameCount before restart detection
   int _pauseCount;
   
@@ -165,15 +165,15 @@ public class CameraView extends PApplet {
   /**
   * Set color detection sensivity - used to calibration based on colored stickers
   **/
-  public void setGreenColorSensivity(float sensivity){
-    _greenColorDetectionSensivity = sensivity;
+  public void setGoodHoldColorSensivity(float sensivity){
+    _goodHoldColorDetectionSensivity = sensivity;
   }
 
   /**
   * Set color detection sensivity - used to calibration based on colored stickers
   **/
-  public void setRedColorSensivity(float sensivity){
-    _redColorDetectionSensivity = sensivity;
+  public void setDeadHoldColorSensivity(float sensivity){
+    _deadHoldColorDetectionSensivity = sensivity;
   }    
     
   public void play(){
@@ -247,7 +247,7 @@ public class CameraView extends PApplet {
   
       float diff = dist(red,green,blue,refRed,refGreen,refBlue);  
       
-      return (diff < _redColorDetectionSensivity);
+      return (diff < _deadHoldColorDetectionSensivity);
     }else{
       return false;
     }
@@ -268,7 +268,7 @@ public class CameraView extends PApplet {
   
       float diff = dist(red,green,blue,refRed,refGreen,regBlue);  
       
-      return (diff < _greenColorDetectionSensivity);
+      return (diff < _goodHoldColorDetectionSensivity);
     }else{
       return false;
     }
