@@ -17,7 +17,6 @@
 **/
 
 import processing.video.*;
-import processing.sound.*;
 
 public class CameraView extends PApplet {
 
@@ -85,9 +84,22 @@ public class CameraView extends PApplet {
   
   ArrayList<Dot> _dots = new ArrayList<Dot>();
   
+  Movie _goSoundfile;
+  Movie _touchSoundfile;
+  Movie _endSoundfile;
+  Movie _winSoundfile;
+  Movie _looserSoundfile;
+  
+  
    public void settings(){
-    size(kCAM_WIDTH*2, kCAM_HEIGHT);    
-   }
+    size(kCAM_WIDTH*2, kCAM_HEIGHT);
+    _goSoundfile = new Movie(this, gDataPath + "\\go.wav");
+    _touchSoundfile = new Movie(this, gDataPath + "\\touch.wav");
+    _endSoundfile = new Movie(this, gDataPath + "\\end.wav");
+    _winSoundfile = new Movie(this, gDataPath + "\\win.wav");
+    _looserSoundfile = new Movie(this,gDataPath + "\\looser.wav");
+
+ }
   
    public void setup(){ 
      frameRate(10);
@@ -408,11 +420,11 @@ public class CameraView extends PApplet {
                  //Start Play Game !!!
                 if(dot.getType()==0){                  
                   dot.touch();
-                  gGoSoundfile.play();
+                  _goSoundfile.play();
                 }else{
                   if(dot.getType()==1){                    
                     dot.touch();
-                    gLooserSoundfile.play();
+                    _looserSoundfile.play();
                     bDoNotTouchTouched = true;
                     if(_nextDotOrderToTouch>0){
                       _nextDotOrderToTouch=1;
@@ -421,7 +433,7 @@ public class CameraView extends PApplet {
                     if(dot.getType()==2){
                       if(_nextDotOrderToTouch==0 || _nextDotOrderToTouch==dot.getOrder()){
                         dot.touch();
-                        gTouchSoundfile.play();
+                        _touchSoundfile.play();
                         _nbUntouchedDots--;                      
                         gWall.setRemainingGreenDots(_nbUntouchedDots);
                         if(_nextDotOrderToTouch>0){
@@ -455,7 +467,7 @@ public class CameraView extends PApplet {
         if(_nbUntouchedDots==0){
           delay(500); //let's dot touch animation time to run          
           gWall.gameWon();
-          gEndSoundfile.play();
+          _endSoundfile.play();
           _bPlay = false;
         }
    

@@ -182,6 +182,7 @@ public class UIControl extends PApplet {
   }
 
   void mousePressed(){
+    
     // Camera select pressed
     int camIndex = 0;
 

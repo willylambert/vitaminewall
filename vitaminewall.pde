@@ -1,5 +1,3 @@
-import processing.sound.*;
-
 /**
     VITAMINE WALL 
     Copyright (C) 2016 Willy LAMBERT @willylambert
@@ -30,23 +28,15 @@ UIControl gUIControl;
 //Data - load data.json
 Data gData;
 
-SoundFile gGoSoundfile;
-SoundFile gTouchSoundfile;
-SoundFile gEndSoundfile;
-SoundFile gWinSoundfile;
-SoundFile gLooserSoundfile;
+String gDataPath;
 
 PImage gReadyToGoImage;
 PShape gShapePill;
 
 void setup(){  
   
-  gGoSoundfile = new SoundFile(this, dataPath("go.wav"));
-  gTouchSoundfile = new SoundFile(this, dataPath("touch.wav"));
-  gEndSoundfile = new SoundFile(this, dataPath("end.wav"));
-  gWinSoundfile = new SoundFile(this, dataPath("win.wav"));
-  gLooserSoundfile = new SoundFile(this,dataPath("looser.wav"));
-  
+  gDataPath = dataPath("");
+    
   //Data
   gData = new Data();
 
