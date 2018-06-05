@@ -25,7 +25,7 @@ class VitaButton {
     _g = g;
     _visible = true;
     _xLabel = _x+_w/2-textWidth(_label)/2;
-    _yLabel = _h/2;
+    _yLabel = _y+15;
   }
   
   void setVisible(boolean visible){
