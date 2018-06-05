@@ -19,38 +19,15 @@
 
 class ReadyToGo{
   PImage _readyToGoImage;
-  PShape _shapePill;
-
-  int _welcomePillX = 0;
-  int _welcomePillAngle = 0;
-  
-  ArrayList<Dot> _dots = new ArrayList<Dot>();
   
   ReadyToGo(PGraphics g){
     _readyToGoImage = loadImage(dataPath("welcome.png"));
     _readyToGoImage.resize(g.width,g.height);
-    _shapePill = loadShape(dataPath("pill.svg"));        
   }
   
   void display(PGraphics g, int frmCount){
     g.image(_readyToGoImage,0,0);
     
-    //each 24 frames
-    if (frmCount % 24 == 0) {
-      Dot dot = new Dot(int(random(0,g.width)),int(random(g.height*0.5,g.height*0.7)),int(random(1,3)),null,null,0);
-      _dots.add(dot);
-      
-      Dot dotTouch = _dots.get(int(random(_dots.size())));
-      dotTouch.touch();
-      
-      if(_dots.size()>5){
-        _dots.remove(int(random(_dots.size())));
-      }
-    }
-
-    for (Dot dot : _dots) {
-      dot.display(g, true, true);
-    }
   }
   
 }

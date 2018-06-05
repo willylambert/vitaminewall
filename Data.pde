@@ -1,12 +1,12 @@
-class Data{
+  class Data{
 
   String _filename = "data.json";
   JSONObject _json;
   ArrayList<Wall> _walls = new ArrayList<Wall>();
       
   //Default values
-  static final float kTHRESHOLD = 40; //How different must a pixel be to be detected as a "motion" pixel
-  static final float kSENSIVITY = 70; //Number of pixels changed to light a dot
+  static final float kTHRESHOLD = 70; //Number of pixels changed to light a dot
+  static final float kSENSIVITY = 50; //How different must a pixel be to be detected as a "motion" pixel
   
   float _sensivity = kTHRESHOLD;
   float _threshold = kSENSIVITY;

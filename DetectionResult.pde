@@ -18,7 +18,13 @@ public class DetectionResult{
     _bestScore = bestScore;
   }
   
-  void setResult(int x,int y, int bestScore){
+  /**
+  * @param x : Cell X coordinate
+  * @param y : Cell Y coordinate
+  * @param bestScore : number of active pixels detected in cel
+  * @param mode : CameraView.kPICK_MOTION_DOT | CameraView.kPICK_RED_DOT | CameraView.kPICK_GREEN_DOT 
+  **/
+  void setResult(int x,int y, int bestScore, int mode){
     if(bestScore > _bestScore){
       //Update best dot
       _xBestActiveDot = x;
@@ -27,10 +33,11 @@ public class DetectionResult{
     }
     
     //Add detected camera-dot to dots collection associated to current active video-dot
-    int[] dot = new int[3];
+    int[] dot = new int[4];
     dot[0] = x;
     dot[1] = y;
     dot[2] = bestScore;
+    dot[3] = mode;
     String dotKey = x + "_" + y;
     if(!_activeDots.containsKey(dotKey)){
     _activeDots.put(dotKey,dot);
@@ -65,6 +72,46 @@ public class DetectionResult{
         _maxY = max(dot[1],_maxY);
       }
     }  
+  }
+  
+  /**
+  * Color : mode : 
+  **/
+  public ArrayList<Dot> getDots(){
+    ArrayList<Dot> dots = new ArrayList<Dot>();
+    
+    Dot newDot;
+    
+    for (Map.Entry camDot :_activeDots.entrySet()) {
+      // Do we have an existing dot already initialised next to this cell ?
+      int[] camDotValue = (int[])camDot.getValue();
+      
+      boolean bDotFound = false;
+      for (Dot dot : dots) {
+        if(camDotValue[0] >= dot.getXcam()-CameraView.kDOT_SIZE && camDotValue[0] <= dot.getXcamMax()+CameraView.kDOT_SIZE && 
+           camDotValue[1] >= dot.getYcam()-CameraView.kDOT_SIZE && camDotValue[1] <= dot.getYcamMax()+CameraView.kDOT_SIZE){
+          // extend existing dot area
+          bDotFound = true;
+          break;
+        }
+      }
+      
+      if(bDotFound){
+        println("Extend existing dot");
+      }else{
+        // Colored dots are display on wall - we need to compute the right position from camera coordinates system
+        float heightRatio = gWall.getHeight() / CameraView.kCAM_HEIGHT;
+        float widthRatio = gWall.getWidth() / CameraView.kCAM_WIDTH;
+        println("Create a new Dot ["+camDotValue[0]+"=>"+int(camDotValue[0]*widthRatio)+","+camDotValue[1]+"=>"+int(camDotValue[1]*heightRatio)+"]");
+        newDot =  new Dot(int(camDotValue[0]*widthRatio),int(camDotValue[1]*heightRatio),camDotValue[3],null,null,dots.size());
+        newDot.setCamCoordinates(camDotValue[0],camDotValue[1],camDotValue[0]+CameraView.kDOT_SIZE,camDotValue[1]+CameraView.kDOT_SIZE);
+        newDot.setDetected(true);
+        newDot.setOrder(dots.size());
+        dots.add(newDot);
+      }
+    }
+    
+    return dots;
   }
   
   int getMinX(){

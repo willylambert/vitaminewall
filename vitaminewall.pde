@@ -1,5 +1,3 @@
-import processing.sound.*;
-
 /**
     VITAMINE WALL 
     Copyright (C) 2016 Willy LAMBERT @willylambert
@@ -30,39 +28,36 @@ UIControl gUIControl;
 //Data - load data.json
 Data gData;
 
-SoundFile gGoSoundfile;
-SoundFile gTouchSoundfile;
-SoundFile gEndSoundfile;
-SoundFile gWinSoundfile;
-SoundFile gLooserSoundfile;
+String gDataPath;
 
 PImage gReadyToGoImage;
 PShape gShapePill;
 
+PFont gFont;
+
 void setup(){  
   
-  gGoSoundfile = new SoundFile(this, dataPath("go.wav"));
-  gTouchSoundfile = new SoundFile(this, dataPath("touch.wav"));
-  gEndSoundfile = new SoundFile(this, dataPath("end.wav"));
-  gWinSoundfile = new SoundFile(this, dataPath("win.wav"));
-  gLooserSoundfile = new SoundFile(this,dataPath("looser.wav"));
-  
+  gDataPath = dataPath("");
+    
   //Data
   gData = new Data();
   
-  //Camera feedback applet
-  String[] camArgs = {"--location=0,0", "ClimbWall"};
-  gCamView = new CameraView();
-  PApplet.runSketch(camArgs, gCamView);
-  
+  //We use global var as Papplet instance are not aware of the data folder
+  gFont = createFont("Digital-7", 40);
+
   //The Wall
   String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};
   gWall = new TheWall(2);
   PApplet.runSketch(wallArgs, gWall);
   
+  //Camera feedback applet
+  String[] camArgs = {"--location=0,0", "ClimbWall"};
+  gCamView = new CameraView();
+  PApplet.runSketch(camArgs, gCamView);
+    
   //Controls
   String[] controlArgs = {"--location=0,500", "ClimbWall"};
   gUIControl = new UIControl(gCamView,gWall);
   PApplet.runSketch(controlArgs, gUIControl);   
-  
+
 }

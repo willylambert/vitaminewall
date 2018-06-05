@@ -39,12 +39,15 @@ class TheWall extends PApplet {
   HallOfFame _hallOfFame;
   ReadyToGo _readyToGo;
 
-  //used to display restart label during 2 sec. this variable is used as a countdown
+  // Used to display restart label during 2 sec. this variable is used as a countdown
   int _showRestartLabel; 
 
   int _remainingGreenDots;  
 
   int _level;
+  
+  // Instructions for player
+  String _instructions = "";
 
   TheWall(int fullscreenMode) {  
     _fullscreenMode = fullscreenMode; 
@@ -71,9 +74,9 @@ class TheWall extends PApplet {
     _wallImg = null;
     _dots = null;
     surface.setResizable(true);
-
-    _font = createFont("Digital-7", 50);
+    
     _wallBuffer = createGraphics(width, height);
+    _font = gFont;    
     _readyToGo = new ReadyToGo(g);
   }
 
@@ -82,9 +85,12 @@ class TheWall extends PApplet {
     _bReadyToGo = false;
     _bShowHallOfFame = false;
     _bGameWon = false;
-    _startTime = 0;
-    _wallBuffer.textFont(_font);   
-  }  
+    _startTime = 0;    
+  } 
+  
+  void setInstructions(String instructions){
+    _instructions = instructions;
+  }
    
   /**
   * Record a new wall
@@ -93,7 +99,7 @@ class TheWall extends PApplet {
     _bRecordNewWall = true;
     _dots = new ArrayList<Dot>();
     gData.getCurrentWall().setScreen(width,height);
-}
+  }
   
   /**
   * Stop dots creation - Stop to record a new wall
@@ -127,6 +133,11 @@ class TheWall extends PApplet {
   
   int getStartTime(){
     return _startTime;
+  }
+  
+  void startTimer(){
+    print("Start Timer");
+    _startTime = millis();
   }
   
  //Untouch all dots
@@ -168,18 +179,32 @@ class TheWall extends PApplet {
     return _gameWonTime;
   }
 
-  void setDots(ArrayList<Dot> dots) {
-   _dots = dots;   
+  void setDots(ArrayList<Dot> dots) {   
+    _dots = dots;
+    _bShowHallOfFame = false;
+    _bGameWon = false;
+    _startTime = 0;
+  }
+
+  /**
+  * Retrieve screen height
+  **/
+  float getHeight(){
+    return height;
+  }
+
+  /**
+  * Retrieve screen width
+  **/
+  float getWidth(){
+    return width;
   }
 
   void showCalibrationResult(ArrayList<Dot> dots) {
     println("showCalibrationResult");
-    _bReadyToGo = true;
+    _bReadyToGo = false;
 
     _dots = dots;
-    for (Dot dot : _dots) {
-      dot.setFont(_font);
-    }
     println("dots count",_dots.size());
 }
 
@@ -187,7 +212,7 @@ class TheWall extends PApplet {
     _bShowHallOfFame = true;
     _hallOfFame = hall;    
   }
-  
+   
   void displayReadyToGo(){
     _bShowHallOfFame = false;
     _bReadyToGo = true;
@@ -209,7 +234,8 @@ class TheWall extends PApplet {
     _wallBuffer.beginDraw();
     _wallBuffer.background(0);
     _wallBuffer.shapeMode(CENTER);
-
+    _wallBuffer.textFont(_font);
+    
     if(_bRecordNewWall){
       _wallBuffer.fill(255,255,255);
       _wallBuffer.ellipse(mouseX, mouseY, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
@@ -223,12 +249,7 @@ class TheWall extends PApplet {
         if(!_bGameWon) {
           //Game is running !
           if (_dots != null && _dots.size()>0) {                         
-            
-            //First dot is used to trigger the timer
-            if(_dots.get(0).isTouched() && _startTime==0){
-              _startTime = millis();
-            }
-            
+                        
             for (Dot dot : _dots) {
               dot.display(_wallBuffer, (_level>1?true:false), (_level==3?false:true));
             }
@@ -242,12 +263,12 @@ class TheWall extends PApplet {
             }
           }
         
-          //Print Timer
+          //Print Timer or instructions
           if (_startTime!=0) {
-            String msg = nf((millis()-_startTime)/1000., 3, 1);
-            _wallBuffer.fill(255);
-            _wallBuffer.text(msg, 10, 40);
+            _instructions = nf((millis()-_startTime)/1000., 3, 1); 
           }
+          _wallBuffer.fill(255);
+          _wallBuffer.text(_instructions, 10, 40);
     
           if (_showRestartLabel>0) {
             String msg = "On recommence, le chrono tourne !";
