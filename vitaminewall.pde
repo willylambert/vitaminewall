@@ -33,12 +33,17 @@ String gDataPath;
 PImage gReadyToGoImage;
 PShape gShapePill;
 
+PFont gFont;
+
 void setup(){  
   
   gDataPath = dataPath("");
     
   //Data
   gData = new Data();
+  
+  //We use global var as Papplet instance are not aware of the data folder
+  gFont = createFont("Digital-7", 40);
 
   //The Wall
   String[] wallArgs = {"--location="+(displayWidth-640)+",0", "ClimbWall"};

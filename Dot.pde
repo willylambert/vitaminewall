@@ -43,8 +43,6 @@ class Dot{
   int _passedTime;
   boolean _bRedDotIsRed;
   
-  PFont _font;
-  
   /**
   * @param int x wall coordinate
   * @param int y wall coordinate

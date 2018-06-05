@@ -11,6 +11,9 @@ class VitaButton {
   boolean _visible;
   boolean _selected;
   
+  float _xLabel;
+  float _yLabel;
+  
   PGraphics _g;
   
   VitaButton(String labelB, float xpos, float ypos, float widthB, float heightB,PGraphics g) {
@@ -21,6 +24,8 @@ class VitaButton {
     _h = heightB;
     _g = g;
     _visible = true;
+    _xLabel = _x+_w/2-textWidth(_label)/2;
+    _yLabel = _h/2;
   }
   
   void setVisible(boolean visible){
@@ -44,9 +49,8 @@ class VitaButton {
       
       _g.stroke(141);
       _g.rect(_x, _y, _w, _h, 10);
-      _g.textAlign(CENTER, CENTER);
       _g.fill(0);
-      _g.text(_label, _x + (_w / 2), _y + (_h / 2));
+      _g.text(_label, _xLabel , _yLabel);
     }
   }
   

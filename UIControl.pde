@@ -80,7 +80,9 @@ public class UIControl extends PApplet {
   public void setup() {
 
     // Default font
-    _font = createFont("Digital-7", 15);
+    _font = gFont;    
+    this.g.textFont(_font);
+    this.g.textSize(15);
 
     // Calibrate
     _btnCalibrate = new VitaButton("Calibrate",125,70,100,20,this.g);
@@ -348,7 +350,6 @@ public class UIControl extends PApplet {
 
   void draw() {    
     background(255);
-    textFont(_font);  
     
     if(_camerasList.size()==0){
       background(255);

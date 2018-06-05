@@ -98,8 +98,7 @@ public class CameraView extends PApplet {
     _endSoundfile = new Movie(this, gDataPath + "\\end.wav");
     _winSoundfile = new Movie(this, gDataPath + "\\win.wav");
     _looserSoundfile = new Movie(this,gDataPath + "\\looser.wav");
-
- }
+   }
   
    public void setup(){ 
      frameRate(10);
@@ -110,7 +109,7 @@ public class CameraView extends PApplet {
 
     _video = null;
     
-    _font = createFont("Digital-7", 40);
+    _font = gFont;
    
     mPrevFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
     mCurrFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
