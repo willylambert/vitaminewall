@@ -71,6 +71,7 @@ class TheWall extends PApplet {
   }
 
   void setup() {
+    frameRate(30);
     _wallImg = null;
     _dots = null;
     surface.setResizable(true);
@@ -231,68 +232,67 @@ class TheWall extends PApplet {
   }
 
   void draw() {
-    _wallBuffer.beginDraw();
-    _wallBuffer.background(0);
-    _wallBuffer.shapeMode(CENTER);
-    _wallBuffer.textFont(_font);
+    background(0);
+    textAlign(LEFT);
+    shapeMode(CENTER);
+    textFont(_font);
     
     if(_bRecordNewWall){
-      _wallBuffer.fill(255,255,255);
-      _wallBuffer.ellipse(mouseX, mouseY, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
+      fill(255,255,255);
+      ellipse(mouseX, mouseY, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
       for (Dot dot : _dots) {
-        dot.display(_wallBuffer, true, true);
+        dot.display(g, true, true);
       }
     }else{
       if(_bReadyToGo){
-        _readyToGo.display(_wallBuffer,frameCount);
+        _readyToGo.display(g,frameCount);
       }else{
         if(!_bGameWon) {
           //Game is running !
-          if (_dots != null && _dots.size()>0) {                         
-                        
-            for (Dot dot : _dots) {
-              dot.display(_wallBuffer, (_level>1?true:false), (_level==3?false:true));
-            }
-    
-          } else {
-            if (_wallImg != null) {
-              _wallBuffer.image(_wallImg, 0, 0);
-            } else {
-              //Welcome message
-              _readyToGo.display(_wallBuffer,frameCount);
-            }
-          }
-        
+
           //Print Timer or instructions
           if (_startTime!=0) {
             _instructions = nf((millis()-_startTime)/1000., 3, 1); 
           }
-          _wallBuffer.fill(255);
-          _wallBuffer.text(_instructions, 10, 40);
+          fill(255);
+          text(_instructions, 10, 40);
+          
+          if(_dots != null && _dots.size()>0){                         
+                        
+            for (Dot dot : _dots) {
+              dot.display(g, (_level>1?true:false), (_level==3?false:true));
+            }
     
+          }else{
+            if (_wallImg != null) {
+              image(_wallImg, 0, 0);
+            } else {
+              //Welcome message
+              _readyToGo.display(g,frameCount);
+            }
+          }
+            
           if (_showRestartLabel>0) {
             String msg = "On recommence, le chrono tourne !";
             _showRestartLabel--;
-            _wallBuffer.fill(255);            
-            _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/2);
+            fill(255);            
+            text(msg, (width/2)-textWidth(msg)/2, height/2);
           }
           
         }else{
            //Game Won !!
           String msg = "Bravo, pas mal... " + nf(_gameWonTime/1000., 0, 1) + " secondes !!";
-          _wallBuffer.fill(255);
-          _wallBuffer.text(msg, (width/2)-_wallBuffer.textWidth(msg)/2, height/4);          
+          fill(255);
+          text(msg, (width/2)-textWidth(msg)/2, height/4);          
         }
       }
     }
     
     if(_bShowHallOfFame){
-      _wallBuffer.fill(255);
-      _hallOfFame.display(_wallBuffer);
+      fill(255);
+      _hallOfFame.display(g);
     }
     
-    _wallBuffer.endDraw();
-    image(_wallBuffer, 0, 0, width, height);
   }
 
 }

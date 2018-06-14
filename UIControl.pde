@@ -78,7 +78,8 @@ public class UIControl extends PApplet {
   }
 
   public void setup() {
-
+    frameRate(10);
+    
     // Default font
     _font = gFont;    
     this.g.textFont(_font);
@@ -164,13 +165,13 @@ public class UIControl extends PApplet {
   void getPlayerName() {
     _bGetPlayerName = true; 
     _playerName = "";
-    
+     //<>//
     //Disable others //<>//
     _btnGoLevel1.setVisible(false);
     _btnGoLevel2.setVisible(false);
     _btnGoLevel3.setVisible(false);
     _btnStop.setVisible(false);
-  }
+  } //<>//
  //<>//
   /**
   * Camera must see the entire wall
@@ -266,14 +267,11 @@ public class UIControl extends PApplet {
       int level = 0;      
       if(_btnGoLevel1.MouseIsOver()){
         level = 1;
-        _btnGoLevel1.setSelected(true);
       }else{
         if(_btnGoLevel2.MouseIsOver()){
           level = 2;
-          _btnGoLevel2.setSelected(true);
         }else{
           level = 3;
-          _btnGoLevel3.setSelected(true);
         }
       }
       _theWall.setLevel(level);
