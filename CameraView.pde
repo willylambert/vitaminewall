@@ -391,12 +391,13 @@ public class CameraView extends PApplet {
         
         boolean bTimerIsStarted = (gWall.getStartTime()>0?true:false);
         
-        int dotIdx = 0;
+        int detectedDotIdx = 0;
         for (Dot dot : _dots) {
           //Only process video-dots with corresponding camera-dots
           if(dot.getDetected()){
+            detectedDotIdx++;
             //The first dot trigger timer
-            if(!dot.isTouched() && bTimerIsStarted || (dotIdx==0 || _calibrationMode==Calibration.kCALIBRATION_COLOR_STICKERS) && !bTimerIsStarted){
+            if(!dot.isTouched() && bTimerIsStarted || (detectedDotIdx==1 || _calibrationMode==Calibration.kCALIBRATION_COLOR_STICKERS) && !bTimerIsStarted){
               if(!bTimerIsStarted && dot.isTouched()){
                 gWall.startTimer();
                 gWall.setInstructions("");
@@ -449,8 +450,7 @@ public class CameraView extends PApplet {
                 }
               }
             }  
-          }
-          dotIdx++;
+          }          
         }
         
         // dead hold touched
