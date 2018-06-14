@@ -420,10 +420,12 @@ public class CameraView extends PApplet {
                 if(dot.getType()==0){                  
                   dot.touch();
                   _goSoundfile.play();
+                  _goSoundfile.jump(0);
                 }else{
                   if(dot.getType()==1){                    
                     dot.touch();
                     _looserSoundfile.play();
+                    _looserSoundfile.jump(0);
                     bDoNotTouchTouched = true;
                     if(_nextDotOrderToTouch>0){
                       _nextDotOrderToTouch=1;
@@ -433,6 +435,7 @@ public class CameraView extends PApplet {
                       if(_nextDotOrderToTouch==0 || _nextDotOrderToTouch==dot.getOrder()){
                         dot.touch();
                         _touchSoundfile.play();
+                        _touchSoundfile.jump(0);
                         _nbUntouchedDots--;                      
                         gWall.setRemainingGreenDots(_nbUntouchedDots);
                         if(_nextDotOrderToTouch>0){
@@ -467,6 +470,7 @@ public class CameraView extends PApplet {
           delay(500); //let's dot touch animation time to run          
           gWall.gameWon();
           _endSoundfile.play();
+          _endSoundfile.jump(0);
           _bPlay = false;
         }
    
