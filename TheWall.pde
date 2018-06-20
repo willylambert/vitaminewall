@@ -190,11 +190,17 @@ class TheWall extends PApplet {
     return _gameWonTime;
   }
 
-  void setDots(ArrayList<Dot> dots) {   
+  private void setDots(ArrayList<Dot> dots) {   
     _dots = dots;
     _bShowHallOfFame = false;
     _bGameWon = false;
     _startTime = 0;
+    
+    // In color mode, TheWall is used as a monitor for climber
+    // => Flash background color to notice hold touch
+    for (Dot dot : _dots) {
+      dot.setBackgroundTouchEffect(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS);
+    }    
   }
 
   /**
@@ -215,7 +221,7 @@ class TheWall extends PApplet {
     println("showCalibrationResult");
     _bReadyToGo = false;
 
-    _dots = dots;
+    setDots(dots);
     println("dots count",_dots.size());
 }
 

@@ -257,8 +257,8 @@ public class UIControl extends PApplet {
         _btnGoLevel3.setVisible(true);
     }else{
         // We used colored stickers - save calibration result
-        _calibration.saveColorCalibrationResult();
         _theWall.setCalibrationMode(Calibration.kCALIBRATION_COLOR_STICKERS);
+        _calibration.saveColorCalibrationResult();        
         _btnGoLevel1.setVisible(true);
       }
     }

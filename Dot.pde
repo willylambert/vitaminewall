@@ -66,6 +66,13 @@ class Dot{
     }    
   }
 
+  /**
+  * Add flashing color effect when a hold is tapped
+  */
+  void setBackgroundTouchEffect(boolean bBackgroundTouchEffect){
+    _bBackgroundTouchEffect = bBackgroundTouchEffect;
+  }
+
   void setCamCoordinates(int camX,int camY, int camMaxX, int camMaxY){
     _camMinX = camX;
     _camMinY = camY;
