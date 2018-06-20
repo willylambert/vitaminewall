@@ -29,6 +29,10 @@ class TheWall extends PApplet {
 
   ArrayList<Dot> _dots = new ArrayList<Dot>();
 
+  // Calibration could be done by displaying dots on wall with VP (Calibration.kCALIBRATION_VP)
+  // or by colored stickers : green = hold to touch / red = hold to avoid (Calibration.kCALIBRATION_COLOR_STICKERS)
+  int _calibrationMode;
+
   int _startTime;
   int _gameWonTime;
   boolean _bGameWon;
@@ -71,7 +75,7 @@ class TheWall extends PApplet {
   }
 
   void setup() {
-    frameRate(30);
+    frameRate(60);
     _wallImg = null;
     _dots = null;
     surface.setResizable(true);
@@ -88,6 +92,10 @@ class TheWall extends PApplet {
     _bGameWon = false;
     _startTime = 0;    
   } 
+
+  void setCalibrationMode(int calibrationMode){
+    _calibrationMode = calibrationMode;    
+  }
   
   void setInstructions(String instructions){
     _instructions = instructions;
@@ -121,14 +129,14 @@ class TheWall extends PApplet {
     if (mouseButton == LEFT) {
       if(_dots.size()==0){
          //First dot is start Dot
-        _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,0,null,null,_dots.size()));
+        _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,0,null,null,_dots.size(),false));
       }else{
         //green dot (pills)
-        _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,2,null,null,_dots.size()));
+        _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,2,null,null,_dots.size(),false));
       }
     } else if (mouseButton == RIGHT) {
       //red dot (skull)
-      _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,1,null,null,_dots.size()));
+      _dots.add(new Dot(mouseX-Calibration.kDOT_SIZE/2,mouseY-Calibration.kDOT_SIZE/2,1,null,null,_dots.size(),false));
     }
   }
   
@@ -161,7 +169,9 @@ class TheWall extends PApplet {
    **/
   void restartGame() {
     _bReadyToGo = false;
-    _showRestartLabel = 100;
+    if(_calibrationMode==Calibration.kCALIBRATION_VP){
+      _showRestartLabel = 100;
+    }
     _bGameWon = false;
   }
 
@@ -233,7 +243,7 @@ class TheWall extends PApplet {
 
   void draw() {
     background(0);
-    textAlign(LEFT);
+    textAlign(LEFT,TOP);
     shapeMode(CENTER);
     textFont(_font);
     
@@ -253,9 +263,12 @@ class TheWall extends PApplet {
           //Print Timer or instructions
           if (_startTime!=0) {
             _instructions = nf((millis()-_startTime)/1000., 3, 1); 
+            if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS){
+              textSize(150);
+            }
           }
           fill(255);
-          text(_instructions, 10, 40);
+          text(_instructions, 10, 5);
           
           if(_dots != null && _dots.size()>0){                         
                         

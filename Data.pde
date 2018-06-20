@@ -8,6 +8,9 @@
   static final float kTHRESHOLD = 70; //Number of pixels changed to light a dot
   static final float kSENSIVITY = 50; //How different must a pixel be to be detected as a "motion" pixel
   
+  static final int kCALIBRATION_VP = 1;
+  static final int kCALIBRATION_COLOR_STICKERS = 2;
+  
   float _sensivity = kTHRESHOLD;
   float _threshold = kSENSIVITY;
   
@@ -45,7 +48,7 @@
           int y = dotItem.getInt("y");
           int type = dotItem.getInt("type");
           int order = dotItem.getInt("order");
-          Dot dot = new Dot(x,y,type,null,null,order);
+          Dot dot = new Dot(x,y,type,null,null,order,false);
           wall.addDot(dot);
         }
         _walls.add(wall);

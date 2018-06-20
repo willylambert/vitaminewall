@@ -258,6 +258,7 @@ public class UIControl extends PApplet {
     }else{
         // We used colored stickers - save calibration result
         _calibration.saveColorCalibrationResult();
+        _theWall.setCalibrationMode(Calibration.kCALIBRATION_COLOR_STICKERS);
         _btnGoLevel1.setVisible(true);
       }
     }
@@ -377,7 +378,7 @@ public class UIControl extends PApplet {
       _sensivityScrollBar.display();
       
       fill(0);
-      text("Sensivity : ",_btnCameraList.size()*230+155,10);
+      text("Motion sensivity : ",_btnCameraList.size()*230+155,10);
             
       textAlign(LEFT);
       text("Capture Device : ",20,15);

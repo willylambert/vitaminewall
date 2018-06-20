@@ -14,7 +14,7 @@
   static final int kCALIBRATION_COLOR_STICKERS = 2;
   
   // Calibration could be done by displaying dots on wall with VP (kCALIBRATION_VP)
-  // or by colored stickers : green = touch dot / red = not touch dot (kCALIBRATION_COLOR_STICKERS)
+  // or by colored stickers : green = hold to touch / red = hold to avoid (kCALIBRATION_COLOR_STICKERS)
   int _calibrationMode;
   
   Calibration(CameraView camView,TheWall theWall, int calibrationMode){

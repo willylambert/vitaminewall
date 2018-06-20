@@ -103,7 +103,7 @@ public class DetectionResult{
         float heightRatio = gWall.getHeight() / CameraView.kCAM_HEIGHT;
         float widthRatio = gWall.getWidth() / CameraView.kCAM_WIDTH;
         println("Create a new Dot ["+camDotValue[0]+"=>"+int(camDotValue[0]*widthRatio)+","+camDotValue[1]+"=>"+int(camDotValue[1]*heightRatio)+"]");
-        newDot =  new Dot(int(camDotValue[0]*widthRatio),int(camDotValue[1]*heightRatio),camDotValue[3],null,null,dots.size());
+        newDot =  new Dot(int(camDotValue[0]*widthRatio),int(camDotValue[1]*heightRatio),camDotValue[3],null,null,dots.size(),false);
         newDot.setCamCoordinates(camDotValue[0],camDotValue[1],camDotValue[0]+CameraView.kDOT_SIZE,camDotValue[1]+CameraView.kDOT_SIZE);
         newDot.setDetected(true);
         newDot.setOrder(dots.size());

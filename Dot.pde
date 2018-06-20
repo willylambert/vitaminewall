@@ -19,8 +19,7 @@
 class Dot{
   
   int _camMinX,_camMinY,_camMaxX,_camMaxY; // => coordinates from the Camera POV
-  
-  
+    
   int _x, _y; // => coordinates from the Wall POV
   
   int _dotType; // => type : 0 => Start, 1 => Do Not Touch, 2 => To be Touched
@@ -40,15 +39,17 @@ class Dot{
   boolean _bShow;
   boolean _bDetected;
   
-  int _passedTime;
-  boolean _bRedDotIsRed;
+  // Used to display the touch effect during few sec.
+  int _touchTime;
+  
+  boolean _bBackgroundTouchEffect;
   
   /**
   * @param int x wall coordinate
   * @param int y wall coordinate
   * @param int dotType : 1 = red, 2 = green
   **/
-  Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch, int order){
+  Dot(int x,int y, int dotType,PShape shapeUnTouch,PShape shapeTouch, int order,boolean bBackgroundTouchEffect){
     _x = x;
     _y = y;
     _dotType = dotType;
@@ -58,10 +59,8 @@ class Dot{
     _dotSize = Calibration.kDOT_SIZE*2;
     _shapeUnTouch = shapeUnTouch;
     _shapeTouch = shapeTouch;
-      
-    //Default color for red dot
-    _bRedDotIsRed = false;
-      
+    _bBackgroundTouchEffect = bBackgroundTouchEffect;
+    
     if(dotType==0){
       _shapeUnTouch = _shapePlay;
     }    
@@ -120,25 +119,28 @@ class Dot{
         g.fill(255,255,255,255-map(millis()%300,0,300,0,300));
         g.rect(_x, _y, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE, 7);
       }else{
-        //Do not touch hold - red
+        // Do not tap hold
         if(_dotType==1 && bShowRedDot){          
-          if(_bTouched && (_passedTime == 0 || millis() - _passedTime > 250)){
-            _passedTime = millis();
-            _bRedDotIsRed = !_bRedDotIsRed;
-          }          
-          if(_bRedDotIsRed){
-            g.fill(255,0,0);
-            g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+30, Calibration.kDOT_SIZE-20, Calibration.kDOT_SIZE-20);
-          }else{
-            g.fill(0,0,0);
-          }          
+            if(millis() - _touchTime < 1500){
+              if(_bBackgroundTouchEffect){
+                g.background(255,0,0);
+              }
+              g.fill(255,0,0);
+              g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+30, Calibration.kDOT_SIZE-20, Calibration.kDOT_SIZE-20);
+            }else{
+            g.fill(0);  
+          }
           g.shape(_shapeSkull,_x+Calibration.kDOT_SIZE/2,_y+Calibration.kDOT_SIZE/2,Calibration.kDOT_SIZE,Calibration.kDOT_SIZE);
         }else{          
-          //Touch good hold
+          // hold to tap
           if(_dotType==2){
             g.fill(255,255,255);
             if(_bTouched){
+              // Extend + Collapse effect 
               if(_dotSize>0){
+                if(_bBackgroundTouchEffect){
+                  g.background(0,255,0);
+                }
                 _dotSize -= sqrt(Calibration.kDOT_SIZE*4 - _dotSize/4)/2;
                 g.ellipse(_x+Calibration.kDOT_SIZE/2, _y+Calibration.kDOT_SIZE/2, _dotSize, _dotSize);                
               }                    
@@ -173,6 +175,8 @@ class Dot{
   }
   
   void touch(){
+    print("Hold # " + _order + " touched");
+    _touchTime = millis();
     _bTouched = true;
   }
   
