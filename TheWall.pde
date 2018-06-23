@@ -43,19 +43,15 @@ class TheWall extends PApplet {
   HallOfFame _hallOfFame;
   ReadyToGo _readyToGo;
 
-  // Used to display restart label during 2 sec. this variable is used as a countdown
-  int _showRestartLabel; 
-
   int _remainingGreenDots;  
 
   int _level;
   
-  // Instructions for player
+  // Instructions for climber
   String _instructions = "";
 
   TheWall(int fullscreenMode) {  
     _fullscreenMode = fullscreenMode; 
-    _showRestartLabel = 0;   
     _bShowHallOfFame = false;
     _bRecordNewWall = false;
     _bReadyToGo = false;    
@@ -165,14 +161,10 @@ class TheWall extends PApplet {
   }
 
   /**
-   * When climber touch a do not touch area
+   * When climber touch a dead skull hold
    **/
   void restartGame() {
-    _bReadyToGo = false;
-    if(_calibrationMode==Calibration.kCALIBRATION_VP){
-      _showRestartLabel = 100;
-    }
-    _bGameWon = false;
+    startGame();
   }
 
   /**
@@ -290,18 +282,12 @@ class TheWall extends PApplet {
               _readyToGo.display(g,frameCount);
             }
           }
-            
-          if (_showRestartLabel>0) {
-            String msg = "On recommence, le chrono tourne !";
-            _showRestartLabel--;
-            fill(255);            
-            text(msg, (width/2)-textWidth(msg)/2, height/2);
-          }
-          
+                     
         }else{
            //Game Won !!
           String msg = "Bravo, pas mal... " + nf(_gameWonTime/1000., 0, 1) + " secondes !!";
           fill(255);
+          textSize(100);
           text(msg, (width/2)-textWidth(msg)/2, height/4);          
         }
       }

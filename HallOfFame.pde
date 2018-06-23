@@ -55,6 +55,7 @@ class HallOfFame{
   void display(PGraphics g){
     g.background(0);
     g.fill(255);
+    g.textSize(40);
     for(int i=0;i<_levels.size();i++){
       int j = 0;
       g.text("Niveau " + (i+1),25+i*g.width/3,(j+1)*75);

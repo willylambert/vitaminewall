@@ -93,11 +93,11 @@ public class CameraView extends PApplet {
   
    public void settings(){
     size(kCAM_WIDTH*2, kCAM_HEIGHT);
-    _goSoundfile = new Movie(this, gDataPath + "\\go.wav");
-    _touchSoundfile = new Movie(this, gDataPath + "\\touch.wav");
-    _endSoundfile = new Movie(this, gDataPath + "\\end.wav");
-    _winSoundfile = new Movie(this, gDataPath + "\\win.wav");
-    _looserSoundfile = new Movie(this,gDataPath + "\\looser.wav");
+    _goSoundfile = new Movie(this, gDataPath + File.separator + "go.wav");
+    _touchSoundfile = new Movie(this, gDataPath + File.separator +"touch.wav");
+    _endSoundfile = new Movie(this, gDataPath + File.separator + "end.wav");
+    _winSoundfile = new Movie(this, gDataPath + File.separator + "win.wav");
+    _looserSoundfile = new Movie(this,gDataPath + File.separator + "looser.wav");
    }
   
    public void setup(){ 
@@ -453,7 +453,7 @@ public class CameraView extends PApplet {
           }          
         }
         
-        // dead hold touched
+        // dead skull hold touched
         if(bDoNotTouchTouched){
           // Restart game without reseting timer
           gWall.restartGame();

@@ -77,9 +77,7 @@ public class UIControl extends PApplet {
     size(1024, 240);
   }
 
-  public void setup() {
-    frameRate(10);
-    
+  public void setup() {    
     // Default font
     _font = gFont;    
     this.g.textFont(_font);
@@ -337,13 +335,23 @@ public class UIControl extends PApplet {
     if(code != ENTER){
       _playerName += ch;
     }else{
-      println(_playerName + " won in " + _theWall.getWonTime() + " ms");
-      _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), _playerName);
-      _theWall.displayHallOfFame(_hallOfFame);
-      _btnGoLevel1.setVisible(true);
-      _btnGoLevel2.setVisible(true);
-      _btnGoLevel3.setVisible(true);
-      _bGetPlayerName = false;
+      if(_bGetPlayerName){
+        println(_playerName + " won in " + _theWall.getWonTime() + " ms");
+        _hallOfFame.add(_theWall.getLevel(), _theWall.getWonTime(), _playerName);
+        _theWall.displayHallOfFame(_hallOfFame);
+        _btnGoLevel1.setVisible(true);
+        if(_currentWallIndex != kUSE_COLOR_STICKERS){
+          _btnGoLevel2.setVisible(true);
+          _btnGoLevel3.setVisible(true);
+        }
+        _bGetPlayerName = false;
+      }else{
+        // Enter start a new game
+        _theWall.startGame();
+        _camView.play();
+        _btnStop.setVisible(true);
+        _theWall.setInstructions("TOUCHE UNE PREMIERE PRISE POUR LANCER LE CHRONO");        
+      }
     }    
   }
 
@@ -378,7 +386,7 @@ public class UIControl extends PApplet {
       _sensivityScrollBar.display();
       
       fill(0);
-      text("Motion sensivity : ",_btnCameraList.size()*230+155,10);
+      text("Motion sensivity : ",_btnCameraList.size()*230+155,20);
             
       textAlign(LEFT);
       text("Capture Device : ",20,15);
