@@ -245,6 +245,19 @@ class TheWall extends PApplet {
     shapeMode(CENTER);
     textFont(_font);
     
+    // switch between Welcome Screen and Hall Of Fame
+    if(_bReadyToGo || _bShowHallOfFame){
+      if (frameCount % 240 == 0 ) {
+        if(_bReadyToGo){
+          _bShowHallOfFame = true;
+          _bReadyToGo = false;
+        }else{
+          _bShowHallOfFame = false;
+          _bReadyToGo = true;
+        }
+      }
+    }
+    
     if(_bRecordNewWall){
       fill(255,255,255);
       ellipse(mouseX, mouseY, Calibration.kDOT_SIZE, Calibration.kDOT_SIZE);
@@ -253,7 +266,7 @@ class TheWall extends PApplet {
       }
     }else{
       if(_bReadyToGo){
-        _readyToGo.display(g,frameCount);
+        _readyToGo.display(g);
       }else{
         if(!_bGameWon) {
           //Game is running !
@@ -279,7 +292,7 @@ class TheWall extends PApplet {
               image(_wallImg, 0, 0);
             } else {
               //Welcome message
-              _readyToGo.display(g,frameCount);
+              _readyToGo.display(g);
             }
           }
                      

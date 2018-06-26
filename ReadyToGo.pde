@@ -25,7 +25,7 @@ class ReadyToGo{
     _readyToGoImage.resize(g.width,g.height);
   }
   
-  void display(PGraphics g, int frmCount){
+  void display(PGraphics g){
     g.image(_readyToGoImage,0,0);
     
   }

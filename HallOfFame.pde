@@ -61,7 +61,7 @@ class HallOfFame{
       g.text("Niveau " + (i+1),25+i*g.width/3,(j+1)*75);
       for(Player player : _levels.get(i)){
         //display player result
-        g.text(player.toString(),25+i*g.width/3,(j+2)*75);
+        g.text(player.toString(),25+i*g.width/3,(j+2)*70);
         j++;
       }
     }

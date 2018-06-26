@@ -82,6 +82,7 @@ public class DetectionResult{
     
     Dot newDot;
     
+        
     for (Map.Entry camDot :_activeDots.entrySet()) {
       // Do we have an existing dot already initialised next to this cell ?
       int[] camDotValue = (int[])camDot.getValue();
