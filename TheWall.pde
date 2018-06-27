@@ -275,7 +275,7 @@ class TheWall extends PApplet {
           if (_startTime!=0) {
             _instructions = nf((millis()-_startTime)/1000., 3, 1); 
             if(_calibrationMode == Calibration.kCALIBRATION_COLOR_STICKERS){
-              textSize(150);
+              textSize(250);
             }
           }
           fill(255);
@@ -298,10 +298,20 @@ class TheWall extends PApplet {
                      
         }else{
            //Game Won !!
-          String msg = "Bravo, pas mal... " + nf(_gameWonTime/1000., 0, 1) + " secondes !!";
+          
           fill(255);
+          
+          String msg = "Bravo, pas mal... ";
           textSize(100);
-          text(msg, (width/2)-textWidth(msg)/2, height/4);          
+          text(msg, (width/2)-textWidth(msg)/2, 0);
+          
+          msg = nf(_gameWonTime/1000., 0, 1);
+          textSize(400);
+          text(msg, (width/2)-textWidth(msg)/2, height/2-200);
+          
+          msg = " secondes !!";
+          textSize(100);
+          text(msg, (width/2)-textWidth(msg)/2, (height/4)*3);
         }
       }
     }

@@ -56,12 +56,20 @@ class HallOfFame{
     g.background(0);
     g.fill(255);
     g.textSize(40);
-    for(int i=0;i<_levels.size();i++){
+    
+    int levelCount;
+    if(gData.getCalibrationMode()==Data.kCALIBRATION_COLOR_STICKERS){
+      levelCount = 1;
+    }else{
+      levelCount = _levels.size();
+    }
+    
+    for(int i=0;i<levelCount;i++){
       int j = 0;
       g.text("Niveau " + (i+1),25+i*g.width/3,(j+1)*75);
       for(Player player : _levels.get(i)){
         //display player result
-        g.text(player.toString(),25+i*g.width/3,(j+2)*70);
+        g.text(player.toString(),25+i*g.width/3,(j+2)*50);
         j++;
       }
     }

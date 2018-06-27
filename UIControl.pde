@@ -216,11 +216,13 @@ public class UIControl extends PApplet {
         // Last wall = wall designed by colored stickers
         if(i == _btnWallList.size() - 1 ){
         _currentWallIndex = kUSE_COLOR_STICKERS;
+        gData.setCalibrationMode(Data.kCALIBRATION_COLOR_STICKERS);
         _redScrollBar.setVisible(true);
         _greenScrollBar.setVisible(true);
         calibrateTheWall();
         }else{
-          _currentWallIndex = i;        
+          _currentWallIndex = i;
+          gData.setCalibrationMode(Data.kCALIBRATION_VP);
           gData.setCurrentWall(_currentWallIndex);
           _theWall.setDots(gData.getCurrentWall().getDots());
         }

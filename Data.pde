@@ -11,6 +11,8 @@
   static final int kCALIBRATION_VP = 1;
   static final int kCALIBRATION_COLOR_STICKERS = 2;
   
+  int _calibrationMode;
+  
   float _sensivity = kTHRESHOLD;
   float _threshold = kSENSIVITY;
   
@@ -56,6 +58,14 @@
     }else{
       println(filename + " not found");
     }
+  }
+  
+  void setCalibrationMode(int mode){
+    _calibrationMode = mode;   
+  }
+  
+  int getCalibrationMode(){
+    return _calibrationMode;
   }
   
   void setCurrentWall(int index){
