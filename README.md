@@ -16,6 +16,10 @@ Check that the folder is named "vitaminewall" (same name as the main sketch `vit
 Then, you have to install the following library (Sketch => Import Library) :
 * Video
 
+### Install font
+
+Vitamin' Wall use the font "Digital-7". It is located in the data folder `data/digital-7.ttf`. Open this file to install the font on your system.
+
 Vitamin' Wall could be run with or without a videoprojector
 
 ### With videoprojector
@@ -26,7 +30,7 @@ Next steps :
 * Open vitaminewall project and run it
 * You will see webcam feedback on main screen, be sure that webcam is centered and see the entire videoprojector view
 * Choose an existing wall Slot (wall #1 ... wall #5)
-* Use predefined holds or design your own wall !
+* Design your own wall : left click to on wall screen to add a *touch dot* and right click to add *skull dot*
 * Click on `Calibrate`
 * and GO !
 
