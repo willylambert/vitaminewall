@@ -50,6 +50,7 @@ class VitaButton {
       _g.stroke(141);
       _g.rect(_x, _y, _w, _h, 10);
       _g.fill(0);
+      _g.textSize(15);
       _g.text(_label, _xLabel , _yLabel);
     }
   }

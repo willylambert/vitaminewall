@@ -92,15 +92,21 @@ public class CameraView extends PApplet {
   
   
    public void settings(){
+    println("CameraView::settings()");
     size(kCAM_WIDTH*2, kCAM_HEIGHT);
+    println("CameraView::settings() load sounds");
+    /*
     _goSoundfile = new Movie(this, gDataPath + File.separator + "go.wav");
     _touchSoundfile = new Movie(this, gDataPath + File.separator +"touch.wav");
     _endSoundfile = new Movie(this, gDataPath + File.separator + "end.wav");
     _winSoundfile = new Movie(this, gDataPath + File.separator + "win.wav");
     _looserSoundfile = new Movie(this,gDataPath + File.separator + "looser.wav");
+    */
+    println("CameraView::settings() sounds loaded");
    }
   
    public void setup(){ 
+     println("CameraView::setup()");
      frameRate(10);
     _detectionResult = new DetectionResult(0,0,0);
     
@@ -111,10 +117,13 @@ public class CameraView extends PApplet {
     
     _font = gFont;
    
+    println("CameraView::setup createImage");
     mPrevFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
     mCurrFrame = createImage(kCAM_WIDTH,kCAM_HEIGHT,RGB);
     mFeedback  = createImage(kCAM_WIDTH,kCAM_HEIGHT, RGB); 
+    println("CameraView::setup createGraphics");
     mCamCtrl   = createGraphics(kCAM_WIDTH,kCAM_HEIGHT);
+    
    }
    
    PImage getCurrentFrame(){

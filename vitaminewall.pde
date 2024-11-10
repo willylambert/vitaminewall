@@ -58,6 +58,6 @@ void setup(){
   //Controls
   String[] controlArgs = {"--location=0,500", "ClimbWall"};
   gUIControl = new UIControl(gCamView,gWall);
-  PApplet.runSketch(controlArgs, gUIControl);   
+  PApplet.runSketch(controlArgs, gUIControl); 
 
 }

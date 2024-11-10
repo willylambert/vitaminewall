@@ -304,7 +304,7 @@ public class UIControl extends PApplet {
     //Save wall on current wall slot
     if(_btnSaveWall.MouseIsOver()){
       _theWall.endCreationWall();
-      gData.getCurrentWall().setName("Wall #" + _currentWallIndex);
+      gData.getCurrentWall().setName("Wall " + _currentWallIndex);
       gData.saveWall(_currentWallIndex);
       gData.loadData(); //reload data from json
       loadData(); //refresh wall list
@@ -388,6 +388,7 @@ public class UIControl extends PApplet {
       _sensivityScrollBar.display();
       
       fill(0);
+      textSize(15);
       text("Motion sensivity : ",_btnCameraList.size()*230+155,20);
             
       textAlign(LEFT);
